@@ -1,0 +1,13 @@
+[run]
+omit =
+    */tests/*
+
+    # Virtualenv packages
+    venv/*
+
+[report]
+exclude_lines =
+    # This excludes all abstract methods from code coverage checks,
+    # as they are never instantiated directly anyway
+    pragma: no cover
+    @abstract

@@ -1,0 +1,6 @@
+numpy == 1.16.2
+
+pytest == 4.2.0         # for test suite
+pytest-cov == 2.6.1     # for test suite
+mypy == 0.670           # for static type analysis
+codecov                 # for test coverage

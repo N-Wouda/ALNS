@@ -1,0 +1,25 @@
+dist:
+  xenial
+
+language:
+  python
+
+python:
+  - 3.7
+
+install:
+  - pip install -r requirements.txt
+
+git:
+  depth: 3
+
+branches:       # since the master branch is the only one where PRs are
+  only:         # merged in
+  - master
+
+script:
+  - pytest
+  - mypy ./ || true                                 # static code analyser
+
+after_success:
+  - codecov

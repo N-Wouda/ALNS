@@ -2,6 +2,7 @@ import numpy as np
 import numpy.random as rnd
 
 from .Result import Result
+from .enums import WeightIndex
 
 
 class ALNS:
@@ -116,25 +117,28 @@ class ALNS:
             The weight value to use when updating the operator weights
         """
         if candidate.objective() > best.objective():
-            return candidate, weights[0]
+            return candidate, weights[WeightIndex.IS_BEST]
 
         if candidate.objective() > current.objective():
-            return candidate, weights[1]
+            return candidate, weights[WeightIndex.IS_BETTER]
 
-        if not anneal:                      # we do not accept the new state,
-            return current, weights[3]      # that is, it is rejected
+        # The temperature-based acceptance criterion allows accepting worse
+        # solutions, especially in early iterations.
+        if anneal and self._accept(current, candidate, temperature,
+                                   temperature_decay):
+            return candidate, weights[WeightIndex.IS_ACCEPTED]
 
-        # This is borrowed from simulated annealing, to allow for worse choices
-        # in the beginning.
-        if self._accept(current, candidate, temperature, temperature_decay) \
-                > np.random.random():
-            return candidate, weights[2]
-        else:
-            return current, weights[3]
+        return current, weights[WeightIndex.IS_REJECTED]
 
     def _accept(self, current, candidate, temperature, temperature_decay):
         """
         TODO
+
+        Returns
+        -------
+        bool
+            True is the candidate solution should be accepted, False if it
+            should be rejected.
         """
         pass
 

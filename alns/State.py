@@ -3,27 +3,20 @@ from abc import ABC, abstractmethod
 
 class State(ABC):
 
-    @classmethod
     @abstractmethod
-    def from_state(cls, state):
+    def copy(self):
         """
-        Constructs a new state from the passed-in state. This may be used to
-        ensure solution steps do not overwrite one another for more difficult
-        problems.
-
-        Parameters
-        ----------
-        state : State
-            The current state
+        Constructs a new state from this state. This may be used to ensure
+        solution steps do not overwrite one another for more difficult
+        problems that track many decision variables.
 
         Returns
         -------
         State
-            The constructed, new state.
+            A newly constructed state, identical to this state.
         """
         return NotImplemented
 
-    @property
     @abstractmethod
     def objective(self):
         """

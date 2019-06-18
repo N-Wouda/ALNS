@@ -3,6 +3,10 @@ from numpy.testing import assert_equal
 
 
 def test_add_destroy_operator():
+    """
+    Tests if adding a destroy operator correctly updates the number of
+    operators available on the ALNS instance.
+    """
     alns = ALNS()
 
     for count in [1, 2]:
@@ -11,6 +15,10 @@ def test_add_destroy_operator():
 
 
 def test_add_repair_operator():
+    """
+    Tests if adding a repair operator correctly updates the number of
+    operators available on the ALNS instance.
+    """
     alns = ALNS()
 
     for count in [1, 2]:

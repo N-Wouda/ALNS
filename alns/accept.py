@@ -1,6 +1,6 @@
 import numpy as np
 
-from .State import State
+from .State import State    # pylint: disable=unused-import
 
 
 def accept(current, candidate, temperature, temperature_decay, rnd):

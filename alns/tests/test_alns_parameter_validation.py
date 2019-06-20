@@ -2,7 +2,7 @@ import numpy.random as rnd
 from numpy.testing import assert_raises
 
 from alns import ALNS
-from .states import One
+from .states import One, Zero
 
 state = rnd.RandomState(0)
 
@@ -121,6 +121,50 @@ def test_raises_non_positive_iterations():
         alns(One(), [1, 1, 1, 1], .5, -5)
 
 
+def test_raises_negative_temperature_decay_parameter():
+    """
+    A negative decay parameter would result in a negative temperature, which
+    should not be allowed.
+    """
+    alns = ALNS()
+
+    alns.add_repair_operator(lambda state, rnd: None)
+    alns.add_destroy_operator(lambda state, rnd: None)
+
+    with assert_raises(ValueError):
+        alns(One(), [1, 1, 1, 1], .5, temperature_decay=-0.5)
+
+
+def test_raises_explosive_temperature_decay_parameter():
+    """
+    Temperatures would increase without bound for a decay parameter greater
+    than one, so this should raise.
+    """
+    alns = ALNS()
+
+    alns.add_repair_operator(lambda state, rnd: None)
+    alns.add_destroy_operator(lambda state, rnd: None)
+
+    with assert_raises(ValueError):
+        alns(One(), [1, 1, 1, 1], .5, temperature_decay=2.5)
+
+
+def test_raises_boundary_temperature_decay_parameters():
+    """
+    The boundary cases, zero and one, should both raise.
+    """
+    alns = ALNS()
+
+    alns.add_repair_operator(lambda state, rnd: None)
+    alns.add_destroy_operator(lambda state, rnd: None)
+
+    with assert_raises(ValueError):
+        alns(One(), [1, 1, 1, 1], .5, temperature_decay=0)
+
+    with assert_raises(ValueError):
+        alns(One(), [1, 1, 1, 1], .5, temperature_decay=1)
+
+
 def test_does_not_raise():
     """
     This set of parameters, on the other hand, should work correctly.
@@ -130,4 +174,4 @@ def test_does_not_raise():
     alns.add_repair_operator(lambda state, rnd: One())
     alns.add_destroy_operator(lambda state, rnd: One())
 
-    alns(One(), [1, 1, 1, 1], .5, 100)
+    alns(Zero(), [1, 1, 1, 1], .5, 100)

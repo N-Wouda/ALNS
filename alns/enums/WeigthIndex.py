@@ -1,6 +1,7 @@
-from enum import IntEnum
+from enum import IntEnum, unique
 
 
+@unique
 class WeightIndex(IntEnum):
     """
     Names the various indices in the weights list. See eq. (1), p. 12 in

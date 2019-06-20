@@ -1,13 +1,17 @@
-from alns import Result
 from numpy.testing import assert_
+
+from alns import Result
+from .states import Sentinel
 
 
 def test_result_states():
     """
     Tests if the result object correctly returns the passed-in states.
     """
-    best = object()     # two unique sentinel objects - their id's are used
-    last = object()     # to differentiate the best and last states below.
+    best = Sentinel()     # two unique sentinel objects - their ids are used
+    last = Sentinel()     # to differentiate the best and last states below.
+
+    assert_(best is not last)                               # sanity check
 
     result = Result(best, last)
 

@@ -2,20 +2,15 @@ from abc import ABC, abstractmethod
 
 
 class State(ABC):
+    """
+    State object, which stores a solution via its decision variables. The
+    objective value is evaluated via its ``objective()`` member, and should
+    return a totally ordered type - e.g. an ``int``, ``float``, or something
+    comparable.
 
-    @abstractmethod
-    def copy(self):
-        """
-        Constructs a new state from this state. This may be used to ensure
-        solution steps do not overwrite one another for more difficult
-        problems that track many decision variables.
-
-        Returns
-        -------
-        State
-            A newly constructed state, identical to this state.
-        """
-        return NotImplemented
+    The State class is abstract - you are encouraged to subclass it to suit
+    your specific problem.
+    """
 
     @abstractmethod
     def objective(self):

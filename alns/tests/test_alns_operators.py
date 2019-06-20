@@ -10,7 +10,7 @@ def test_add_destroy_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_destroy_operator(lambda item: None)
+        alns.add_destroy_operator(lambda state, rnd: None)
         assert_equal(len(alns.destroy_operators), count)
 
 
@@ -22,5 +22,5 @@ def test_add_repair_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_repair_operator(lambda item: None)
+        alns.add_repair_operator(lambda state, rnd: None)
         assert_equal(len(alns.repair_operators), count)

@@ -1,11 +1,11 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class WeightIndex(Enum):
+class WeightIndex(IntEnum):
     """
-    Names the various indices in the weights list.
+    Names the various indices in the weights list. See eq. (1), p. 12 in
+    Pisinger and Røpke (2010).
     """
-
     IS_BEST = 0
     IS_BETTER = 1
     IS_ACCEPTED = 2

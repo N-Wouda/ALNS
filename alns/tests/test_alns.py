@@ -18,3 +18,5 @@ def test_trivial_example():
 
     assert_equal(result.best_state.objective(), 1)
     assert_equal(result.last_state.objective(), 1)
+
+# TODO more sophisticated tests

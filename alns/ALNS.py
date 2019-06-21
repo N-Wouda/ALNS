@@ -145,7 +145,7 @@ class ALNS:
         return Result(best, current)
 
     def _consider_candidate(self, best, current, candidate, weights,
-                            anneal=True, init_temperature=1000,
+                            anneal=True, initial_temperature=10000,
                             temperature_decay=0.95):
         """
         Considers the candidate solution by comparing it against the best and
@@ -167,7 +167,7 @@ class ALNS:
         anneal : bool
             Should an annealing approach be used when considering inferior
             candidate solutions? Defaults to True.
-        init_temperature : float
+        initial_temperature : float
             The initial temperature. Defaults to 1000.
         temperature_decay : float
             Temperature decay parameter. Defaults to 0.95, in line with
@@ -195,7 +195,7 @@ class ALNS:
         if candidate.objective() > current.objective():
             return candidate, weights[WeightIndex.IS_BETTER]
 
-        temperature = self._compute_temperature(init_temperature,
+        temperature = self._compute_temperature(initial_temperature,
                                                 temperature_decay)
 
         # The temperature-based acceptance criterion allows accepting worse

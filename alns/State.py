@@ -2,28 +2,15 @@ from abc import ABC, abstractmethod
 
 
 class State(ABC):
+    """
+    State object, which stores a solution via its decision variables. The
+    objective value is evaluated via its ``objective()`` member, and should
+    return a numeric type - e.g. an ``int``, ``float``, or comparable.
 
-    @classmethod
-    @abstractmethod
-    def from_state(cls, state):
-        """
-        Constructs a new state from the passed-in state. This may be used to
-        ensure solution steps do not overwrite one another for more difficult
-        problems.
+    The State class is abstract - you are encouraged to subclass it to suit
+    your specific problem.
+    """
 
-        Parameters
-        ----------
-        state : State
-            The current state
-
-        Returns
-        -------
-        State
-            The constructed, new state.
-        """
-        return NotImplemented
-
-    @property
     @abstractmethod
     def objective(self):
         """
@@ -31,8 +18,7 @@ class State(ABC):
 
         Returns
         -------
-        Any
-            The actual value and type are unimportant, so long as they admit
-            comparison and equality operators.
+        float
+            Some numeric value, e.g. an ``int`` or ``float``.
         """
         return NotImplemented

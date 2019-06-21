@@ -62,3 +62,6 @@ target/
 
 # Virtualenv
 venv/
+
+# Jupyter
+.ipynb_checkpoints/

@@ -9,20 +9,22 @@ from .enums import WeightIndex
 
 class ALNS:
 
-    def __init__(self, seed=None):
+    def __init__(self, rnd_state=rnd.RandomState()):
         """
+        TODO
 
         Parameters
         ----------
-        seed : int
-            The random seed to use for method and acceptance selection. This
-            seed is also passed to the destroy and repair operators, as a
-            second argument.
+        rnd_state : rnd.RandomState
+            Optional random state to use for random number generation. When
+            passed, this state is used for operator selection and general
+            computations requiring random numbers. It is also passed to the
+            destroy and repair operators, as a second argument.
         """
         self._destroy_operators = []
         self._repair_operators = []
 
-        self._random = rnd.RandomState(seed)
+        self._rnd_state = rnd_state
         self._iteration = 0
 
     @property
@@ -115,16 +117,16 @@ class ALNS:
         for iteration in range(iterations):
             self._iteration = iteration
 
-            d_idx = self._random.choice(
+            d_idx = self._rnd_state.choice(
                 np.arange(0, len(self.destroy_operators)),
                 p=d_weights / np.sum(d_weights))
 
-            r_idx = self._random.choice(
+            r_idx = self._rnd_state.choice(
                 np.arange(0, len(self.repair_operators)),
                 p=r_weights / np.sum(r_weights))
 
-            destroyed = self.destroy_operators[d_idx](current, self._random)
-            candidate = self.repair_operators[r_idx](destroyed, self._random)
+            destroyed = self.destroy_operators[d_idx](current, self._rnd_state)
+            candidate = self.repair_operators[r_idx](destroyed, self._rnd_state)
 
             current, weight = self._consider_candidate(best, current, candidate,
                                                        weights, **kwargs)
@@ -198,7 +200,7 @@ class ALNS:
 
         # The temperature-based acceptance criterion allows accepting worse
         # solutions, especially in early iterations.
-        if anneal and accept(current, candidate, temperature, self._random):
+        if anneal and accept(current, candidate, temperature, self._rnd_state):
             return candidate, weights[WeightIndex.IS_ACCEPTED]
 
         return current, weights[WeightIndex.IS_REJECTED]

@@ -14,7 +14,7 @@ def test_trivial_example():
     alns.add_repair_operator(lambda state, rnd: One())
     alns.add_destroy_operator(lambda state, rnd: One())
 
-    result = alns(Zero(), [1, 1, 1, 1], .5, 100)
+    result = alns.iterate(Zero(), [1, 1, 1, 1], .5, 100)
 
     assert_equal(result.best_state.objective(), 1)
     assert_equal(result.last_state.objective(), 1)

@@ -61,8 +61,8 @@ class ALNS:
         """
         self._repair_operators.append(operator)
 
-    def __call__(self, initial_solution, weights, operator_decay,
-                 iterations=10000, **kwargs):
+    def iterate(self, initial_solution, weights, operator_decay,
+                iterations=10000, **kwargs):
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set

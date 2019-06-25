@@ -16,7 +16,7 @@ def test_raises_missing_destroy_operator():
     alns.add_repair_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], 0.95)
+        alns.iterate(One(), [1, 1, 1, 1], 0.95)
 
 
 def test_raises_missing_repair_operator():
@@ -28,7 +28,7 @@ def test_raises_missing_repair_operator():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], 0.95)
+        alns.iterate(One(), [1, 1, 1, 1], 0.95)
 
 
 def test_raises_negative_operator_decay():
@@ -42,7 +42,7 @@ def test_raises_negative_operator_decay():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], -0.5)
+        alns.iterate(One(), [1, 1, 1, 1], -0.5)
 
 
 def test_raises_explosive_operator_decay():
@@ -56,7 +56,7 @@ def test_raises_explosive_operator_decay():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], 1.2)
+        alns.iterate(One(), [1, 1, 1, 1], 1.2)
 
 
 def test_raises_boundary_operator_decay():
@@ -69,10 +69,10 @@ def test_raises_boundary_operator_decay():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], 0)
+        alns.iterate(One(), [1, 1, 1, 1], 0)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], 1)
+        alns.iterate(One(), [1, 1, 1, 1], 1)
 
 
 def test_raises_insufficient_weights():
@@ -86,7 +86,7 @@ def test_raises_insufficient_weights():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1], .5)
+        alns.iterate(One(), [1, 1, 1], .5)
 
 
 def test_raises_non_positive_weights():
@@ -99,10 +99,10 @@ def test_raises_non_positive_weights():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 0, 1], .5)
+        alns.iterate(One(), [1, 1, 0, 1], .5)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, -5, 1], .5)
+        alns.iterate(One(), [1, 1, -5, 1], .5)
 
 
 def test_raises_non_positive_iterations():
@@ -115,10 +115,10 @@ def test_raises_non_positive_iterations():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], .5, 0)
+        alns.iterate(One(), [1, 1, 1, 1], .5, 0)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], .5, -5)
+        alns.iterate(One(), [1, 1, 1, 1], .5, -5)
 
 
 def test_raises_negative_temperature_decay_parameter():
@@ -132,7 +132,7 @@ def test_raises_negative_temperature_decay_parameter():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], .5, temperature_decay=-0.5)
+        alns.iterate(One(), [1, 1, 1, 1], .5, temperature_decay=-0.5)
 
 
 def test_raises_explosive_temperature_decay_parameter():
@@ -146,7 +146,7 @@ def test_raises_explosive_temperature_decay_parameter():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], .5, temperature_decay=2.5)
+        alns.iterate(One(), [1, 1, 1, 1], .5, temperature_decay=2.5)
 
 
 def test_raises_boundary_temperature_decay_parameters():
@@ -159,10 +159,10 @@ def test_raises_boundary_temperature_decay_parameters():
     alns.add_destroy_operator(lambda state, rnd: None)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], .5, temperature_decay=0)
+        alns.iterate(One(), [1, 1, 1, 1], .5, temperature_decay=0)
 
     with assert_raises(ValueError):
-        alns(One(), [1, 1, 1, 1], .5, temperature_decay=1)
+        alns.iterate(One(), [1, 1, 1, 1], .5, temperature_decay=1)
 
 
 def test_does_not_raise():
@@ -174,4 +174,4 @@ def test_does_not_raise():
     alns.add_repair_operator(lambda state, rnd: One())
     alns.add_destroy_operator(lambda state, rnd: One())
 
-    alns(Zero(), [1, 1, 1, 1], .5, 100)
+    alns.iterate(Zero(), [1, 1, 1, 1], .5, 100)

@@ -1,5 +1,5 @@
 numpy == 1.16.2
-matplotlib ==  3.0.2    # for plotting
+matplotlib >=  2.2.0    # for plotting
 
 pytest == 4.2.0         # for test suite
 pytest-cov == 2.6.1     # for test suite

@@ -108,9 +108,11 @@ class ALNS:
         Operational Research*, 171: 750–775, 2006.
         """
         weights = np.asarray(weights, dtype=np.float16)
+
         self._validate_parameters(weights, operator_decay, iterations)
 
         current = best = initial_solution
+
         d_weights = np.ones_like(self.destroy_operators, dtype=np.float16)
         r_weights = np.ones_like(self.repair_operators, dtype=np.float16)
 

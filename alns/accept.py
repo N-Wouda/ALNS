@@ -31,7 +31,7 @@ def accept(current, candidate, temperature, rnd):
     if temperature <= 0:
         raise ValueError("Non-positive temperature is not understood.")
 
-    probability = np.exp(-(current.objective() - candidate.objective())
+    probability = np.exp((current.objective() - candidate.objective())
                          / temperature)
 
     return probability > rnd.random_sample()

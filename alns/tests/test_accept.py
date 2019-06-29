@@ -15,8 +15,8 @@ def test_accept_random_solutions():
     # Using the above seed, the first two random numbers are 0.55 and .72,
     # respectively. The acceptance probability is 0.61, so the first should be
     # accepted (0.61 > 0.55), but the second should not (0.61 < 0.72).
-    assert_(accept(One(), Zero(), 2, state))
-    assert_(not accept(One(), Zero(), 2, state))
+    assert_(accept(Zero(), One(), 2, state))
+    assert_(not accept(Zero(), One(), 2, state))
 
 
 def test_always_accept_better_solutions():
@@ -27,4 +27,4 @@ def test_always_accept_better_solutions():
     state = rnd.RandomState()
 
     for _ in range(100):
-        assert_(accept(Zero(), One(), 2, state))
+        assert_(accept(One(), Zero(), 2, state))

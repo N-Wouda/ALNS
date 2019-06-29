@@ -133,7 +133,7 @@ class ALNS:
             current, weight = self._consider_candidate(best, current, candidate,
                                                        weights, **kwargs)
 
-            if current.objective() > best.objective():
+            if current.objective() < best.objective():
                 best = current
 
             # The weights are updated as convex combinations of the current
@@ -191,10 +191,10 @@ class ALNS:
             raise ValueError("Temperature decay parameter outside unit"
                              " interval is not understood.")
 
-        if candidate.objective() > best.objective():
+        if candidate.objective() < best.objective():
             return candidate, weights[WeightIndex.IS_BEST]
 
-        if candidate.objective() > current.objective():
+        if candidate.objective() < current.objective():
             return candidate, weights[WeightIndex.IS_BETTER]
 
         temperature = self._compute_temperature(initial_temperature,

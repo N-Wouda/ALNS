@@ -11,12 +11,12 @@ def test_trivial_example():
     """
     alns = ALNS()
 
-    alns.add_repair_operator(lambda state, rnd: One())
-    alns.add_destroy_operator(lambda state, rnd: One())
+    alns.add_repair_operator(lambda state, rnd: Zero())
+    alns.add_destroy_operator(lambda state, rnd: Zero())
 
-    result = alns.iterate(Zero(), [1, 1, 1, 1], .5, 100)
+    result = alns.iterate(One(), [1, 1, 1, 1], .5, 100)
 
-    assert_equal(result.best_state.objective(), 1)
-    assert_equal(result.last_state.objective(), 1)
+    assert_equal(result.best_state.objective(), 0)
+    assert_equal(result.last_state.objective(), 0)
 
 # TODO more sophisticated tests

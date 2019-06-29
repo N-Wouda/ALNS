@@ -8,4 +8,4 @@ class HillClimbing(AcceptanceCriterion):
     """
 
     def accept(self, best, current, candidate):
-        return candidate.objective() >= current.objective()
+        return candidate.objective() <= current.objective()

@@ -1,7 +1,10 @@
 from .AcceptanceCriterion import AcceptanceCriterion
 
 
-class RecordTravel(AcceptanceCriterion):
+class RecordToRecordTravel(AcceptanceCriterion):
+    """
+    TODO
+    """
 
     def accept(self, best, current, candidate):
         return NotImplemented

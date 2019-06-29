@@ -4,7 +4,7 @@ import numpy.random as rnd
 from .Result import Result
 from .State import State    # pylint: disable=unused-import
 from .accept import accept
-from .enums import WeightIndex
+from .WeigthIndex import WeightIndex
 
 
 class ALNS:

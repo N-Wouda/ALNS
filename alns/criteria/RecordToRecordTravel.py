@@ -2,34 +2,34 @@ from .AcceptanceCriterion import AcceptanceCriterion
 
 
 class RecordToRecordTravel(AcceptanceCriterion):
-    """
-    Linear record-to-record travel, using an updating threshold. The threshold
-    is updated as,
-
-    ``threshold = max(end_threshold, threshold - step)``
-
-    where the initial threshold is set to ``start_threshold``.
-
-    Parameters
-    ----------
-    start_threshold : float
-        The initial threshold.
-    end_threshold : float
-        The final threshold.
-    step : float
-        The updating step.
-
-    References
-    ----------
-    - Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-      criteria for the adaptive large neighbourhood search metaheuristic.
-      *Journal of Heuristics* (2018) 24 (5): 783–815.
-    - Dueck, G., Scheuer, T. Threshold accepting: A general purpose
-      optimization algorithm appearing superior to simulated annealing.
-      *Journal of Computational Physics* (1990) 90 (1): 161-175.
-    """
 
     def __init__(self, start_threshold, end_threshold, step):
+        """
+        Linear record-to-record travel, using an updating threshold. The
+        threshold is updated as,
+
+        ``threshold = max(end_threshold, threshold - step)``
+
+        where the initial threshold is set to ``start_threshold``.
+
+        Parameters
+        ----------
+        start_threshold : float
+            The initial threshold.
+        end_threshold : float
+            The final threshold.
+        step : float
+            The updating step.
+
+        References
+        ----------
+        - Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+          criteria for the adaptive large neighbourhood search metaheuristic.
+          *Journal of Heuristics* (2018) 24 (5): 783–815.
+        - Dueck, G., Scheuer, T. Threshold accepting: A general purpose
+          optimization algorithm appearing superior to simulated annealing.
+          *Journal of Computational Physics* (1990) 90 (1): 161-175.
+        """
         if start_threshold < 0 or end_threshold < 0 or step < 0:
             raise ValueError("Thresholds must be positive.")
 

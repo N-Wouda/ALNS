@@ -78,7 +78,7 @@ def test_accepts_better():
 def test_rejects_worse():
     record_travel = RecordToRecordTravel(0.5, 0.2, 0.1)
 
-    # This results in a relative improvement of plus one, which is bigger than
+    # This results in a relative worsening of plus one, which is bigger than
     # the threshold (0.5).
     assert_(not record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))
 
@@ -91,4 +91,14 @@ def test_accepts_equal():
     assert_(record_travel.accept(rnd.RandomState(), Zero(), Zero(), Zero()))
 
 
-# TODO test threshold updating
+def test_threshold_update():
+    record_travel = RecordToRecordTravel(5, 0, 1)
+
+    # For the first five, the threshold is, resp., 5, 4, 3, 2, 1. The relative
+    # worsening is plus one, so this should be accepted (lower or equal to
+    # threshold).
+    for _ in range(5):
+        assert_(record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))
+
+    # Threshold is now zero, so this should no longer be accepted.
+    assert_(not record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))

@@ -168,14 +168,12 @@ def test_trivial_example():
     This tests the ALNS algorithm on a trivial example, where the initial
     solution is zero, and any other operator returns one.
     """
-    alns = ALNS()
-
-    alns.add_repair_operator(lambda state, rnd: Zero())
-    alns.add_destroy_operator(lambda state, rnd: Zero())
+    alns = get_alns_instance([lambda state, rnd: Zero()],
+                             [lambda state, rnd: Zero()])
 
     result = alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 100)
 
     assert_equal(result.best_state.objective(), 0)
     assert_equal(result.last_state.objective(), 0)
 
-# TODO more sophisticated tests
+# TODO test more sophisticated examples

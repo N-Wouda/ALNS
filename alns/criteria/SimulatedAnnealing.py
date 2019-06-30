@@ -31,8 +31,8 @@ class SimulatedAnnealing(AcceptanceCriterion):
         - Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
           by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
         """
-        if start_temperature < 0 or end_temperature < 0 or step < 0:
-            raise ValueError("Temperatures must be positive.")
+        if start_temperature <= 0 or end_temperature <= 0 or step < 0:
+            raise ValueError("Temperatures must be strictly positive.")
 
         if start_temperature < end_temperature:
             raise ValueError("Start temperature must be bigger than end "

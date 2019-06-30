@@ -55,7 +55,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
     def step(self):
         return self._step
 
-    def accept(self, best, current, candidate):
+    def accept(self, rnd, best, current, candidate):
         # This follows from the paper by Dueck and Scheueur (1990), p. 162.
         result = (candidate.objective() - best.objective()) <= self._threshold
 

@@ -1,3 +1,4 @@
+import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
 
 from alns.criteria import RecordToRecordTravel
@@ -71,7 +72,7 @@ def test_end_threshold():
 
 def test_accepts_better():
     record_travel = RecordToRecordTravel(1, 0, 0.1)
-    assert_(record_travel.accept(One(), Zero(), Zero()))
+    assert_(record_travel.accept(rnd.RandomState(), One(), Zero(), Zero()))
 
 
 def test_rejects_worse():
@@ -79,7 +80,7 @@ def test_rejects_worse():
 
     # This results in a relative improvement of plus one, which is bigger than
     # the threshold (0.5).
-    assert_(not record_travel.accept(Zero(), Zero(), One()))
+    assert_(not record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))
 
 
 def test_accepts_equal():
@@ -87,7 +88,7 @@ def test_accepts_equal():
 
     # Even a the strictest threshold, this should be accepted since the
     # relative improvement is zero (they are equal).
-    assert_(record_travel.accept(Zero(), Zero(), Zero()))
+    assert_(record_travel.accept(rnd.RandomState(), Zero(), Zero(), Zero()))
 
 
 # TODO test threshold updating

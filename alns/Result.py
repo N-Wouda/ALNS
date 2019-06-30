@@ -1,4 +1,4 @@
-from .State import State    # pylint: disable=unused-import
+from .State import State  # pylint: disable=unused-import
 
 
 class Result:

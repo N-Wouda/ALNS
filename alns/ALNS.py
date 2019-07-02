@@ -2,16 +2,18 @@ import numpy as np
 import numpy.random as rnd
 
 from .Result import Result
-from .State import State    # pylint: disable=unused-import
-from .accept import accept
-from .enums import WeightIndex
+from .State import State  # pylint: disable=unused-import
+from .WeigthIndex import WeightIndex
+from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
 
 
 class ALNS:
 
     def __init__(self, rnd_state=rnd.RandomState()):
         """
-        TODO
+        Implements the adaptive large neighbourhood search (ALNS) algorithm.
+        The implementation optimises for a minimisation problem, as explained
+        in the text by Pisinger and Røpke (2010).
 
         Parameters
         ----------
@@ -20,6 +22,12 @@ class ALNS:
             passed, this state is used for operator selection and general
             computations requiring random numbers. It is also passed to the
             destroy and repair operators, as a second argument.
+
+        References
+        ----------
+        - Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In M.
+          Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399-420).
+          Springer.
         """
         self._destroy_operators = []
         self._repair_operators = []
@@ -61,8 +69,8 @@ class ALNS:
         """
         self._repair_operators.append(operator)
 
-    def iterate(self, initial_solution, weights, operator_decay,
-                iterations=10000, **kwargs):
+    def iterate(self, initial_solution, weights, operator_decay, criterion,
+                iterations=10000):
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -80,11 +88,11 @@ class ALNS:
             accepted (idx 2), or rejected (idx 3).
         operator_decay : float
             The operator decay parameter, as a float in the unit interval.
+        criterion : AcceptanceCriterion
+            The acceptance criterion to use for candidate states. See also
+            the `alns.criteria` module for an overview.
         iterations : int
             The number of iterations. Default 10000.
-        **kwargs
-            Arguments passed to determine the correct updating strategy. See
-            code for details.
 
         Raises
         ------
@@ -108,9 +116,11 @@ class ALNS:
         Operational Research*, 171: 750–775, 2006.
         """
         weights = np.asarray(weights, dtype=np.float16)
+
         self._validate_parameters(weights, operator_decay, iterations)
 
         current = best = initial_solution
+
         d_weights = np.ones_like(self.destroy_operators, dtype=np.float16)
         r_weights = np.ones_like(self.repair_operators, dtype=np.float16)
 
@@ -129,9 +139,9 @@ class ALNS:
             candidate = self.repair_operators[r_idx](destroyed, self._rnd_state)
 
             current, weight = self._consider_candidate(best, current, candidate,
-                                                       weights, **kwargs)
+                                                       weights, criterion)
 
-            if current.objective() > best.objective():
+            if current.objective() < best.objective():
                 best = current
 
             # The weights are updated as convex combinations of the current
@@ -142,17 +152,15 @@ class ALNS:
             r_weights[r_idx] *= operator_decay
             r_weights[r_idx] += (1 - operator_decay) * weight
 
-        return Result(best, current)
+        return Result(best)
 
     def _consider_candidate(self, best, current, candidate, weights,
-                            anneal=True, initial_temperature=10000,
-                            temperature_decay=0.95):
+                            criterion):
         """
         Considers the candidate solution by comparing it against the best and
         current solutions. Returns the new solution when it is better or
-        accepted, or the current in case it is rejected. An annealing-based
-        acceptance criterion might be used, in which case worse solutions are
-        accepted from time to time.
+        accepted, or the current in case it is rejected. Candidate solutions
+        are accepted based on the passed-in acceptance criterion.
 
         Parameters
         ----------
@@ -164,14 +172,8 @@ class ALNS:
             Candidate solution.
         weights : array_like
             Updating weights for the operators.
-        anneal : bool
-            Should an annealing approach be used when considering inferior
-            candidate solutions? Defaults to True.
-        initial_temperature : float
-            The initial temperature. Defaults to 1000.
-        temperature_decay : float
-            Temperature decay parameter. Defaults to 0.95, in line with
-            Kirkpatrick et al. (1982).
+        criterion : AcceptanceCriterion
+            The chosen acceptance criterion.
 
         Returns
         -------
@@ -179,38 +181,17 @@ class ALNS:
             The new state.
         float
             The weight value to use when updating the operator weights.
-
-        References
-        ----------
-        Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P., Optimization by
-        Simulated Annealing, *IBM Research Report* RC 9355, 1982.
         """
-        if not (0 < temperature_decay < 1):
-            raise ValueError("Temperature decay parameter outside unit"
-                             " interval is not understood.")
-
-        if candidate.objective() > best.objective():
+        if candidate.objective() < best.objective():
             return candidate, weights[WeightIndex.IS_BEST]
 
-        if candidate.objective() > current.objective():
+        if candidate.objective() < current.objective():
             return candidate, weights[WeightIndex.IS_BETTER]
 
-        temperature = self._compute_temperature(initial_temperature,
-                                                temperature_decay)
-
-        # The temperature-based acceptance criterion allows accepting worse
-        # solutions, especially in early iterations.
-        if anneal and accept(current, candidate, temperature, self._rnd_state):
+        if criterion.accept(self._rnd_state, best, current, candidate):
             return candidate, weights[WeightIndex.IS_ACCEPTED]
 
         return current, weights[WeightIndex.IS_REJECTED]
-
-    def _compute_temperature(self, initial_temperature, temperature_decay):
-        """
-        For this particular updating scheme, see Kirkpatrick et al. (1982).
-        """
-        return initial_temperature * np.power(temperature_decay,
-                                              self._iteration)
 
     def _validate_parameters(self, weights, operator_decay, iterations):
         """

@@ -1,1 +1,0 @@
-from .WeigthIndex import WeightIndex

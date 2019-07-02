@@ -26,3 +26,5 @@ class Result:
             The associated State object
         """
         return self._best
+
+    # TODO incorporate statistics in Result object

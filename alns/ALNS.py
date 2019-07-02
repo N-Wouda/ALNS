@@ -70,7 +70,7 @@ class ALNS:
         self._repair_operators.append(operator)
 
     def iterate(self, initial_solution, weights, operator_decay, criterion,
-                iterations=10000):
+                iterations=10000, collect_stats=True):
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -93,6 +93,9 @@ class ALNS:
             the `alns.criteria` module for an overview.
         iterations : int
             The number of iterations. Default 10000.
+        collect_stats : bool
+            Should statistics be collected during iteration? Default True, but
+            may be turned off for long runs to reduce memory consumption.
 
         Raises
         ------

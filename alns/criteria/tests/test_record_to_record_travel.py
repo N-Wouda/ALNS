@@ -20,6 +20,17 @@ def test_raises_negative_parameters():
         RecordToRecordTravel(1, 1, -1)
 
 
+def test_raises_explosive_step():
+    """
+    For exponential updating, the step parameter must not be bigger than one,
+    as that would result in an explosive threshold.
+    """
+    with assert_raises(ValueError):
+        RecordToRecordTravel(2, 1, 2, "exponential")
+
+    RecordToRecordTravel(2, 1, 1, "exponential")    # boundary should be fine
+
+
 def test_threshold_boundary():
     """
     The boundary case for the end threshold parameter is at zero, which should
@@ -91,7 +102,7 @@ def test_accepts_equal():
     assert_(record_travel.accept(rnd.RandomState(), Zero(), Zero(), Zero()))
 
 
-def test_threshold_update():
+def test_linear_threshold_update():
     record_travel = RecordToRecordTravel(5, 0, 1)
 
     # For the first five, the threshold is, resp., 5, 4, 3, 2, 1. The relative
@@ -102,3 +113,6 @@ def test_threshold_update():
 
     # Threshold is now zero, so this should no longer be accepted.
     assert_(not record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))
+
+
+# TODO test exponential update

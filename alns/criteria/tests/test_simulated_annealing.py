@@ -20,6 +20,17 @@ def test_raises_negative_parameters():
         SimulatedAnnealing(1, 1, -1)
 
 
+def test_raises_explosive_step():
+    """
+    For exponential updating, the step parameter must not be bigger than one,
+    as that would result in an explosive threshold.
+    """
+    with assert_raises(ValueError):
+        SimulatedAnnealing(2, 1, 2, "exponential")
+
+    SimulatedAnnealing(2, 1, 1, "exponential")    # boundary should be fine
+
+
 def test_temperature_boundary():
     """
     The boundary case for the end temperature parameter is at zero, which must
@@ -95,8 +106,8 @@ def test_accepts_equal():
 
 def test_random_solutions():
     """
-    Checks if the ``accept`` method correctly decides in two known cases for
-    a fixed seed.
+    Checks if the linear ``accept`` method correctly decides in two known cases
+    for a fixed seed.
     """
     simulated_annealing = SimulatedAnnealing(2, 1, 1)
 
@@ -108,3 +119,6 @@ def test_random_solutions():
     # second should not (0.37 < 0.72).
     assert_(simulated_annealing.accept(state, Zero(), Zero(), One()))
     assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
+
+
+# TODO test exponential update

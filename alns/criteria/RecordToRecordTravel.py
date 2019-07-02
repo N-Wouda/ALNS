@@ -1,14 +1,17 @@
 from .AcceptanceCriterion import AcceptanceCriterion
+from .update import update
 
 
 class RecordToRecordTravel(AcceptanceCriterion):
 
-    def __init__(self, start_threshold, end_threshold, step):
+    def __init__(self, start_threshold, end_threshold, step, method="linear"):
         """
-        Linear record-to-record travel, using an updating threshold. The
-        threshold is updated as,
+        Record-to-record travel, using an updating threshold. The threshold is
+        updated as,
 
-        ``threshold = max(end_threshold, threshold - step)``
+        ``threshold = max(end_threshold, threshold - step)`` (linear)
+
+        ``threshold = max(end_threshold, step * threshold)`` (exponential)
 
         where the initial threshold is set to ``start_threshold``.
 
@@ -20,6 +23,9 @@ class RecordToRecordTravel(AcceptanceCriterion):
             The final threshold.
         step : float
             The updating step.
+        method : str
+            The updating method, one of {'linear', 'exponential'}. Default
+            'linear'.
 
         References
         ----------
@@ -37,9 +43,14 @@ class RecordToRecordTravel(AcceptanceCriterion):
             raise ValueError("Start threshold must be bigger than end "
                              "threshold.")
 
+        if method == "exponential" and step > 1:
+            raise ValueError("For exponential updating, the step parameter "
+                             "must not be explosive.")
+
         self._start_threshold = start_threshold
         self._end_threshold = end_threshold
         self._step = step
+        self._method = method
 
         self._threshold = start_threshold
 
@@ -55,11 +66,15 @@ class RecordToRecordTravel(AcceptanceCriterion):
     def step(self):
         return self._step
 
+    @property
+    def method(self):
+        return self._method
+
     def accept(self, rnd, best, current, candidate):
         # This follows from the paper by Dueck and Scheueur (1990), p. 162.
         result = (candidate.objective() - best.objective()) <= self._threshold
 
-        # We should not set a threshold that is lower than the end threshold.
-        self._threshold = max(self.end_threshold, self._threshold - self.step)
+        self._threshold = max(self.end_threshold,
+                              update(self._threshold, self.step, self.method))
 
         return result

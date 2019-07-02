@@ -18,7 +18,7 @@ TO-DO
 
 ## References
 
-- Pisinger, D., & Røpke, S. (2010). Large Neighborhood Search. In M. Gendreau (Ed.),
+- Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In M. Gendreau (Ed.),
 _Handbook of Metaheuristics_ (2 ed., pp. 399-420). Springer.
 
 [1]: http://orbit.dtu.dk/en/publications/large-neighborhood-search(61a1b7ca-4bf7-4355-96ba-03fcdf021f8f).html

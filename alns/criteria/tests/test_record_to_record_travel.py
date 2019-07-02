@@ -115,4 +115,12 @@ def test_linear_threshold_update():
     assert_(not record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))
 
 
-# TODO test exponential update
+def test_exponential_threshold_update():
+    record_travel = RecordToRecordTravel(5, 0, 0.1, "exponential")
+
+    # The relative worsening is plus one, so this should be accepted initially,
+    # as the threshold is 5, resp. 0.5. In the second case, 1 > 0.5, so the
+    # second should be rejected.
+    assert_(record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(not record_travel.accept(rnd.RandomState(), Zero(), Zero(), One()))
+

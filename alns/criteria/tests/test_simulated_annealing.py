@@ -104,7 +104,7 @@ def test_accepts_equal():
                                            One()))
 
 
-def test_random_solutions():
+def test_linear_random_solutions():
     """
     Checks if the linear ``accept`` method correctly decides in two known cases
     for a fixed seed.
@@ -121,4 +121,16 @@ def test_random_solutions():
     assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
 
 
-# TODO test exponential update
+def test_exponential_random_solutions():
+    """
+    Checks if the exponential ``accept`` method correctly decides in two known
+    cases for a fixed seed. This is the exponential equivalent to the linear
+    random solutions test above.
+    """
+    simulated_annealing = SimulatedAnnealing(2, 1, 0.5, "exponential")
+
+    state = rnd.RandomState(0)
+
+    assert_(simulated_annealing.accept(state, Zero(), Zero(), One()))
+    assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
+

@@ -4,19 +4,11 @@ from alns import Result
 from .states import Sentinel
 
 
-def test_result_states():
+def test_result_state():
     """
-    Tests if the result object correctly returns the passed-in states.
+    Tests if the result object correctly returns the passed-in state.
     """
-    best = Sentinel()     # two unique sentinel objects - their ids are used
-    last = Sentinel()     # to differentiate the best and last states below.
-
-    assert_(best is not last)                               # sanity check
-
-    result = Result(best, last)
+    best = Sentinel()
+    result = Result(best)
 
     assert_(result.best_state is best)
-    assert_(result.best_state is not last)
-
-    assert_(result.last_state is last)
-    assert_(result.last_state is not best)

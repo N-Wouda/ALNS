@@ -174,6 +174,5 @@ def test_trivial_example():
     result = alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 100)
 
     assert_equal(result.best_state.objective(), 0)
-    assert_equal(result.last_state.objective(), 0)
 
 # TODO test more sophisticated examples

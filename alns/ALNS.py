@@ -11,7 +11,9 @@ class ALNS:
 
     def __init__(self, rnd_state=rnd.RandomState()):
         """
-        TODO
+        Implements the adaptive large neighbourhood search (ALNS) algorithm.
+        The implementation optimises for a minimisation problem, as explained
+        in the text by Pisinger and Røpke (2010).
 
         Parameters
         ----------
@@ -20,6 +22,12 @@ class ALNS:
             passed, this state is used for operator selection and general
             computations requiring random numbers. It is also passed to the
             destroy and repair operators, as a second argument.
+
+        References
+        ----------
+        - Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In M.
+          Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399-420).
+          Springer.
         """
         self._destroy_operators = []
         self._repair_operators = []
@@ -144,7 +152,7 @@ class ALNS:
             r_weights[r_idx] *= operator_decay
             r_weights[r_idx] += (1 - operator_decay) * weight
 
-        return Result(best, current)
+        return Result(best)
 
     def _consider_candidate(self, best, current, candidate, weights,
                             criterion):

@@ -1,8 +1,8 @@
 from numpy.testing import assert_equal, assert_raises
 
 from alns import ALNS
-from .states import One, Zero
 from alns.criteria import HillClimbing
+from .states import One, Zero
 
 
 def get_alns_instance(repair_operators=None, destroy_operators=None):
@@ -174,5 +174,6 @@ def test_trivial_example():
     result = alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 100)
 
     assert_equal(result.best_state.objective(), 0)
+
 
 # TODO test more sophisticated examples

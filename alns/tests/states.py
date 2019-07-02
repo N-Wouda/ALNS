@@ -19,6 +19,15 @@ class One(State):
         return 1
 
 
+class Two(State):
+    """
+    Testable state with objective two.
+    """
+
+    def objective(self):
+        return 2
+
+
 class Sentinel(Zero):
     """
     Placeholder state.

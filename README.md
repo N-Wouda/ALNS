@@ -14,7 +14,12 @@ TO-DO
 
 ## Examples
 
-TO-DO
+The `examples/` directory features some example notebooks showcasing
+how the ALNS library may be used. Of particular interest are,
+
+- The travelling salesman problem (TSP),
+ [here](../blob/master/examples/travelling_salesman_problem.ipynb).
+
 
 ## References
 

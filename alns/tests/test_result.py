@@ -16,10 +16,10 @@ def test_result_state():
     assert_(result.best_state is best)
 
 
-def test_raises_no_statistics():
+def test_raises_missing_statistics():
     """
     Accessing the statistics object when no statistics have been passed-in
-    should raise
+    should raise.
     """
     result = Result(Sentinel())
 

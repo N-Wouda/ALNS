@@ -24,10 +24,10 @@ def test_raises_no_statistics():
     result = Result(Sentinel())
 
     with assert_raises(NotCollectedError):
-        result.statistics
+        result.statistics  # pylint: disable=pointless-statement
 
     result = Result(Sentinel(), Statistics())
-    result.statistics                               # this should be fine
+    result.statistics  # pylint: disable=pointless-statement
 
 
 # TODO test plot_objectives

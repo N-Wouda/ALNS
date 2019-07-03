@@ -3,6 +3,7 @@ import numpy.random as rnd
 
 from .Result import Result
 from .State import State  # pylint: disable=unused-import
+from .Statistics import Statistics
 from .WeigthIndex import WeightIndex
 from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
 
@@ -127,6 +128,11 @@ class ALNS:
         d_weights = np.ones_like(self.destroy_operators, dtype=np.float16)
         r_weights = np.ones_like(self.repair_operators, dtype=np.float16)
 
+        statistics = Statistics()
+
+        if collect_stats:
+            statistics.collect_objective(initial_solution.objective())
+
         for iteration in range(iterations):
             self._iteration = iteration
 
@@ -155,7 +161,10 @@ class ALNS:
             r_weights[r_idx] *= operator_decay
             r_weights[r_idx] += (1 - operator_decay) * weight
 
-        return Result(best)
+            if collect_stats:
+                statistics.collect_objective(current.objective())
+
+        return Result(best, statistics if collect_stats else None)
 
     def _consider_candidate(self, best, current, candidate, weights,
                             criterion):

@@ -1,10 +1,3 @@
-try:
-    from matplotlib.testing.decorators import check_figures_equal
-except ImportError:
-    def check_figures_equal(*args, **kwargs):       # callable placeholder
-        return check_figures_equal
-
-import os
 import sys
 
 import pytest
@@ -15,10 +8,11 @@ from alns.Statistics import Statistics
 from alns.exceptions import NotCollectedError
 from .states import Sentinel
 
-# This is mostly for running tests on Travis
-if os.environ.get("DISPLAY") is None:
-    import matplotlib as mpl
-    mpl.use("Agg")
+try:
+    from matplotlib.testing.decorators import check_figures_equal
+except ImportError:
+    def check_figures_equal(*args, **kwargs):       # placeholder
+        return check_figures_equal
 
 
 # HELPERS ---------------------------------------------------------------------

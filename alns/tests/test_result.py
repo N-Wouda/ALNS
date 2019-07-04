@@ -1,9 +1,39 @@
+from matplotlib.testing.decorators import check_figures_equal
 from numpy.testing import assert_, assert_raises
 
 from alns import Result
 from alns.Statistics import Statistics
 from alns.exceptions import NotCollectedError
 from .states import Sentinel
+
+
+# HELPERS ---------------------------------------------------------------------
+
+
+def get_statistics():
+    """
+    Helper method.
+    """
+    statistics = Statistics()
+
+    for objective in range(100):
+        statistics.collect_objective(objective)
+
+    return statistics
+
+
+def get_plot(ax, *args, **kwargs):
+    """
+    Helper method.
+    """
+    ax.plot(*args, **kwargs)
+
+    ax.set_title("Objective value at each iteration")
+    ax.set_ylabel("Objective value")
+    ax.set_xlabel("Iteration (#)")
+
+
+# TESTS -----------------------------------------------------------------------
 
 
 def test_result_state():
@@ -30,4 +60,46 @@ def test_raises_missing_statistics():
     result.statistics  # pylint: disable=pointless-statement
 
 
-# TODO test plot_objectives
+@check_figures_equal(extensions=['png'])
+def test_plot_objectives(fig_test, fig_ref):
+    """
+    Tests if the ``plot_objectives`` method returns the same figure as a
+    reference plot below.
+    """
+    statistics = get_statistics()
+    result = Result(Sentinel(), statistics)
+
+    # Tested plot
+    result.plot_objectives(fig_test.subplots())
+
+    # Reference plot
+    get_plot(fig_ref.subplots(), statistics.objectives)
+
+
+@check_figures_equal(extensions=['png'])
+def test_plot_objectives_kwargs(fig_test, fig_ref):
+    """
+    Tests if the passed-in keyword arguments to ``plot_objectives`` are
+    correctly passed to the ``plot`` method.
+    """
+    statistics = get_statistics()
+    result = Result(Sentinel(), statistics)
+
+    kwargs = dict(lw=5, marker='*')
+
+    # Tested plot
+    result.plot_objectives(fig_test.subplots(), **kwargs)
+
+    # Reference plot
+    get_plot(fig_ref.subplots(), statistics.objectives, **kwargs)
+
+
+def test_plot_objectives_default_axes():
+    """
+    When an axes object is not passed, the ``plot_objectives`` method should
+    create a new figure and axes object.
+    """
+    statistics = get_statistics()
+    result = Result(Sentinel(), statistics)
+
+    result.plot_objectives()

@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.pyplot import Axes  # pylint: disable=unused-import
 
 from .State import State  # pylint: disable=unused-import
@@ -49,8 +48,8 @@ class Result:
 
         Returns
         -------
-        Optional[Statistics]
-            The statistics object, or None if not collected.
+        Statistics
+            The statistics object.
         """
         if self._statistics is None:
             raise NotCollectedError("Statistics were not collected during "
@@ -73,9 +72,7 @@ class Result:
         if ax is None:
             _, ax = plt.subplots()
 
-        ax.plot(np.arange(0, len(self.statistics.objectives)),
-                self.statistics.objectives,
-                **kwargs)
+        ax.plot(self.statistics.objectives, **kwargs)
 
         ax.set_title("Objective value at each iteration")
         ax.set_ylabel("Objective value")

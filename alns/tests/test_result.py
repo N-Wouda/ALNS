@@ -100,6 +100,8 @@ def test_plot_objectives_default_axes():
     create a new figure and axes object.
     """
     statistics = get_statistics()
-    result = Result(Sentinel(), statistics)
 
+    result = Result(Sentinel(), statistics)
     result.plot_objectives()
+
+    # TODO verify the resulting plot somehow

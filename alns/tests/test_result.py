@@ -1,4 +1,12 @@
-from matplotlib.testing.decorators import check_figures_equal
+try:
+    from matplotlib.testing.decorators import check_figures_equal
+except ImportError:
+    def check_figures_equal(*args, **kwargs):       # placeholder
+        pass
+
+import sys
+
+import pytest
 from numpy.testing import assert_, assert_raises
 
 from alns import Result
@@ -60,6 +68,8 @@ def test_raises_missing_statistics():
     result.statistics  # pylint: disable=pointless-statement
 
 
+@pytest.mark.skipif(sys.version_info < (3, 5),
+                    reason="check_figures_equal is not available below Py3.5")
 @check_figures_equal(extensions=['png'])
 def test_plot_objectives(fig_test, fig_ref):
     """
@@ -76,6 +86,8 @@ def test_plot_objectives(fig_test, fig_ref):
     get_plot(fig_ref.subplots(), statistics.objectives)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 5),
+                    reason="check_figures_equal is not available below Py3.5")
 @check_figures_equal(extensions=['png'])
 def test_plot_objectives_kwargs(fig_test, fig_ref):
     """

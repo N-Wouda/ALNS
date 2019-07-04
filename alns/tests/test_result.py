@@ -1,8 +1,8 @@
 try:
     from matplotlib.testing.decorators import check_figures_equal
 except ImportError:
-    def check_figures_equal(*args, **kwargs):       # placeholder
-        pass
+    def check_figures_equal(*args, **kwargs):       # callable placeholder
+        return check_figures_equal
 
 import sys
 

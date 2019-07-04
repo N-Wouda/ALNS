@@ -4,6 +4,7 @@ except ImportError:
     def check_figures_equal(*args, **kwargs):       # callable placeholder
         return check_figures_equal
 
+import os
 import sys
 
 import pytest
@@ -13,6 +14,11 @@ from alns import Result
 from alns.Statistics import Statistics
 from alns.exceptions import NotCollectedError
 from .states import Sentinel
+
+# This is mostly for running tests on Travis
+if os.environ.get("DISPLAY") is None:
+    import matplotlib as mpl
+    mpl.use("Agg")
 
 
 # HELPERS ---------------------------------------------------------------------
@@ -106,6 +112,8 @@ def test_plot_objectives_kwargs(fig_test, fig_ref):
     get_plot(fig_ref.subplots(), statistics.objectives, **kwargs)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 5),
+                    reason="check_figures_equal is not available below Py3.5")
 def test_plot_objectives_default_axes():
     """
     When an axes object is not passed, the ``plot_objectives`` method should

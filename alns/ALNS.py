@@ -38,10 +38,16 @@ class ALNS:
 
     @property
     def destroy_operators(self):
+        """
+        Returns the destroy operators set for the ALNS algorithm.
+        """
         return self._destroy_operators
 
     @property
     def repair_operators(self):
+        """
+        Returns the repair operators set for the ALNS algorithm.
+        """
         return self._repair_operators
 
     def add_destroy_operator(self, operator):

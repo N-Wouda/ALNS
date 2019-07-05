@@ -14,10 +14,6 @@ install:
 git:
   depth: 3
 
-branches:       # since the master branch is the only one where PRs are
-  only:         # merged in
-  - master
-
 script:
 - pytest
 - mypy ./ || true

@@ -1,15 +1,19 @@
-from numpy.testing import assert_equal, assert_raises
+import numpy.random as rnd
+from numpy.testing import assert_almost_equal, assert_equal, assert_raises
 
-from alns import ALNS
-from alns.criteria import HillClimbing
+from alns import ALNS, State
+from alns.criteria import HillClimbing, SimulatedAnnealing
 from .states import One, Zero
 
 
-def get_alns_instance(repair_operators=None, destroy_operators=None):
+# HELPERS ----------------------------------------------------------------------
+
+
+def get_alns_instance(repair_operators=None, destroy_operators=None, seed=None):
     """
     Test helper method.
     """
-    alns = ALNS()
+    alns = ALNS(rnd.RandomState(seed))
 
     if repair_operators is not None:
         for repair_operator in repair_operators:
@@ -22,7 +26,19 @@ def get_alns_instance(repair_operators=None, destroy_operators=None):
     return alns
 
 
-# OPERATORS -------------------------------------------------------------------
+class ValueState(State):
+    """
+    Helper state for testing random values.
+    """
+
+    def __init__(self, value):
+        self._value = value
+
+    def objective(self):
+        return self._value
+
+
+# OPERATORS --------------------------------------------------------------------
 
 
 def test_add_destroy_operator():
@@ -49,7 +65,7 @@ def test_add_repair_operator():
         assert_equal(len(alns.repair_operators), count)
 
 
-# PARAMETERS ------------------------------------------------------------------
+# PARAMETERS -------------------------------------------------------------------
 
 
 def test_raises_missing_destroy_operator():
@@ -160,7 +176,7 @@ def test_does_not_raise():
     alns.iterate(Zero(), [1, 1, 1, 1], .5, HillClimbing(), 100)
 
 
-# EXAMPLES --------------------------------------------------------------------
+# EXAMPLES ---------------------------------------------------------------------
 
 
 def test_trivial_example():
@@ -176,4 +192,24 @@ def test_trivial_example():
     assert_equal(result.best_state.objective(), 0)
 
 
-# TODO test more sophisticated examples
+def test_fixed_seed_outcomes():
+    """
+    Tests if fixing a seed results in deterministic outcomes even when using a
+    'random' acceptance criterion (here SA).
+    """
+    outcomes = [0.00469, 0.00011, 0.04312]
+
+    for seed, desired in enumerate(outcomes):                   # idx is seed
+        alns = get_alns_instance(
+            [lambda state, rnd: ValueState(rnd.random_sample())],
+            [lambda state, rnd: None],
+            seed)
+
+        simulated_annealing = SimulatedAnnealing(1, .25, 1 / 100)
+
+        result = alns.iterate(One(), [1, 1, 1, 1], .5, simulated_annealing, 100)
+
+        assert_almost_equal(result.best_state.objective(), desired, decimal=5)
+
+
+# TODO test more complicated examples?

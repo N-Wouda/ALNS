@@ -5,6 +5,9 @@ omit =
     # Virtualenv packages
     venv/*
 
+    # For deploying to PyPI
+    setup.py
+
 [report]
 exclude_lines =
     # This excludes all abstract methods from code coverage checks,

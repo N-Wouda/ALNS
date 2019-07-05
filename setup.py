@@ -1,7 +1,11 @@
 import setuptools
 
+MAJOR = 1
+MINOR = 0
+MAINTENANCE = 1
+MODIFIER = ""
 
-VERSION = "1.0.0"
+VERSION = "{0}.{1}.{2}{3}".format(MAJOR, MINOR, MAINTENANCE, MODIFIER)
 
 
 # Long description is simply the README file
@@ -20,7 +24,7 @@ setuptools.setup(
     url="https://github.com/N-Wouda/ALNS",
     project_urls={
         "Tracker": "https://github.com/N-Wouda/ALNS/issues",
-        "Source": "https://github.com/N-Wouda/ALNS"
+        "Source": "https://github.com/N-Wouda/ALNS",
     },
     packages=setuptools.find_packages(exclude=['examples']),
     classifiers=[
@@ -32,7 +36,9 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
-        "Development Status :: 3 - Alpha"
+        "Development Status :: 5 - Production/Stable",
+        "Topic :: Software Development",
+        "Topic :: Scientific/Engineering",
     ],
     python_requires='~=3.4',
     install_requires=[

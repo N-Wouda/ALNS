@@ -1,7 +1,7 @@
 import setuptools
 
 
-VERSION = "1.0.0a4"
+VERSION = "1.0.0a1"
 
 
 # Long description is simply the README file

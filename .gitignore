@@ -44,6 +44,9 @@ nosetests.xml
 coverage.xml
 *,cover
 
+# Unit tests for matplotlib images
+result_images/
+
 # Translations
 *.mo
 *.pot

@@ -3,6 +3,7 @@ import numpy.random as rnd
 
 from .Result import Result
 from .State import State  # pylint: disable=unused-import
+from .Statistics import Statistics
 from .WeigthIndex import WeightIndex
 from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
 
@@ -37,10 +38,16 @@ class ALNS:
 
     @property
     def destroy_operators(self):
+        """
+        Returns the destroy operators set for the ALNS algorithm.
+        """
         return self._destroy_operators
 
     @property
     def repair_operators(self):
+        """
+        Returns the repair operators set for the ALNS algorithm.
+        """
         return self._repair_operators
 
     def add_destroy_operator(self, operator):
@@ -70,7 +77,7 @@ class ALNS:
         self._repair_operators.append(operator)
 
     def iterate(self, initial_solution, weights, operator_decay, criterion,
-                iterations=10000):
+                iterations=10000, collect_stats=True):
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -93,6 +100,9 @@ class ALNS:
             the `alns.criteria` module for an overview.
         iterations : int
             The number of iterations. Default 10000.
+        collect_stats : bool
+            Should statistics be collected during iteration? Default True, but
+            may be turned off for long runs to reduce memory consumption.
 
         Raises
         ------
@@ -124,6 +134,11 @@ class ALNS:
         d_weights = np.ones_like(self.destroy_operators, dtype=np.float16)
         r_weights = np.ones_like(self.repair_operators, dtype=np.float16)
 
+        statistics = Statistics()
+
+        if collect_stats:
+            statistics.collect_objective(initial_solution.objective())
+
         for iteration in range(iterations):
             self._iteration = iteration
 
@@ -152,7 +167,10 @@ class ALNS:
             r_weights[r_idx] *= operator_decay
             r_weights[r_idx] += (1 - operator_decay) * weight
 
-        return Result(best)
+            if collect_stats:
+                statistics.collect_objective(current.objective())
+
+        return Result(best, statistics if collect_stats else None)
 
     def _consider_candidate(self, best, current, candidate, weights,
                             criterion):

@@ -1,4 +1,3 @@
-# ALNS
 [![Build Status](https://travis-ci.com/N-Wouda/ALNS.svg?branch=master)](https://travis-ci.com/N-Wouda/ALNS)
 [![codecov](https://codecov.io/gh/N-Wouda/ALNS/branch/master/graph/badge.svg)](https://codecov.io/gh/N-Wouda/ALNS)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0c573395b313403b96c26054973dec34)](https://www.codacy.com/app/N-Wouda/ALNS)
@@ -6,7 +5,11 @@
 This package offers a general, well-documented and tested
 implementation of the adaptive large neighbourhood search (ALNS)
 meta-heuristic, based on the description given in [Pisinger and Ropke
-(2010)][1].
+(2010)][1]. It may be installed in the usual way as,
+
+```
+pip install alns
+```
 
 ## How to use
 The `alns` package exposes two classes, `ALNS` and `State`. The first

@@ -213,3 +213,4 @@ def test_fixed_seed_outcomes():
 
 
 # TODO test more complicated examples?
+# TODO test select_operator?

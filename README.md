@@ -42,6 +42,9 @@ how the ALNS library may be used. Of particular interest are,
 - The travelling salesman problem (TSP), [here][2]. We solve an
   instance of 131 cities to within 2.1% of optimality, using simple
   destroy and repair heuristics with a post-processing step.
+- The cutting-stock problem (CSP), [here][4]. We solve an instance with
+  180 orders, over 165 distinct beam sizes. The total stock available
+  amounts to 165 beams of length 1000. TODO optimality
 
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.
@@ -54,3 +57,4 @@ how the ALNS library may be used. Of particular interest are,
 [1]: http://orbit.dtu.dk/en/publications/large-neighborhood-search(61a1b7ca-4bf7-4355-96ba-03fcdf021f8f).html
 [2]: https://github.com/N-Wouda/ALNS/blob/master/examples/travelling_salesman_problem.ipynb
 [3]: https://link.springer.com/article/10.1007%2Fs10732-018-9377-x
+[4]: https://github.com/N-Wouda/ALNS/blob/master/examples/cutting_stock_problem.ipynb

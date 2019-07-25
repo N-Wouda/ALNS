@@ -34,7 +34,6 @@ class ALNS:
         self._repair_operators = []
 
         self._rnd_state = rnd_state
-        self._iteration = 0
 
     @property
     def destroy_operators(self):
@@ -140,15 +139,11 @@ class ALNS:
             statistics.collect_objective(initial_solution.objective())
 
         for iteration in range(iterations):
-            self._iteration = iteration
+            d_idx = select_operator(self.destroy_operators, d_weights,
+                                    self._rnd_state)
 
-            d_idx = self._rnd_state.choice(
-                np.arange(0, len(self.destroy_operators)),
-                p=d_weights / np.sum(d_weights))
-
-            r_idx = self._rnd_state.choice(
-                np.arange(0, len(self.repair_operators)),
-                p=r_weights / np.sum(r_weights))
+            r_idx = select_operator(self.repair_operators, r_weights,
+                                    self._rnd_state)
 
             destroyed = self.destroy_operators[d_idx](current, self._rnd_state)
             candidate = self.repair_operators[r_idx](destroyed, self._rnd_state)
@@ -215,7 +210,7 @@ class ALNS:
         """
         Helper method to validate the passed-in ALNS parameters.
         """
-        if not len(self.destroy_operators) or not len(self.repair_operators):
+        if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing at least one destroy or repair operator.")
 
         if not (0 < operator_decay < 1):
@@ -226,8 +221,33 @@ class ALNS:
             raise ValueError("Non-positive weights are not understood.")
 
         if len(weights) < 4:
+            # More than four is not explicitly problematic, as we only use the
+            # first four anyways.
             raise ValueError("Unsupported number of weights: expected 4,"
                              " found {0}.".format(len(weights)))
 
         if iterations <= 0:
             raise ValueError("Non-positive number of iterations.")
+
+
+def select_operator(operators, weights, rnd_state):
+    """
+    Selects an operator from the list of operators, using a distribution
+    inferred from the given weights.
+
+    Parameters
+    ----------
+    operators : array_like
+        The list of operators.
+    weights : array_like
+        The operator weights.
+    rnd_state : rnd.RandomState
+        Random state to draw the choice from.
+
+    Returns
+    -------
+    int
+        Index into the operator array of the selected method.
+    """
+    return rnd_state.choice(np.arange(0, len(operators)),
+                            p=weights / np.sum(weights))

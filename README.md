@@ -44,7 +44,8 @@ how the ALNS library may be used. Of particular interest are,
   destroy and repair heuristics with a post-processing step.
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with
   180 orders, over 165 distinct beam sizes. The total stock available
-  amounts to 165 beams of length 1000. TODO optimality
+  amounts to 165 beams of length 1000. We solve the instance to within
+  1.35% of optimality in only a very limited number of iterations.
 
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.

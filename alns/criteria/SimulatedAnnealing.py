@@ -9,8 +9,8 @@ class SimulatedAnnealing(AcceptanceCriterion):
     def __init__(self, start_temperature, end_temperature, step,
                  method="linear"):
         """
-        Linear simulated annealing, using an updating temperature. The
-        temperature is updated as,
+        Simulated annealing, using an updating temperature. The temperature is
+        updated as,
 
         ``temperature = max(end_temperature, temperature - step)`` (linear)
 

@@ -30,7 +30,7 @@ def get_statistics():
     return statistics
 
 
-def get_plot(ax, *args, **kwargs):
+def get_objective_plot(ax, *args, **kwargs):
     """
     Helper method.
     """
@@ -83,7 +83,7 @@ def test_plot_objectives(fig_test, fig_ref):
     result.plot_objectives(fig_test.subplots())
 
     # Reference plot
-    get_plot(fig_ref.subplots(), statistics.objectives)
+    get_objective_plot(fig_ref.subplots(), statistics.objectives)
 
 
 @pytest.mark.skipif(sys.version_info < (3, 5),
@@ -103,7 +103,7 @@ def test_plot_objectives_kwargs(fig_test, fig_ref):
     result.plot_objectives(fig_test.subplots(), **kwargs)
 
     # Reference plot
-    get_plot(fig_ref.subplots(), statistics.objectives, **kwargs)
+    get_objective_plot(fig_ref.subplots(), statistics.objectives, **kwargs)
 
 
 @pytest.mark.skipif(sys.version_info < (3, 5),

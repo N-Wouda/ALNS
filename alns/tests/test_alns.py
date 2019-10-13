@@ -1,9 +1,10 @@
 import numpy.random as rnd
 from numpy.testing import (assert_, assert_almost_equal, assert_equal,
-                           assert_raises)
+                           assert_raises, assert_no_warnings, assert_warns)
 
 from alns import ALNS, State
 from alns.criteria import HillClimbing, SimulatedAnnealing
+from alns.exception_warnings import OverwriteWarning
 from .states import One, Zero
 
 
@@ -101,6 +102,26 @@ def test_add_repair_operator_name():
     assert_equal(name, "repair_operator")
     assert_(operator is repair_operator)
 
+
+def test_add_operator_same_name_warns_per_type():
+    """
+    Adding an operator with the same name as an already added operator (of the
+    same type) should warn that the previous operator will be overwritten.
+    """
+    alns = ALNS()
+
+    with assert_no_warnings():
+        # The same name is allowed for different types of operators.
+        alns.add_destroy_operator(lambda state, rnd: None, "test")
+        alns.add_repair_operator(lambda state, rnd: None, "test")
+
+    with assert_warns(OverwriteWarning):
+        # Already exists as a destroy operator.
+        alns.add_destroy_operator(lambda state, rnd: None, "test")
+
+    with assert_warns(OverwriteWarning):
+        # Already exists as a repair operator.
+        alns.add_repair_operator(lambda state, rnd: None, "test")
 
 # PARAMETERS -------------------------------------------------------------------
 

@@ -3,7 +3,7 @@ from matplotlib.pyplot import Axes  # pylint: disable=unused-import
 
 from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics  # pylint: disable=unused-import
-from .exceptions import NotCollectedError
+from .exception_warnings import NotCollectedError
 
 
 class Result:
@@ -79,3 +79,5 @@ class Result:
         ax.set_xlabel("Iteration (#)")
 
         plt.draw_if_interactive()
+
+    # TODO use the collected operator statistics here.

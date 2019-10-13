@@ -1,3 +1,4 @@
+import warnings
 from collections import OrderedDict
 
 import numpy as np
@@ -8,6 +9,7 @@ from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics
 from .WeigthIndex import WeightIndex
 from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
+from .exception_warnings import OverwriteWarning
 from .select_operator import select_operator
 
 
@@ -78,10 +80,7 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        if name is None:
-            name = operator.__name__
-
-        self._destroy_operators[name] = operator
+        self._add_operator(self._destroy_operators, operator, name)
 
     def add_repair_operator(self, operator, name=None):
         """
@@ -97,10 +96,7 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        if name is None:
-            name = operator.__name__
-
-        self._repair_operators[name] = operator
+        self._add_operator(self._repair_operators, operator, name)
 
     def iterate(self, initial_solution, weights, operator_decay, criterion,
                 iterations=10000, collect_stats=True):
@@ -199,6 +195,37 @@ class ALNS:
                 statistics.collect_repair_operator(r_name, weight_idx)
 
         return Result(best, statistics if collect_stats else None)
+
+    @staticmethod
+    def _add_operator(operators, operator, name):
+        """
+        Internal helper that adds an operator to the passed-in operator
+        dictionary.
+
+        See `add_destroy_operator` and `add_repair_operator` for public methods
+        that use this helper.
+
+        Parameters
+        ----------
+        operators : dict
+            Dictionary of name -> operator values.
+        operator : Callable[[State, RandomState], State]
+            Callable operator function.
+        name : str
+            Optional operator name.
+        """
+        if name is None:
+            name = operator.__name__
+
+        if name in operators:
+            warnings.warn("The ALNS instance already knows an operator by the"
+                          " name `{0}'. This operator will now be replaced with"
+                          " the newly passed-in operator. If this is not what"
+                          " you intended, consider explicitly naming your"
+                          " operators via the `name' argument.".format(name),
+                          OverwriteWarning)
+
+        operators[name] = operator
 
     def _consider_candidate(self, best, current, candidate, criterion):
         """

@@ -54,6 +54,24 @@ def test_add_destroy_operator():
         assert_equal(len(alns.destroy_operators), count)
 
 
+def test_add_destroy_operator_name():
+    """
+    Tests if adding a destroy operator without an explicit name correctly
+    takes the function name instead.
+    """
+    def destroy_operator():                 # placeholder
+        pass
+
+    alns = ALNS()
+
+    alns.add_destroy_operator(destroy_operator)
+
+    name, operator = alns.destroy_operators[0]
+
+    assert_equal(name, "destroy_operator")
+    assert_(operator is destroy_operator)
+
+
 def test_add_repair_operator():
     """
     Tests if adding a repair operator correctly updates the number of
@@ -64,6 +82,24 @@ def test_add_repair_operator():
     for count in [1, 2]:
         alns.add_repair_operator(lambda state, rnd: None, name=str(count))
         assert_equal(len(alns.repair_operators), count)
+
+
+def test_add_repair_operator_name():
+    """
+    Tests if adding a repair operator without an explicit name correctly
+    takes the function name instead.
+    """
+    def repair_operator():                  # placeholder
+        pass
+
+    alns = ALNS()
+
+    alns.add_repair_operator(repair_operator)
+
+    name, operator = alns.repair_operators[0]
+
+    assert_equal(name, "repair_operator")
+    assert_(operator is repair_operator)
 
 
 # PARAMETERS -------------------------------------------------------------------

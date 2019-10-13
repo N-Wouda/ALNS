@@ -155,7 +155,7 @@ def test_raises_non_positive_weights():
 
 def test_raises_negative_iterations():
     """
-    The number of iterations should be strictly positive.
+    The number of iterations should be non-negative, as zero is allowed.
     """
     alns = get_alns_instance([lambda state, rnd: None],
                              [lambda state, rnd: None])

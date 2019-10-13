@@ -226,8 +226,8 @@ class ALNS:
             raise ValueError("Unsupported number of weights: expected 4,"
                              " found {0}.".format(len(weights)))
 
-        if iterations <= 0:
-            raise ValueError("Non-positive number of iterations.")
+        if iterations < 0:
+            raise ValueError("Negative number of iterations.")
 
 
 def select_operator(operators, weights, rnd_state):

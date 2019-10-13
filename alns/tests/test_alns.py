@@ -1,5 +1,6 @@
 import numpy.random as rnd
-from numpy.testing import assert_almost_equal, assert_equal, assert_raises
+from numpy.testing import (assert_, assert_almost_equal, assert_equal,
+                           assert_raises)
 
 from alns import ALNS, State
 from alns.criteria import HillClimbing, SimulatedAnnealing
@@ -152,18 +153,23 @@ def test_raises_non_positive_weights():
         alns.iterate(One(), [1, 1, -5, 1], .5, HillClimbing())
 
 
-def test_raises_non_positive_iterations():
+def test_raises_negative_iterations():
     """
     The number of iterations should be strictly positive.
     """
     alns = get_alns_instance([lambda state, rnd: None],
                              [lambda state, rnd: None])
 
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 0)
+    initial_solution = One()
 
+    # A negative iteration count is not understood, for obvious reasons.
     with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), -1)
+        alns.iterate(initial_solution, [1, 1, 1, 1], .5, HillClimbing(), -1)
+
+    # But zero should just return the initial solution.
+    result = alns.iterate(initial_solution, [1, 1, 1, 1], .5, HillClimbing(), 0)
+
+    assert_(result.best_state is initial_solution)
 
 
 def test_does_not_raise():

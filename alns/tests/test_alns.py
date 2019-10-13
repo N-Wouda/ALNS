@@ -123,6 +123,7 @@ def test_add_operator_same_name_warns_per_type():
         # Already exists as a repair operator.
         alns.add_repair_operator(lambda state, rnd: None, "test")
 
+
 # PARAMETERS -------------------------------------------------------------------
 
 

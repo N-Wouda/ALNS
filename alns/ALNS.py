@@ -200,10 +200,8 @@ class ALNS:
     def _add_operator(operators, operator, name):
         """
         Internal helper that adds an operator to the passed-in operator
-        dictionary.
-
-        See `add_destroy_operator` and `add_repair_operator` for public methods
-        that use this helper.
+        dictionary. See `add_destroy_operator` and `add_repair_operator` for
+        public methods that use this helper.
 
         Parameters
         ----------

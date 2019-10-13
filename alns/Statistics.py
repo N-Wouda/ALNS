@@ -12,7 +12,6 @@ class Statistics:
         """
         self._objectives = []
 
-        # TODO: is this as operator idx or name? If name, add to ALNS field.
         self._destroy_operator_counts = defaultdict(lambda: [0, 0, 0, 0])
         self._repair_operator_counts = defaultdict(lambda: [0, 0, 0, 0])
 
@@ -26,14 +25,30 @@ class Statistics:
     @property
     def destroy_operator_counts(self):
         """
-        TODO
+        Returns the destroy operator counts, as a dictionary of operator names
+        to lists of counts. Such a list consists of four elements, one for
+        each value in `WeightIndex`, and counts the number of times that the
+        application of that operator resulted in such an outcome.
+
+        Returns
+        -------
+        defaultdict
+            Destroy operator counts.
         """
         return self._destroy_operator_counts
 
     @property
     def repair_operator_counts(self):
         """
-        TODO
+        Returns the repair operator counts, as a dictionary of operator names
+        to lists of counts. Such a list consists of four elements, one for
+        each value in `WeightIndex`, and counts the number of times that the
+        application of that operator resulted in such an outcome.
+
+        Returns
+        -------
+        defaultdict
+            Repair operator counts.
         """
         return self._repair_operator_counts
 
@@ -48,14 +63,36 @@ class Statistics:
         """
         self._objectives.append(objective)
 
-    def collect_repair_operator_count(self, operator, weight):
+    def collect_destroy_operator(self, operator_name, weight_idx):
         """
-        TODO
-        """
-        pass
+        Collects a weight (index) for a used destroy operator. This maintains
+        count of the number of times this operator was used, and what result
+        came from its use.
 
-    def collect_destroy_operator_count(self, operator, weight):
+        Parameters
+        ----------
+        operator_name : str
+            Operator name. This was set when the operator was passed to the
+            ALNS instance.
+        weight_idx : int
+            Weight indices used for the various iteration outcomes. See also
+            the `WeightIndex` enum.
         """
-        TODO
+        self._destroy_operator_counts[operator_name][weight_idx] += 1
+
+    def collect_repair_operator(self, operator_name, weight_idx):
         """
-        pass
+        Collects a weight (index) for a used repair operator. This maintains
+        count of the number of times this operator was used, and what result
+        came from its use.
+
+        Parameters
+        ----------
+        operator_name : str
+            Operator name. This was set when the operator was passed to the
+            ALNS instance.
+        weight_idx : int
+            Weight indices used for the various iteration outcomes. See also
+            the `WeightIndex` enum.
+        """
+        self._repair_operator_counts[operator_name][weight_idx] += 1

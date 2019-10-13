@@ -17,12 +17,12 @@ def get_alns_instance(repair_operators=None, destroy_operators=None, seed=None):
     alns = ALNS(rnd.RandomState(seed))
 
     if repair_operators is not None:
-        for repair_operator in repair_operators:
-            alns.add_repair_operator(repair_operator)
+        for idx, repair_operator in enumerate(repair_operators):
+            alns.add_repair_operator(repair_operator, name=str(idx))
 
     if destroy_operators is not None:
-        for destroy_operator in destroy_operators:
-            alns.add_destroy_operator(destroy_operator)
+        for idx, destroy_operator in enumerate(destroy_operators):
+            alns.add_destroy_operator(destroy_operator, name=str(idx))
 
     return alns
 
@@ -50,7 +50,7 @@ def test_add_destroy_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_destroy_operator(lambda state, rnd: None)
+        alns.add_destroy_operator(lambda state, rnd: None, name=str(count))
         assert_equal(len(alns.destroy_operators), count)
 
 
@@ -62,7 +62,7 @@ def test_add_repair_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_repair_operator(lambda state, rnd: None)
+        alns.add_repair_operator(lambda state, rnd: None, name=str(count))
         assert_equal(len(alns.repair_operators), count)
 
 
@@ -217,6 +217,4 @@ def test_fixed_seed_outcomes():
 
         assert_almost_equal(result.best_state.objective(), desired, decimal=5)
 
-
 # TODO test more complicated examples?
-# TODO test select_operator?

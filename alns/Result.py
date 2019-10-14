@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.pyplot import Axes  # pylint: disable=unused-import
 
 from .State import State  # pylint: disable=unused-import
@@ -90,7 +91,7 @@ class Result:
             Optional list of length two, containing an Axes object for each of
             the operator types.
         kwargs : dict
-            Optional arguments passed to each call of ``ax.plot``.
+            Optional arguments passed to each call of ``ax.barh``.
 
         Raises
         ------
@@ -105,18 +106,52 @@ class Result:
         else:
             d_ax, r_ax = axs
 
-        # TODO destroy_operator data
+        self._plot_operator_counts(d_ax,
+                                   self.statistics.destroy_operator_counts,
+                                   "Destroy operators",
+                                   **kwargs)
 
-        d_ax.set_title("Destroy operators")
-        d_ax.set_ylabel("Iterations where operator resulted in"
-                        " this outcome (#)")
-        d_ax.set_xlabel("Operator")
+        self._plot_operator_counts(r_ax,
+                                   self.statistics.repair_operator_counts,
+                                   "Repair operators",
+                                   **kwargs)
 
-        # TODO repair_operator data
+        # TODO: Legend
 
-        r_ax.set_title("Repair operators")
-        r_ax.set_ylabel("Iterations where operator resulted in"
-                        " this outcome (#)")
-        r_ax.set_xlabel("Operator")
-
+        plt.subplots_adjust(hspace=0.5)     # TODO test this for default
         plt.draw_if_interactive()
+
+    @staticmethod
+    def _plot_operator_counts(ax, data, title, **kwargs):
+        """
+        TODO Docstring
+
+        Note
+        ----
+        This code takes loosely after an example from the matplotlib gallery
+        titled "Discrete distribution as horizontal bar chart".
+        """
+        labels = list(data.keys())
+        data = np.array(list(data.values()))
+
+        data_cum = data.cumsum(axis=1)
+
+        ax.invert_yaxis()
+        ax.set_xlim(0, np.sum(data, axis=1).max())
+
+        for idx in range(4):
+            widths = data[:, idx]
+            starts = data_cum[:, idx] - widths
+
+            ax.barh(labels,
+                    widths,
+                    left=starts,
+                    height=0.5,
+                    **kwargs)
+
+            for y, (x, label) in enumerate(zip(starts + widths / 2, widths)):
+                ax.text(x, y, str(int(label)), ha='center', va='center')
+
+        ax.set_title(title)
+        ax.set_xlabel("Iterations where operator resulted in this outcome (#)")
+        ax.set_ylabel("Operator")

@@ -2,6 +2,7 @@ import sys
 
 import pytest
 from numpy.testing import assert_, assert_raises
+from numpy.random import RandomState
 
 from alns.Result import Result
 from alns.Statistics import Statistics
@@ -27,6 +28,17 @@ def get_statistics():
     for objective in range(100):
         statistics.collect_objective(objective)
 
+    # We should make sure these results are reproducible.
+    state = RandomState(1)
+
+    operators = ["test1", "test2", "test3"]
+
+    for _ in range(100):
+        operator = state.choice(operators)
+
+        statistics.collect_destroy_operator("d_" + operator, state.randint(4))
+        statistics.collect_repair_operator("r_" + operator, state.randint(4))
+
     return statistics
 
 
@@ -39,6 +51,13 @@ def get_objective_plot(ax, *args, **kwargs):
     ax.set_title("Objective value at each iteration")
     ax.set_ylabel("Objective value")
     ax.set_xlabel("Iteration (#)")
+
+
+def get_operator_plot(axs, destroy, repair, **kwargs):
+    """
+    Helper method.
+    """
+    pass
 
 
 # TESTS ------------------------------------------------------------------------
@@ -68,6 +87,7 @@ def test_raises_missing_statistics():
     result.statistics  # pylint: disable=pointless-statement
 
 
+@pytest.mark.matplotlib
 @pytest.mark.skipif(sys.version_info < (3, 5),
                     reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
@@ -86,6 +106,7 @@ def test_plot_objectives(fig_test, fig_ref):
     get_objective_plot(fig_ref.subplots(), statistics.objectives)
 
 
+@pytest.mark.matplotlib
 @pytest.mark.skipif(sys.version_info < (3, 5),
                     reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
@@ -106,6 +127,7 @@ def test_plot_objectives_kwargs(fig_test, fig_ref):
     get_objective_plot(fig_ref.subplots(), statistics.objectives, **kwargs)
 
 
+@pytest.mark.matplotlib
 @pytest.mark.skipif(sys.version_info < (3, 5),
                     reason="Plot testing is not reliably available for Py3.4")
 def test_plot_objectives_default_axes():
@@ -119,3 +141,26 @@ def test_plot_objectives_default_axes():
     result.plot_objectives()
 
     # TODO verify the resulting plot somehow
+
+
+@pytest.mark.matplotlib
+@pytest.mark.skipif(sys.version_info < (3, 5),
+                    reason="Plot testing is not reliably available for Py3.4")
+@check_figures_equal(extensions=['png'])
+def test_plot_operator_counts(fig_test, fig_ref):
+    """
+    Tests if the ``plot_objectives`` method returns the same figure as a
+    reference plot below.
+    """
+    statistics = get_statistics()
+    result = Result(Sentinel(), statistics)
+
+    # Tested plot
+    result.plot_operator_counts(fig_test.subplots(nrows=2))
+
+    # Reference plot
+    get_operator_plot(fig_ref.subplots(2),
+                      statistics.destroy_operator_counts,
+                      statistics.repair_operator_counts)
+
+# TODO test kwargs, defaults for operator_counts

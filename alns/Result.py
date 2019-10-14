@@ -4,7 +4,7 @@ from matplotlib.pyplot import Axes  # pylint: disable=unused-import
 
 from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics  # pylint: disable=unused-import
-from .exception_warnings import NotCollectedError
+from .exceptions_warnings import NotCollectedError
 
 
 class Result:

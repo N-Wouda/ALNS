@@ -9,7 +9,7 @@ from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics
 from .WeigthIndex import WeightIndex
 from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
-from .exception_warnings import OverwriteWarning
+from .exceptions_warnings import OverwriteWarning
 from .select_operator import select_operator
 
 
@@ -206,7 +206,7 @@ class ALNS:
         Parameters
         ----------
         operators : dict
-            Dictionary of name -> operator values.
+            Dictionary of (name, operator) key-value pairs.
         operator : Callable[[State, RandomState], State]
             Callable operator function.
         name : str

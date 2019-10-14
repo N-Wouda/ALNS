@@ -4,7 +4,7 @@ from numpy.testing import (assert_, assert_almost_equal, assert_equal,
 
 from alns import ALNS, State
 from alns.criteria import HillClimbing, SimulatedAnnealing
-from alns.exception_warnings import OverwriteWarning
+from alns.exceptions_warnings import OverwriteWarning
 from .states import One, Zero
 
 

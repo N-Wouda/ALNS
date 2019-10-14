@@ -6,7 +6,7 @@ from numpy.random import RandomState
 
 from alns.Result import Result
 from alns.Statistics import Statistics
-from alns.exception_warnings import NotCollectedError
+from alns.exceptions_warnings import NotCollectedError
 from .states import Sentinel
 
 try:

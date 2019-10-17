@@ -15,14 +15,15 @@ git:
   depth: 3
 
 branches:       # since the master branch is the only one where PRs are
-  only:         # merged in
+  only:         # merged in.
   - master
+  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/    # for release tags
 
 script:
 - pytest
 - mypy ./ || true
 
-deploy:         # deploy to PyPI on tagged commits
+deploy:         # deploy to PyPI on tagged commits.
   provider: pypi
   user: N-Wouda
   password:

@@ -197,7 +197,7 @@ class ALNS:
         return Result(best, statistics if collect_stats else None)
 
     @staticmethod
-    def _add_operator(operators, operator, name):
+    def _add_operator(operators, operator, name=None):
         """
         Internal helper that adds an operator to the passed-in operator
         dictionary. See `add_destroy_operator` and `add_repair_operator` for
@@ -211,6 +211,12 @@ class ALNS:
             Callable operator function.
         name : str
             Optional operator name.
+
+        Warns
+        -----
+        OverwriteWarning
+            When the operator name already maps to an operator on this ALNS
+            instance.
         """
         if name is None:
             name = operator.__name__

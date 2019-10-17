@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.pyplot import Axes  # pylint: disable=unused-import
+from matplotlib.pyplot import Axes, Figure  # pylint: disable=unused-import
 
 from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics  # pylint: disable=unused-import
@@ -81,30 +81,49 @@ class Result:
 
         plt.draw_if_interactive()
 
-    def plot_operator_counts(self, axs=None, **kwargs):
+    def plot_operator_counts(self, figure=None, title=None, legend=None,
+                             **kwargs):
         """
         Plots an overview of the destroy and repair operators' performance.
 
         Parameters
         ----------
-        axs : list
-            Optional list of length two, containing an Axes object for each of
-            the operator types.
+        figure : Figure
+            Optional figure. If not passed, a new figure is constructed, and
+            some default margins are set.
+        title : str
+            Optional figure title. When not passed, no title is set.
+        legend : list
+            Optional legend entries. When passed, this should be a list of
+            four strings. When not passed, a sensible default is set.
         kwargs : dict
             Optional arguments passed to each call of ``ax.barh``.
 
         Raises
         ------
         ValueError
-            When an axs list is passed-in, but not of the appropriate length.
+            When the passed-in legend list is not of appropriate length.
         """
-        if axs is None:
-            _, (d_ax, r_ax) = plt.subplots(nrows=2)
-        elif len(axs) != 2:
-            raise ValueError("Expected two axes objects, got {0}."
-                             .format(len(axs)))
+        if figure is None:
+            figure, (d_ax, r_ax) = plt.subplots(nrows=2)
+
+            # Ensures there is generally sufficient white space between the
+            # operator subplots, and we have some space to put the legend. When
+            # a figure is passed-in, these sorts of modifications are assumed
+            # to have been performed at the call site.
+            figure.subplots_adjust(hspace=0.7, bottom=0.2)
         else:
-            d_ax, r_ax = axs
+            d_ax, r_ax = figure.subplots(nrows=2)
+
+        if title is not None:
+            figure.suptitle(title)
+
+        if legend is not None:
+            if len(legend) < 4:
+                raise ValueError("Legend not understood. Expected 4 items,"
+                                 " found {1}.".format(legend, len(legend)))
+        else:
+            legend = ["Best", "Better", "Accepted", "Rejected"]
 
         self._plot_operator_counts(d_ax,
                                    self.statistics.destroy_operator_counts,
@@ -116,41 +135,49 @@ class Result:
                                    "Repair operators",
                                    **kwargs)
 
-        # TODO: Legend
+        # It is not really a problem if the legend is longer than four items,
+        # but we will only use the first four.
+        figure.legend(legend[:4], ncol=4, loc="lower center")
 
-        plt.subplots_adjust(hspace=0.5)     # TODO test this for default
         plt.draw_if_interactive()
 
     @staticmethod
-    def _plot_operator_counts(ax, data, title, **kwargs):
+    def _plot_operator_counts(ax, operator_counts, title, **kwargs):
         """
-        TODO Docstring
+        Internal helper that plots the passed-in operator_counts on the given
+        ax object.
+
+        Parameters
+        ----------
+        ax: Axes
+            An axes object, to be populated with data.
+        operator_counts : dict
+            A dictionary of operator counts.
+        title : str
+            Plot title.
+        **kwargs
+            Optional keyword arguments, to be passed to ``ax.barh``.
 
         Note
         ----
         This code takes loosely after an example from the matplotlib gallery
         titled "Discrete distribution as horizontal bar chart".
         """
-        labels = list(data.keys())
-        data = np.array(list(data.values()))
+        operator_names = list(operator_counts.keys())
 
-        data_cum = data.cumsum(axis=1)
+        operator_counts = np.array(list(operator_counts.values()))
+        cumulative_counts = operator_counts.cumsum(axis=1)
 
-        ax.invert_yaxis()
-        ax.set_xlim(0, np.sum(data, axis=1).max())
+        ax.set_xlim(right=np.sum(operator_counts, axis=1).max())
 
         for idx in range(4):
-            widths = data[:, idx]
-            starts = data_cum[:, idx] - widths
+            widths = operator_counts[:, idx]
+            starts = cumulative_counts[:, idx] - widths
 
-            ax.barh(labels,
-                    widths,
-                    left=starts,
-                    height=0.5,
-                    **kwargs)
+            ax.barh(operator_names, widths, left=starts, height=0.5, **kwargs)
 
             for y, (x, label) in enumerate(zip(starts + widths / 2, widths)):
-                ax.text(x, y, str(int(label)), ha='center', va='center')
+                ax.text(x, y, str(label), ha='center', va='center')
 
         ax.set_title(title)
         ax.set_xlabel("Iterations where operator resulted in this outcome (#)")

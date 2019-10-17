@@ -53,7 +53,7 @@ def get_objective_plot(ax, *args, **kwargs):
     ax.set_xlabel("Iteration (#)")
 
 
-def get_operator_plot(axs, destroy, repair, **kwargs):
+def get_operator_plot(figure, destroy, repair, **kwargs):
     """
     Helper method.
     """
@@ -156,10 +156,10 @@ def test_plot_operator_counts(fig_test, fig_ref):
     result = Result(Sentinel(), statistics)
 
     # Tested plot
-    result.plot_operator_counts(fig_test.subplots(nrows=2))
+    result.plot_operator_counts(fig_test)
 
     # Reference plot
-    get_operator_plot(fig_ref.subplots(2),
+    get_operator_plot(fig_ref,
                       statistics.destroy_operator_counts,
                       statistics.repair_operator_counts)
 

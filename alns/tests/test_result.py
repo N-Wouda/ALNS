@@ -1,5 +1,6 @@
 import sys
 
+import matplotlib
 import numpy as np
 import numpy.random as rnd
 import pytest
@@ -9,6 +10,8 @@ from alns.Result import Result
 from alns.Statistics import Statistics
 from alns.exceptions_warnings import NotCollectedError
 from .states import Sentinel
+
+matplotlib.use('Agg')
 
 try:
     from matplotlib.testing.decorators import check_figures_equal

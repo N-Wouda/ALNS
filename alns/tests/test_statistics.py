@@ -58,5 +58,3 @@ def test_collect_repair_counts_example():
     for idx, count in enumerate([0, 0, 1, 0]):
         assert_equal(statistics.repair_operator_counts["repair_test"][idx],
                      count)
-
-# TODO add more tests

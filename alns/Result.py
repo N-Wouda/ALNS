@@ -121,7 +121,7 @@ class Result:
         if legend is not None:
             if len(legend) < 4:
                 raise ValueError("Legend not understood. Expected 4 items,"
-                                 " found {1}.".format(legend, len(legend)))
+                                 " found {0}.".format(len(legend)))
         else:
             legend = ["Best", "Better", "Accepted", "Rejected"]
 

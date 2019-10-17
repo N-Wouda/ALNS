@@ -1,17 +1,22 @@
+import os
 import sys
 
-import matplotlib
 import numpy as np
 import numpy.random as rnd
 import pytest
 from numpy.testing import assert_, assert_raises
 
+if "TRAVIS" in os.environ:
+    import matplotlib
+
+    # Travis does not understand the default TkAgg back-end, so we have to set
+    # this manually. See also https://stackoverflow.com/q/37604289/4316405.
+    matplotlib.use('Agg')
+
 from alns.Result import Result
 from alns.Statistics import Statistics
 from alns.exceptions_warnings import NotCollectedError
 from .states import Sentinel
-
-matplotlib.use('Agg')
 
 try:
     from matplotlib.testing.decorators import check_figures_equal

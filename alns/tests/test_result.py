@@ -1,17 +1,9 @@
-import os
 import sys
 
 import numpy as np
 import numpy.random as rnd
 import pytest
 from numpy.testing import assert_, assert_raises
-
-if "TRAVIS" in os.environ:
-    import matplotlib
-
-    # Travis does not understand the default TkAgg back-end, so we have to set
-    # this manually. See also https://stackoverflow.com/q/37604289/4316405.
-    matplotlib.use('Agg')
 
 from alns.Result import Result
 from alns.Statistics import Statistics
@@ -209,6 +201,8 @@ def test_plot_operator_counts(fig_test, fig_ref):
                       result.statistics.repair_operator_counts)
 
 
+@pytest.mark.skipif(sys.version_info < (3, 5),
+                    reason="Plot testing is not reliably available for Py3.4")
 def test_plot_operator_counts_raises_legend():
     """
     Tests if the ``plot_operator_counts`` method raises when the passed-in

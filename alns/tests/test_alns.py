@@ -1,8 +1,10 @@
 import numpy.random as rnd
-from numpy.testing import assert_almost_equal, assert_equal, assert_raises
+from numpy.testing import (assert_, assert_almost_equal, assert_equal,
+                           assert_raises, assert_no_warnings, assert_warns)
 
 from alns import ALNS, State
 from alns.criteria import HillClimbing, SimulatedAnnealing
+from alns.exceptions_warnings import OverwriteWarning
 from .states import One, Zero
 
 
@@ -16,12 +18,12 @@ def get_alns_instance(repair_operators=None, destroy_operators=None, seed=None):
     alns = ALNS(rnd.RandomState(seed))
 
     if repair_operators is not None:
-        for repair_operator in repair_operators:
-            alns.add_repair_operator(repair_operator)
+        for idx, repair_operator in enumerate(repair_operators):
+            alns.add_repair_operator(repair_operator, name=str(idx))
 
     if destroy_operators is not None:
-        for destroy_operator in destroy_operators:
-            alns.add_destroy_operator(destroy_operator)
+        for idx, destroy_operator in enumerate(destroy_operators):
+            alns.add_destroy_operator(destroy_operator, name=str(idx))
 
     return alns
 
@@ -49,8 +51,26 @@ def test_add_destroy_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_destroy_operator(lambda state, rnd: None)
+        alns.add_destroy_operator(lambda state, rnd: None, name=str(count))
         assert_equal(len(alns.destroy_operators), count)
+
+
+def test_add_destroy_operator_name():
+    """
+    Tests if adding a destroy operator without an explicit name correctly
+    takes the function name instead.
+    """
+    def destroy_operator():                 # placeholder
+        pass
+
+    alns = ALNS()
+
+    alns.add_destroy_operator(destroy_operator)
+
+    name, operator = alns.destroy_operators[0]
+
+    assert_equal(name, "destroy_operator")
+    assert_(operator is destroy_operator)
 
 
 def test_add_repair_operator():
@@ -61,8 +81,47 @@ def test_add_repair_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_repair_operator(lambda state, rnd: None)
+        alns.add_repair_operator(lambda state, rnd: None, name=str(count))
         assert_equal(len(alns.repair_operators), count)
+
+
+def test_add_repair_operator_name():
+    """
+    Tests if adding a repair operator without an explicit name correctly
+    takes the function name instead.
+    """
+    def repair_operator():                  # placeholder
+        pass
+
+    alns = ALNS()
+
+    alns.add_repair_operator(repair_operator)
+
+    name, operator = alns.repair_operators[0]
+
+    assert_equal(name, "repair_operator")
+    assert_(operator is repair_operator)
+
+
+def test_add_operator_same_name_warns_per_type():
+    """
+    Adding an operator with the same name as an already added operator (of the
+    same type) should warn that the previous operator will be overwritten.
+    """
+    alns = ALNS()
+
+    with assert_no_warnings():
+        # The same name is allowed for different types of operators.
+        alns.add_destroy_operator(lambda state, rnd: None, "test")
+        alns.add_repair_operator(lambda state, rnd: None, "test")
+
+    with assert_warns(OverwriteWarning):
+        # Already exists as a destroy operator.
+        alns.add_destroy_operator(lambda state, rnd: None, "test")
+
+    with assert_warns(OverwriteWarning):
+        # Already exists as a repair operator.
+        alns.add_repair_operator(lambda state, rnd: None, "test")
 
 
 # PARAMETERS -------------------------------------------------------------------
@@ -152,18 +211,23 @@ def test_raises_non_positive_weights():
         alns.iterate(One(), [1, 1, -5, 1], .5, HillClimbing())
 
 
-def test_raises_non_positive_iterations():
+def test_raises_negative_iterations():
     """
-    The number of iterations should be strictly positive.
+    The number of iterations should be non-negative, as zero is allowed.
     """
     alns = get_alns_instance([lambda state, rnd: None],
                              [lambda state, rnd: None])
 
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 0)
+    initial_solution = One()
 
+    # A negative iteration count is not understood, for obvious reasons.
     with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), -1)
+        alns.iterate(initial_solution, [1, 1, 1, 1], .5, HillClimbing(), -1)
+
+    # But zero should just return the initial solution.
+    result = alns.iterate(initial_solution, [1, 1, 1, 1], .5, HillClimbing(), 0)
+
+    assert_(result.best_state is initial_solution)
 
 
 def test_does_not_raise():
@@ -211,6 +275,4 @@ def test_fixed_seed_outcomes():
 
         assert_almost_equal(result.best_state.objective(), desired, decimal=5)
 
-
 # TODO test more complicated examples?
-# TODO test select_operator?

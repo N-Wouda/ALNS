@@ -58,7 +58,7 @@ class Result:
 
         return self._statistics
 
-    def plot_objectives(self, ax=None, **kwargs):
+    def plot_objectives(self, ax=None, title=None, **kwargs):
         """
         Plots the collected objective values at each iteration.
 
@@ -67,15 +67,20 @@ class Result:
         ax : Axes
             Optional axes argument. If not passed, a new figure and axes are
             constructed.
+        title : str
+            Optional title argument. When not passed, a default is set.
         kwargs : dict
             Optional arguments passed to ``ax.plot``.
         """
         if ax is None:
             _, ax = plt.subplots()
 
+        if title is None:
+            title = "Objective value at each iteration"
+
         ax.plot(self.statistics.objectives, **kwargs)
 
-        ax.set_title("Objective value at each iteration")
+        ax.set_title(title)
         ax.set_ylabel("Objective value")
         ax.set_xlabel("Iteration (#)")
 

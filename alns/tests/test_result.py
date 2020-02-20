@@ -57,9 +57,14 @@ def get_objective_plot(ax, *args, **kwargs):
     """
     Helper method.
     """
+    title = kwargs.pop('title', None)
+
+    if title is None:
+        title = "Objective value at each iteration"
+
     ax.plot(*args, **kwargs)
 
-    ax.set_title("Objective value at each iteration")
+    ax.set_title(title)
     ax.set_ylabel("Objective value")
     ax.set_xlabel("Iteration (#)")
 
@@ -156,7 +161,7 @@ def test_plot_objectives_kwargs(fig_test, fig_ref):
     correctly passed to the ``plot`` method.
     """
     result = get_result(Sentinel())
-    kwargs = dict(lw=5, marker='*')
+    kwargs = dict(lw=5, marker='*', title="Test title")
 
     # Tested plot
     result.plot_objectives(fig_test.subplots(), **kwargs)
@@ -211,14 +216,12 @@ def test_plot_operator_counts_raises_legend():
     result = get_result(Sentinel())
 
     with assert_raises(ValueError):
-        # Legend should be of length four.
-        result.plot_operator_counts(legend=["test", "test"])
+        # Legend should be of length at most four.
+        result.plot_operator_counts(legend=["test"] * 5)
 
     # This should work.
-    result.plot_operator_counts(legend=["test", "test", "test", "test"])
-
-    # As should longer legend lists - the final values are unused.
-    result.plot_operator_counts(legend=["test", "test", "test", "test", "test"])
+    result.plot_operator_counts(legend=["test"] * 2)
+    result.plot_operator_counts(legend=["test"] * 4)
 
 
 @pytest.mark.matplotlib

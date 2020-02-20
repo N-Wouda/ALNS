@@ -4,6 +4,8 @@ from collections import OrderedDict
 import numpy as np
 import numpy.random as rnd
 
+from .CallbackFlag import CallbackFlag
+from .CallbackMixin import CallbackMixin
 from .Result import Result
 from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics
@@ -13,7 +15,7 @@ from .exceptions_warnings import OverwriteWarning
 from .select_operator import select_operator
 
 
-class ALNS:
+class ALNS(CallbackMixin):
 
     def __init__(self, rnd_state=rnd.RandomState()):
         """
@@ -35,6 +37,8 @@ class ALNS:
           Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399-420).
           Springer.
         """
+        super().__init__()
+
         self._destroy_operators = OrderedDict()
         self._repair_operators = OrderedDict()
 
@@ -116,7 +120,8 @@ class ALNS:
             is better than the current solution (idx 1), the solution is
             accepted (idx 2), or rejected (idx 3).
         operator_decay : float
-            The operator decay parameter, as a float in the unit interval.
+            The operator decay parameter, as a float in the unit interval,
+            [0, 1] (inclusive).
         criterion : AcceptanceCriterion
             The acceptance criterion to use for candidate states. See also
             the `alns.criteria` module for an overview.
@@ -134,8 +139,8 @@ class ALNS:
         Returns
         -------
         Result
-            A result object, containing the best and last solutions, and some
-            additional results.
+            A result object, containing the best solution and some additional
+            statistics.
 
         References
         ----------
@@ -178,6 +183,10 @@ class ALNS:
                                                            candidate, criterion)
 
             if current.objective() < best.objective():
+                if self.has_callback(CallbackFlag.ON_BEST):
+                    callback = self.callback(CallbackFlag.ON_BEST)
+                    current = callback(current, self._rnd_state)
+
                 best = current
 
             # The weights are updated as convex combinations of the current
@@ -274,7 +283,7 @@ class ALNS:
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing at least one destroy or repair operator.")
 
-        if not (0 < operator_decay < 1):
+        if not (0 <= operator_decay <= 1):
             raise ValueError("Operator decay parameter outside unit interval"
                              " is not understood.")
 

@@ -40,6 +40,23 @@ class ValueState(State):
         return self._value
 
 
+# CALLBACKS --------------------------------------------------------------------
+
+def test_on_best_is_called():
+    """
+    Tests if the callback is invoked when a new global best is found.
+    """
+    alns = get_alns_instance([lambda state, rnd: Zero()],
+                             [lambda state, rnd: Zero()])
+
+    # Called when a new global best is found. In this case, that happens once:
+    # in the only iteration below. It returns a state with value 10, which
+    # should then also be returned by the entire algorithm.
+    alns.on_best(lambda *args: ValueState(10))
+
+    result = alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 1)
+    assert_equal(result.best_state.objective(), 10)
+
 # OPERATORS --------------------------------------------------------------------
 
 
@@ -171,20 +188,6 @@ def test_raises_explosive_operator_decay():
         alns.iterate(One(), [1, 1, 1, 1], 1.2, HillClimbing())
 
 
-def test_raises_boundary_operator_decay():
-    """
-    The boundary cases, zero and one, should both raise.
-    """
-    alns = get_alns_instance([lambda state, rnd: None],
-                             [lambda state, rnd: None])
-
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], 0, HillClimbing())
-
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], 1, HillClimbing())
-
-
 def test_raises_insufficient_weights():
     """
     We need (at least) four weights to be passed-in, one for each updating
@@ -238,6 +241,10 @@ def test_does_not_raise():
                              [lambda state, rnd: One()])
 
     alns.iterate(Zero(), [1, 1, 1, 1], .5, HillClimbing(), 100)
+
+    # 0 and 1 are both acceptable decay parameters (since v1.2.0).
+    alns.iterate(Zero(), [1, 1, 1, 1], 0., HillClimbing(), 100)
+    alns.iterate(Zero(), [1, 1, 1, 1], 1., HillClimbing(), 100)
 
 
 # EXAMPLES ---------------------------------------------------------------------

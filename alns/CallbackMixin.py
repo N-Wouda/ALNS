@@ -1,6 +1,7 @@
+import warnings
+
 from .CallbackFlag import CallbackFlag
 from .exceptions_warnings import OverwriteWarning
-import warnings
 
 
 class CallbackMixin:

@@ -242,6 +242,10 @@ def test_does_not_raise():
 
     alns.iterate(Zero(), [1, 1, 1, 1], .5, HillClimbing(), 100)
 
+    # 0 and 1 are both acceptable decay parameters (since v1.2.0).
+    alns.iterate(Zero(), [1, 1, 1, 1], 0., HillClimbing(), 100)
+    alns.iterate(Zero(), [1, 1, 1, 1], 1., HillClimbing(), 100)
+
 
 # EXAMPLES ---------------------------------------------------------------------
 

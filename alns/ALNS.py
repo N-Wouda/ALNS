@@ -4,6 +4,8 @@ from collections import OrderedDict
 import numpy as np
 import numpy.random as rnd
 
+from .CallbackFlag import CallbackFlag
+from .CallbackMixin import CallbackMixin
 from .Result import Result
 from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics
@@ -13,7 +15,7 @@ from .exceptions_warnings import OverwriteWarning
 from .select_operator import select_operator
 
 
-class ALNS:
+class ALNS(CallbackMixin):
 
     def __init__(self, rnd_state=rnd.RandomState()):
         """
@@ -35,6 +37,8 @@ class ALNS:
           Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399-420).
           Springer.
         """
+        super().__init__()
+
         self._destroy_operators = OrderedDict()
         self._repair_operators = OrderedDict()
 
@@ -178,6 +182,10 @@ class ALNS:
                                                            candidate, criterion)
 
             if current.objective() < best.objective():
+                if self.has_callback(CallbackFlag.ON_BEST):
+                    callback = self.callback(CallbackFlag.ON_BEST)
+                    current = callback(current, self._rnd_state)
+
                 best = current
 
             # The weights are updated as convex combinations of the current

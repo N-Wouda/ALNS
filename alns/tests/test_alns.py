@@ -240,6 +240,8 @@ def test_does_not_raise():
     alns.iterate(Zero(), [1, 1, 1, 1], .5, HillClimbing(), 100)
 
 
+# TODO test callback
+
 # EXAMPLES ---------------------------------------------------------------------
 
 

@@ -216,14 +216,12 @@ def test_plot_operator_counts_raises_legend():
     result = get_result(Sentinel())
 
     with assert_raises(ValueError):
-        # Legend should be of length four.
-        result.plot_operator_counts(legend=["test", "test"])
+        # Legend should be of length at most four.
+        result.plot_operator_counts(legend=["test"] * 5)
 
     # This should work.
-    result.plot_operator_counts(legend=["test", "test", "test", "test"])
-
-    # As should longer legend lists - the final values are unused.
-    result.plot_operator_counts(legend=["test", "test", "test", "test", "test"])
+    result.plot_operator_counts(legend=["test"] * 2)
+    result.plot_operator_counts(legend=["test"] * 4)
 
 
 @pytest.mark.matplotlib

@@ -120,7 +120,8 @@ class ALNS(CallbackMixin):
             is better than the current solution (idx 1), the solution is
             accepted (idx 2), or rejected (idx 3).
         operator_decay : float
-            The operator decay parameter, as a float in the unit interval.
+            The operator decay parameter, as a float in the unit interval,
+            [0, 1] (inclusive).
         criterion : AcceptanceCriterion
             The acceptance criterion to use for candidate states. See also
             the `alns.criteria` module for an overview.
@@ -138,8 +139,8 @@ class ALNS(CallbackMixin):
         Returns
         -------
         Result
-            A result object, containing the best and last solutions, and some
-            additional results.
+            A result object, containing the best solution and some additional
+            statistics.
 
         References
         ----------
@@ -282,7 +283,7 @@ class ALNS(CallbackMixin):
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing at least one destroy or repair operator.")
 
-        if not (0 < operator_decay < 1):
+        if not (0 <= operator_decay <= 1):
             raise ValueError("Operator decay parameter outside unit interval"
                              " is not understood.")
 

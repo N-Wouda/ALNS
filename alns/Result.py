@@ -99,15 +99,21 @@ class Result:
         title : str
             Optional figure title. When not passed, no title is set.
         legend : list
-            Optional legend entries. When passed, this should be a list of
-            four strings. When not passed, a sensible default is set.
+            Optional legend entries. When passed, this should be a list of at
+            most four strings. The first string describes the number of times
+            a best solution was found, the second a better, the third a solution
+            was accepted but did not improve upon the current or global best,
+            and the fourth the number of times a solution was rejected. If less
+            than four strings are passed, only the first len(legend) count types
+            are plotted. When not passed, a sensible default is set and all
+            counts are shown.
         kwargs : dict
             Optional arguments passed to each call of ``ax.barh``.
 
         Raises
         ------
         ValueError
-            When the passed-in legend list is not of appropriate length.
+            When the legend contains more than four elements.
         """
         if figure is None:
             figure, (d_ax, r_ax) = plt.subplots(nrows=2)
@@ -123,45 +129,33 @@ class Result:
         if title is not None:
             figure.suptitle(title)
 
-        if legend is not None:
-            if len(legend) < 4:
-                raise ValueError("Legend not understood. Expected 4 items,"
-                                 " found {0}.".format(len(legend)))
-        else:
+        if legend is None:
             legend = ["Best", "Better", "Accepted", "Rejected"]
+        elif len(legend) > 4:
+            raise ValueError("Legend not understood. Expected at most 4 items,"
+                             " found {0}.".format(len(legend)))
 
         self._plot_operator_counts(d_ax,
                                    self.statistics.destroy_operator_counts,
                                    "Destroy operators",
+                                   len(legend),
                                    **kwargs)
 
         self._plot_operator_counts(r_ax,
                                    self.statistics.repair_operator_counts,
                                    "Repair operators",
+                                   len(legend),
                                    **kwargs)
 
-        # It is not really a problem if the legend is longer than four items,
-        # but we will only use the first four.
-        figure.legend(legend[:4], ncol=4, loc="lower center")
+        figure.legend(legend, ncol=len(legend), loc="lower center")
 
         plt.draw_if_interactive()
 
     @staticmethod
-    def _plot_operator_counts(ax, operator_counts, title, **kwargs):
+    def _plot_operator_counts(ax, operator_counts, title, num_types, **kwargs):
         """
         Internal helper that plots the passed-in operator_counts on the given
         ax object.
-
-        Parameters
-        ----------
-        ax: Axes
-            An axes object, to be populated with data.
-        operator_counts : dict
-            A dictionary of operator counts.
-        title : str
-            Plot title.
-        **kwargs
-            Optional keyword arguments, to be passed to ``ax.barh``.
 
         Note
         ----
@@ -175,7 +169,7 @@ class Result:
 
         ax.set_xlim(right=np.sum(operator_counts, axis=1).max())
 
-        for idx in range(4):
+        for idx in range(num_types):
             widths = operator_counts[:, idx]
             starts = cumulative_counts[:, idx] - widths
 

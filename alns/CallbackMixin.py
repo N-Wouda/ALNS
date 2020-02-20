@@ -1,4 +1,6 @@
 from .CallbackFlag import CallbackFlag
+from .exceptions_warnings import OverwriteWarning
+import warnings
 
 
 class CallbackMixin:
@@ -21,9 +23,13 @@ class CallbackMixin:
             A function that should take a solution State as its first parameter,
             and a numpy RandomState as its second (cf. the operator signature).
             It should return a (new) solution State.
+
+        Warns
+        -----
+        OverwriteWarning
+            When a callback has already been set for the ON_BEST flag.
         """
-        # TODO raise if a callback already exists?
-        self._callbacks[CallbackFlag.ON_BEST] = func
+        self._set_callback(CallbackFlag.ON_BEST, func)
 
     def has_callback(self, flag):
         """
@@ -33,6 +39,10 @@ class CallbackMixin:
         ----------
         flag : CallbackFlag
 
+        Returns
+        -------
+        bool
+            True if a callable is set, False otherwise.
         """
         return flag in self._callbacks
 
@@ -51,3 +61,16 @@ class CallbackMixin:
             Callback for the passed-in flag.
         """
         return self._callbacks[flag]
+
+    def _set_callback(self, flag, func):
+        """
+        Sets the passed-in callback func for the passed-in flag. Warns if this
+        would overwrite an existing callback.
+        """
+        if self.has_callback(flag):
+            warnings.warn("A callback function has already been set for the"
+                          " `{0}' flag. This callback will now be replaced by"
+                          " the newly passed-in callback.".format(flag),
+                          OverwriteWarning)
+
+        self._callbacks[flag] = func

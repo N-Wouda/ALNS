@@ -165,9 +165,9 @@ class Result:
         operator_names = list(operator_counts.keys())
 
         operator_counts = np.array(list(operator_counts.values()))
-        cumulative_counts = operator_counts.cumsum(axis=1)
+        cumulative_counts = operator_counts[:, :num_types].cumsum(axis=1)
 
-        ax.set_xlim(right=np.sum(operator_counts, axis=1).max())
+        ax.set_xlim(right=cumulative_counts[:, -1].max())
 
         for idx in range(num_types):
             widths = operator_counts[:, idx]

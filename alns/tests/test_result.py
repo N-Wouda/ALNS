@@ -1,5 +1,3 @@
-import sys
-
 import numpy as np
 import numpy.random as rnd
 import pytest
@@ -139,8 +137,6 @@ def test_raises_missing_statistics():
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
 def test_plot_objectives(fig_test, fig_ref):
     """
@@ -157,8 +153,6 @@ def test_plot_objectives(fig_test, fig_ref):
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
 def test_plot_objectives_kwargs(fig_test, fig_ref):
     """
@@ -178,8 +172,6 @@ def test_plot_objectives_kwargs(fig_test, fig_ref):
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 def test_plot_objectives_default_axes():
     """
     When an axes object is not passed, the ``plot_objectives`` method should
@@ -192,8 +184,6 @@ def test_plot_objectives_default_axes():
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
 def test_plot_operator_counts(fig_test, fig_ref):
     """
@@ -211,8 +201,6 @@ def test_plot_operator_counts(fig_test, fig_ref):
                       result.statistics.repair_operator_counts)
 
 
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 def test_plot_operator_counts_raises_legend():
     """
     Tests if the ``plot_operator_counts`` method raises when the passed-in
@@ -230,8 +218,6 @@ def test_plot_operator_counts_raises_legend():
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
 def test_plot_operator_counts_title(fig_test, fig_ref):
     """
@@ -250,8 +236,6 @@ def test_plot_operator_counts_title(fig_test, fig_ref):
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 def test_plot_operator_counts_default_figure():
     """
     When a figure object is not passed, the ``plot_operator_counts`` method
@@ -264,8 +248,6 @@ def test_plot_operator_counts_default_figure():
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
 def test_plot_operator_counts_kwargs(fig_test, fig_ref):
     """
@@ -286,8 +268,6 @@ def test_plot_operator_counts_kwargs(fig_test, fig_ref):
 
 
 @pytest.mark.matplotlib
-@pytest.mark.skipif(sys.version_info < (3, 5),
-                    reason="Plot testing is not reliably available for Py3.4")
 @check_figures_equal(extensions=['png'])
 def test_plot_operator_counts_legend_length(fig_test, fig_ref):
     """

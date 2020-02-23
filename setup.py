@@ -2,7 +2,7 @@ import setuptools
 
 MAJOR = 1
 MINOR = 2
-MAINTENANCE = 1
+MAINTENANCE = 2
 MODIFIER = ""
 
 VERSION = "{0}.{1}.{2}{3}".format(MAJOR, MINOR, MAINTENANCE, MODIFIER)
@@ -30,7 +30,6 @@ setuptools.setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",

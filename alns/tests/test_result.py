@@ -51,7 +51,7 @@ def get_statistics():
 # TODO revisit image comparison - maybe check against static images instead?
 
 
-def get_objective_plot(ax, *args, **kwargs):
+def get_objective_plot(ax, data, **kwargs):
     """
     Helper method.
     """
@@ -60,7 +60,8 @@ def get_objective_plot(ax, *args, **kwargs):
     if title is None:
         title = "Objective value at each iteration"
 
-    ax.plot(*args, **kwargs)
+    ax.plot(data, **kwargs)
+    ax.plot(np.minimum.accumulate(data), **kwargs)
 
     ax.set_title(title)
     ax.set_ylabel("Objective value")

@@ -78,7 +78,10 @@ class Result:
         if title is None:
             title = "Objective value at each iteration"
 
+        # First call is current solution objectives (at each iteration), second
+        # call is the best solution found so far (as a running minimum).
         ax.plot(self.statistics.objectives, **kwargs)
+        ax.plot(np.minimum.accumulate(self.statistics.objectives), **kwargs)
 
         ax.set_title(title)
         ax.set_ylabel("Objective value")

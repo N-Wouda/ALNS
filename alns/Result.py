@@ -87,6 +87,8 @@ class Result:
         ax.set_ylabel("Objective value")
         ax.set_xlabel("Iteration (#)")
 
+        ax.legend(["Current", "Best"], loc="upper right")
+
         plt.draw_if_interactive()
 
     def plot_operator_counts(self, figure=None, title=None, legend=None,

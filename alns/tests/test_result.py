@@ -67,6 +67,8 @@ def get_objective_plot(ax, data, **kwargs):
     ax.set_ylabel("Objective value")
     ax.set_xlabel("Iteration (#)")
 
+    ax.legend(["Current", "Best"], loc="upper right")
+
 
 def get_operator_plot(figure, destroy, repair, legend=None, suptitle=None,
                       **kwargs):

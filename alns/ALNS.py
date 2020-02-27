@@ -263,12 +263,12 @@ class ALNS(CallbackMixin):
             The weight index to use when updating the operator weights.
         """
         if criterion.accept(self._rnd_state, best, current, candidate):
-            current = candidate
-
             if candidate.objective() < current.objective():
                 weight = WeightIndex.IS_BETTER
             else:
                 weight = WeightIndex.IS_ACCEPTED
+
+            current = candidate
         else:
             weight = WeightIndex.IS_REJECTED
 

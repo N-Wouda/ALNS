@@ -179,15 +179,10 @@ class ALNS(CallbackMixin):
             r_name, r_operator = self.repair_operators[r_idx]
             candidate = r_operator(destroyed, self._rnd_state)
 
-            current, weight_idx = self._consider_candidate(best, current,
-                                                           candidate, criterion)
-
-            if current.objective() < best.objective():
-                if self.has_callback(CallbackFlag.ON_BEST):
-                    callback = self.callback(CallbackFlag.ON_BEST)
-                    current = callback(current, self._rnd_state)
-
-                best = current
+            best, current, weight_idx = self._consider_candidate(best,
+                                                                 current,
+                                                                 candidate,
+                                                                 criterion)
 
             # The weights are updated as convex combinations of the current
             # weight and the update parameter. See eq. (2), p. 12.
@@ -261,20 +256,36 @@ class ALNS(CallbackMixin):
         Returns
         -------
         State
-            The new state.
+            The (possibly new) best state.
+        State
+            The (possibly new) current state.
         int
             The weight index to use when updating the operator weights.
         """
-        if candidate.objective() < best.objective():
-            return candidate, WeightIndex.IS_BEST
-
-        if candidate.objective() < current.objective():
-            return candidate, WeightIndex.IS_BETTER
-
         if criterion.accept(self._rnd_state, best, current, candidate):
-            return candidate, WeightIndex.IS_ACCEPTED
+            if candidate.objective() < current.objective():
+                weight = WeightIndex.IS_BETTER
+            else:
+                weight = WeightIndex.IS_ACCEPTED
 
-        return current, WeightIndex.IS_REJECTED
+            current = candidate
+        else:
+            weight = WeightIndex.IS_REJECTED
+
+        if candidate.objective() < best.objective():
+            # Is a new global best, so we might want to do something to further
+            # improve the solution.
+            if self.has_callback(CallbackFlag.ON_BEST):
+                callback = self.callback(CallbackFlag.ON_BEST)
+                candidate = callback(candidate, self._rnd_state)
+
+            # Global best solution becomes the new starting point for further
+            # iterations.
+            return candidate, candidate, WeightIndex.IS_BEST
+
+        # Best has not been updated if we get here, but the current state might
+        # have (if the candidate was accepted).
+        return best, current, weight
 
     def _validate_parameters(self, weights, operator_decay, iterations):
         """

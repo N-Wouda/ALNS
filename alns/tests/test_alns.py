@@ -268,7 +268,7 @@ def test_fixed_seed_outcomes():
     Tests if fixing a seed results in deterministic outcomes even when using a
     'random' acceptance criterion (here SA).
     """
-    outcomes = [0.00469, 0.00011, 0.04312]
+    outcomes = [0.01171, 0.00011, 0.01025]
 
     for seed, desired in enumerate(outcomes):                   # idx is seed
         alns = get_alns_instance(

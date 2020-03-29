@@ -82,4 +82,11 @@ class SimulatedAnnealing(AcceptanceCriterion):
                                                              self.step,
                                                              self.method))
 
-        return probability >= rnd.random_sample()
+        # TODO the following is in preparation of the new numpy Generator
+        #  interface, which deprecates random_sample() in favour of random().
+        #  ALNS does not yet formally support Generators, but unofficially it
+        #  should work in most cases.
+        try:
+            return probability >= rnd.random()
+        except AttributeError:
+            return probability >= rnd.random_sample()

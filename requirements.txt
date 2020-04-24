@@ -6,5 +6,5 @@ pytest-cov >= 2.6.1     # for test suite
 mypy >= 0.670           # for static type analysis
 codecov                 # for test coverage
 
-networkx >= 2.1.0       # for the TSP example
-tsplib95 >= 0.3.3       # for the TSP example
+networkx >= 2.4.0       # for the TSP example
+tsplib95 >= 0.7.0       # for the TSP example

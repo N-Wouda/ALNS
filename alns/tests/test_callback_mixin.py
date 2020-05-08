@@ -2,7 +2,7 @@ from numpy.testing import assert_, assert_no_warnings, assert_warns
 
 from alns import CallbackFlag
 from alns.CallbackMixin import CallbackMixin
-from alns.exceptions_warnings import OverwriteWarning
+from alns.tools.warnings import OverwriteWarning
 
 
 def dummy_callback():

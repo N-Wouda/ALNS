@@ -2,7 +2,11 @@ class AdaptiveStrategy:
 
     # TODO weight lists for both operator lists.
 
-    def __init__(self, init_weights, update_weights):
+    def __init__(self,
+                 init_weights,
+                 update_weights,
+                 reset_every,
+                 combine_rule):
         """
         TODO
         """
@@ -10,6 +14,10 @@ class AdaptiveStrategy:
         self._update_weights = update_weights
 
         self._weights = init_weights
+
+        self._reset_every = reset_every
+        self.combine = combine_rule
+        self._iteration = 0
 
     def current_weights(self):
         """
@@ -21,8 +29,14 @@ class AdaptiveStrategy:
         """
         TODO
         """
-        # TODO How should these be updated? Flexible strategy?
-        pass
+        self._iteration += 1
+
+        self._weights[operator_idx] = self.combine(
+            self._weights[operator_idx],
+            self._update_weights[weight_idx])
+
+        if self._iteration % self._reset_every == 0:
+            self.reset_weights()
 
     def reset_weights(self):
         """

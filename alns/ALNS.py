@@ -4,6 +4,7 @@ from collections import OrderedDict
 import numpy as np
 import numpy.random as rnd
 
+from .AdaptiveStrategy import AdaptiveStrategy  # pylint: disable=unused-import
 from .CallbackFlag import CallbackFlag
 from .CallbackMixin import CallbackMixin
 from .Result import Result
@@ -102,8 +103,14 @@ class ALNS(CallbackMixin):
         """
         self._add_operator(self._repair_operators, operator, name)
 
-    def iterate(self, initial_solution, weights, operator_decay, criterion,
-                iterations=10000, collect_stats=True):
+    def iterate(self,
+                initial_solution,
+                criterion,
+                adaptive_strategy,
+                iterations,
+                weights=None,
+                operator_decay=None,
+                collect_stats=True):
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -114,6 +121,13 @@ class ALNS(CallbackMixin):
         ----------
         initial_solution : State
             The initial solution, as a State object.
+        criterion : AcceptanceCriterion
+            The acceptance criterion to use for candidate states. See also
+            the `alns.criteria` module for an overview.
+        adaptive_strategy : AdaptiveStrategy
+            TODO
+        iterations : int
+            The number of iterations.
         weights: array_like
             A list of four positive elements, representing the weight updates
             when the candidate solution results in a new global best (idx 0),
@@ -122,11 +136,6 @@ class ALNS(CallbackMixin):
         operator_decay : float
             The operator decay parameter, as a float in the unit interval,
             [0, 1] (inclusive).
-        criterion : AcceptanceCriterion
-            The acceptance criterion to use for candidate states. See also
-            the `alns.criteria` module for an overview.
-        iterations : int
-            The number of iterations. Default 10000.
         collect_stats : bool
             Should statistics be collected during iteration? Default True, but
             may be turned off for long runs to reduce memory consumption.
@@ -152,6 +161,12 @@ class ALNS(CallbackMixin):
         class of vehicle routing problems with backhauls. *European Journal of
         Operational Research*, 171: 750–775, 2006.
         """
+        if weights is not None or operator_decay is not None:
+            warnings.warn("``weights'' and ``operator_decay'' are deprecated "
+                          "in favour of AdaptiveStrategy.",
+                          DeprecationWarning)
+
+        # TODO integrate the AdaptiveStrategy
         weights = np.asarray(weights, dtype=np.float16)
 
         self._validate_parameters(weights, operator_decay, iterations)

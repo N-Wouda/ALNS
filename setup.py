@@ -25,7 +25,7 @@ setuptools.setup(
         "Tracker": "https://github.com/N-Wouda/ALNS/issues",
         "Source": "https://github.com/N-Wouda/ALNS",
     },
-    packages=setuptools.find_packages(exclude=['examples']),
+    packages=setuptools.find_packages(exclude=['examples', 'docs']),
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",

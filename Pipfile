@@ -9,10 +9,14 @@ pytest-cov = ">=2.6.1"
 mypy = ">=0.670"
 codecov = "*"
 
+# Documentation
+sphinx = ">=3.0.0"
+
 # These are solely for work on the example notebooks, and not required for
 # the package itself.
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
+
 
 [packages]
 numpy = ">=1.15.2"

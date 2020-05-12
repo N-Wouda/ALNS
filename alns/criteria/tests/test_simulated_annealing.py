@@ -143,15 +143,15 @@ def test_accepts_generator_and_random_state():
     See also https://numpy.org/doc/1.18/reference/random/index.html#quick-start
     """
 
-    class Old:  # old RandomState interface
-        def random_sample(self):
+    class Old:  # old RandomState interface mock
+        def random_sample(self):  # pylint: disable=no-self-use
             return 0.5
 
     simulated_annealing = SimulatedAnnealing(2, 1, 1)
     assert_(simulated_annealing.accept(Old(), One(), One(), Zero()))
 
-    class New:  # new Generator interface
-        def random(self):
+    class New:  # new Generator interface mock
+        def random(self):  # pylint: disable=no-self-use
             return 0.5
 
     simulated_annealing = SimulatedAnnealing(2, 1, 1)

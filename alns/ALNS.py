@@ -11,8 +11,8 @@ from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics
 from .WeigthIndex import WeightIndex
 from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
-from .exceptions_warnings import OverwriteWarning
 from .select_operator import select_operator
+from .tools.warnings import OverwriteWarning
 
 
 class ALNS(CallbackMixin):
@@ -194,7 +194,6 @@ class ALNS(CallbackMixin):
 
             if collect_stats:
                 statistics.collect_objective(current.objective())
-
                 statistics.collect_destroy_operator(d_name, weight_idx)
                 statistics.collect_repair_operator(r_name, weight_idx)
 

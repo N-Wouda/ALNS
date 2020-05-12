@@ -1,0 +1,19 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = ">=4.2.0"
+pytest-cov = ">=2.6.1"
+mypy = ">=0.670"
+codecov = "*"
+
+# These are solely for work on the example notebooks, and not required for
+# the package itself.
+networkx = ">=2.4.0"
+tsplib95 = ">=0.7.0"
+
+[packages]
+numpy = ">=1.15.2"
+matplotlib = ">=2.2.0"

@@ -7,7 +7,6 @@ MODIFIER = ""
 
 VERSION = "{0}.{1}.{2}{3}".format(MAJOR, MINOR, MAINTENANCE, MODIFIER)
 
-
 # Long description is simply the README file
 with open("README.md", "r") as file:
     long_description = file.read()
@@ -43,5 +42,5 @@ setuptools.setup(
     python_requires='~=3.5',
     install_requires=[
         'numpy >= 1.15.2',
-        'matplotlib >=  2.2.0',
+        'matplotlib >= 2.2.0',
     ])

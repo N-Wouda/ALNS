@@ -1,10 +1,10 @@
 import numpy.random as rnd
 from numpy.testing import (assert_, assert_almost_equal, assert_equal,
-                           assert_raises, assert_no_warnings, assert_warns)
+                           assert_no_warnings, assert_raises, assert_warns)
 
 from alns import ALNS, State
 from alns.criteria import HillClimbing, SimulatedAnnealing
-from alns.exceptions_warnings import OverwriteWarning
+from alns.tools.warnings import OverwriteWarning
 from .states import One, Zero
 
 

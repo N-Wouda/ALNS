@@ -9,7 +9,8 @@ python:
 - 3.8
 
 install:
-- pip install -r requirements.txt
+  - pip install pipenv
+  - pipenv install --dev
 
 git:
   depth: 3
@@ -20,8 +21,8 @@ branches:       # since the master branch is the only one where PRs are
   - /^v\d+\.\d+(\.\d+)?(-\S*)?$/    # for release tags
 
 script:
-- pytest
-- mypy ./ || true
+- pipenv run pytest
+- pipenv run mypy ./ || true
 
 deploy:         # deploy to PyPI on tagged commits.
   provider: pypi

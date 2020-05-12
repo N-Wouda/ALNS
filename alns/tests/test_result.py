@@ -5,7 +5,7 @@ from numpy.testing import assert_, assert_raises
 
 from alns.Result import Result
 from alns.Statistics import Statistics
-from alns.exceptions_warnings import NotCollectedError
+from alns.tools.exceptions import NotCollectedError
 from .states import Sentinel
 
 try:

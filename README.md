@@ -16,7 +16,7 @@ pip install alns
 The `alns` package exposes two classes, `ALNS` and `State`. The first
 may be used to run the ALNS algorithm, the second may be subclassed to
 store a solution state - all it requires is to define an `objective`
-member function.
+member function, returning an objective value.
 
 The ALNS algorithm must be supplied with an acceptance criterion, to
 determine the acceptance of a new solution state at each iteration.

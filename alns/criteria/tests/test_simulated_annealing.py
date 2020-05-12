@@ -10,13 +10,13 @@ def test_raises_negative_parameters():
     Simulated annealing does not work with negative parameters, so those should
     not be accepted.
     """
-    with assert_raises(ValueError):         # start temperature cannot be
-        SimulatedAnnealing(-1, 1, 1)        # negative
+    with assert_raises(ValueError):  # start temperature cannot be
+        SimulatedAnnealing(-1, 1, 1)  # negative
 
-    with assert_raises(ValueError):         # nor can the end temperature
+    with assert_raises(ValueError):  # nor can the end temperature
         SimulatedAnnealing(1, -1, 1)
 
-    with assert_raises(ValueError):         # nor the updating step
+    with assert_raises(ValueError):  # nor the updating step
         SimulatedAnnealing(1, 1, -1)
 
 
@@ -28,7 +28,7 @@ def test_raises_explosive_step():
     with assert_raises(ValueError):
         SimulatedAnnealing(2, 1, 2, "exponential")
 
-    SimulatedAnnealing(2, 1, 1, "exponential")    # boundary should be fine
+    SimulatedAnnealing(2, 1, 1, "exponential")  # boundary should be fine
 
 
 def test_temperature_boundary():
@@ -48,7 +48,7 @@ def test_raises_start_smaller_than_end():
     with assert_raises(ValueError):
         SimulatedAnnealing(0.5, 1, 1)
 
-    SimulatedAnnealing(1, 1, 1)           # should not raise for equality
+    SimulatedAnnealing(1, 1, 1)  # should not raise for equality
 
 
 def test_does_not_raise():
@@ -134,3 +134,25 @@ def test_exponential_random_solutions():
     assert_(simulated_annealing.accept(state, Zero(), Zero(), One()))
     assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
 
+
+def test_accepts_generator_and_random_state():
+    """
+    Tests if SimulatedAnnealing works with both Generator and RandomState
+    randomness classes.
+
+    See also https://numpy.org/doc/1.18/reference/random/index.html#quick-start
+    """
+
+    class Old:  # old RandomState interface
+        def random_sample(self):
+            return 0.5
+
+    simulated_annealing = SimulatedAnnealing(2, 1, 1)
+    assert_(simulated_annealing.accept(Old(), One(), One(), Zero()))
+
+    class New:  # new Generator interface
+        def random(self):
+            return 0.5
+
+    simulated_annealing = SimulatedAnnealing(2, 1, 1)
+    assert_(simulated_annealing.accept(New(), One(), One(), Zero()))

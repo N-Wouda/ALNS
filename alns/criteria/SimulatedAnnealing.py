@@ -82,10 +82,8 @@ class SimulatedAnnealing(AcceptanceCriterion):
                                                              self.step,
                                                              self.method))
 
-        # TODO the following is in preparation of the new numpy Generator
-        #  interface, which deprecates random_sample() in favour of random().
-        #  ALNS does not yet formally support Generators, but unofficially it
-        #  should work in most cases.
+        # TODO deprecate RandomState in favour of Generator - which uses
+        #  random(), rather than random_sample().
         try:
             return probability >= rnd.random()
         except AttributeError:

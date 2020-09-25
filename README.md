@@ -51,7 +51,7 @@ how the ALNS library may be used. Of particular interest are,
 In case you have used this package in a published work, please consider
 citing it as
 
-> N.A. Wouda. 2019. A Python package for the adaptive large neighbourhood search metaheuristic. https://github.com/N-Wouda/ALNS.
+> Wouda, N.A. 2019. A Python package for the adaptive large neighbourhood search metaheuristic. https://github.com/N-Wouda/ALNS.
 
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.

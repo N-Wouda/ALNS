@@ -3,10 +3,10 @@ dist: xenial
 language: python
 
 python:
-- 3.5
-- 3.6
-- 3.7
-- 3.8
+  - 3.6
+  - 3.7
+  - 3.8
+  - 3.9
 
 install:
   - pip install pipenv
@@ -17,12 +17,12 @@ git:
 
 branches:       # since the master branch is the only one where PRs are
   only:         # merged in.
-  - master
-  - /^v\d+\.\d+(\.\d+)?(-\S*)?$/    # for release tags
+    - master
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/    # for release tags
 
 script:
-- pipenv run pytest
-- pipenv run mypy ./ || true
+  - pipenv run pytest
+  - pipenv run mypy ./ || true
 
 deploy:         # deploy to PyPI on tagged commits.
   provider: pypi
@@ -35,4 +35,4 @@ deploy:         # deploy to PyPI on tagged commits.
   skip_existing: true
 
 after_success:
-- codecov
+  - codecov

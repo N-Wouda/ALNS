@@ -1,8 +1,8 @@
 import setuptools
 
 MAJOR = 1
-MINOR = 2
-MAINTENANCE = 5
+MINOR = 3
+MAINTENANCE = 0
 MODIFIER = ""
 
 VERSION = "{0}.{1}.{2}{3}".format(MAJOR, MINOR, MAINTENANCE, MODIFIER)
@@ -29,17 +29,17 @@ setuptools.setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "Development Status :: 5 - Production/Stable",
         "Topic :: Software Development",
         "Topic :: Scientific/Engineering",
     ],
-    python_requires='~=3.5',
+    python_requires='~=3.6',
     install_requires=[
         'numpy >= 1.15.2',
         'matplotlib >= 2.2.0',

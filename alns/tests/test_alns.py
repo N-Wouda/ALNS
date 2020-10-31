@@ -42,6 +42,25 @@ class ValueState(State):
 
 # CALLBACKS --------------------------------------------------------------------
 
+def dummy_callback():
+    return None
+
+
+def test_overwrite_warns_on_best():
+    """
+    There can only be a single callback for each event point, so inserting two
+    (or more) should warn the previous callback for ``on_best`` is overwritten.
+    """
+    alns = get_alns_instance([lambda state, rnd: Zero()],
+                             [lambda state, rnd: Zero()])
+
+    with assert_no_warnings():  # first insert is fine..
+        alns.on_best(dummy_callback)
+
+    with assert_warns(OverwriteWarning):  # .. but second insert should warn
+        alns.on_best(dummy_callback)
+
+
 def test_on_best_is_called():
     """
     Tests if the callback is invoked when a new global best is found.
@@ -56,6 +75,7 @@ def test_on_best_is_called():
 
     result = alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 1)
     assert_equal(result.best_state.objective(), 10)
+
 
 # OPERATORS --------------------------------------------------------------------
 
@@ -77,7 +97,8 @@ def test_add_destroy_operator_name():
     Tests if adding a destroy operator without an explicit name correctly
     takes the function name instead.
     """
-    def destroy_operator():                 # placeholder
+
+    def destroy_operator():  # placeholder
         pass
 
     alns = ALNS()
@@ -107,7 +128,8 @@ def test_add_repair_operator_name():
     Tests if adding a repair operator without an explicit name correctly
     takes the function name instead.
     """
-    def repair_operator():                  # placeholder
+
+    def repair_operator():  # placeholder
         pass
 
     alns = ALNS()
@@ -270,7 +292,7 @@ def test_fixed_seed_outcomes():
     """
     outcomes = [0.01171, 0.00011, 0.01025]
 
-    for seed, desired in enumerate(outcomes):                   # idx is seed
+    for seed, desired in enumerate(outcomes):  # idx is seed
         alns = get_alns_instance(
             [lambda state, rnd: ValueState(rnd.random_sample())],
             [lambda state, rnd: None],

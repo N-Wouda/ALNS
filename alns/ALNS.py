@@ -4,18 +4,24 @@ from collections import OrderedDict
 import numpy as np
 import numpy.random as rnd
 
-from .CallbackFlag import CallbackFlag
-from .CallbackMixin import CallbackMixin
 from .Result import Result
 from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics
-from .WeigthIndex import WeightIndex
 from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
 from .select_operator import select_operator
 from .tools.warnings import OverwriteWarning
 
+# Weights
+_IS_BEST = 0
+_IS_BETTER = 1
+_IS_ACCEPTED = 2
+_IS_REJECTED = 3
 
-class ALNS(CallbackMixin):
+# Callbacks
+_ON_BEST = 0
+
+
+class ALNS:
 
     def __init__(self, rnd_state=rnd.RandomState()):
         """
@@ -41,6 +47,7 @@ class ALNS(CallbackMixin):
 
         self._destroy_operators = OrderedDict()
         self._repair_operators = OrderedDict()
+        self._callbacks = {}
 
         self._rnd_state = rnd_state
 
@@ -199,6 +206,25 @@ class ALNS(CallbackMixin):
 
         return Result(best, statistics if collect_stats else None)
 
+    def on_best(self, func):
+        """
+        Sets a callback function to be called when ALNS finds a new global best
+        solution state.
+
+        Parameters
+        ----------
+        func : callable
+            A function that should take a solution State as its first parameter,
+            and a numpy RandomState as its second (cf. the operator signature).
+            It should return a (new) solution State.
+
+        Warns
+        -----
+        OverwriteWarning
+            When a callback has already been set.
+        """
+        self._set_callback(_ON_BEST, func)
+
     @staticmethod
     def _add_operator(operators, operator, name=None):
         """
@@ -263,24 +289,24 @@ class ALNS(CallbackMixin):
         """
         if criterion.accept(self._rnd_state, best, current, candidate):
             if candidate.objective() < current.objective():
-                weight = WeightIndex.IS_BETTER
+                weight = _IS_BETTER
             else:
-                weight = WeightIndex.IS_ACCEPTED
+                weight = _IS_ACCEPTED
 
             current = candidate
         else:
-            weight = WeightIndex.IS_REJECTED
+            weight = _IS_REJECTED
 
         if candidate.objective() < best.objective():
             # Is a new global best, so we might want to do something to further
             # improve the solution.
-            if self.has_callback(CallbackFlag.ON_BEST):
-                callback = self.callback(CallbackFlag.ON_BEST)
+            if _ON_BEST in self._callbacks:
+                callback = self._callbacks[_ON_BEST]
                 candidate = callback(candidate, self._rnd_state)
 
             # Global best solution becomes the new starting point for further
             # iterations.
-            return candidate, candidate, WeightIndex.IS_BEST
+            return candidate, candidate, _IS_BEST
 
         # Best has not been updated if we get here, but the current state might
         # have (if the candidate was accepted).
@@ -308,3 +334,16 @@ class ALNS(CallbackMixin):
 
         if iterations < 0:
             raise ValueError("Negative number of iterations.")
+
+    def _set_callback(self, flag, func):
+        """
+        Sets the passed-in callback func for the passed-in flag. Warns if this
+        would overwrite an existing callback.
+        """
+        if flag in self._callbacks:
+            warnings.warn("A callback function has already been set for the"
+                          " `{0}' flag. This callback will now be replaced by"
+                          " the newly passed-in callback.".format(flag),
+                          OverwriteWarning)
+
+        self._callbacks[flag] = func

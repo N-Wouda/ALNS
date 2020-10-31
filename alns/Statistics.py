@@ -27,7 +27,7 @@ class Statistics:
         """
         Returns the destroy operator counts, as a dictionary of operator names
         to lists of counts. Such a list consists of four elements, one for
-        each value in `WeightIndex`, and counts the number of times that the
+        each possible outcome, and counts the number of times that the
         application of that operator resulted in such an outcome.
 
         Returns
@@ -42,7 +42,7 @@ class Statistics:
         """
         Returns the repair operator counts, as a dictionary of operator names
         to lists of counts. Such a list consists of four elements, one for
-        each value in `WeightIndex`, and counts the number of times that the
+        each possible outcome, and counts the number of times that the
         application of that operator resulted in such an outcome.
 
         Returns
@@ -75,8 +75,7 @@ class Statistics:
             Operator name. This was set when the operator was passed to the
             ALNS instance.
         weight_idx : int
-            Weight indices used for the various iteration outcomes. See also
-            the `WeightIndex` enum.
+            Weight indices used for the various iteration outcomes.
         """
         self._destroy_operator_counts[operator_name][weight_idx] += 1
 
@@ -92,7 +91,6 @@ class Statistics:
             Operator name. This was set when the operator was passed to the
             ALNS instance.
         weight_idx : int
-            Weight indices used for the various iteration outcomes. See also
-            the `WeightIndex` enum.
+            Weight indices used for the various iteration outcomes.
         """
         self._repair_operator_counts[operator_name][weight_idx] += 1

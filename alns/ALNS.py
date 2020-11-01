@@ -122,10 +122,10 @@ class ALNS:
         initial_solution : State
             The initial solution, as a State object.
         weights: array_like
-            A list of four positive elements, representing the weight updates
-            when the candidate solution results in a new global best (idx 0),
-            is better than the current solution (idx 1), the solution is
-            accepted (idx 2), or rejected (idx 3).
+            A list of four non-negative elements, representing the weight
+            updates when the candidate solution results in a new global best
+            (idx 0), is better than the current solution (idx 1), the solution
+            is accepted (idx 2), or rejected (idx 3).
         operator_decay : float
             The operator decay parameter, as a float in the unit interval,
             [0, 1] (inclusive).
@@ -323,8 +323,8 @@ class ALNS:
             raise ValueError("Operator decay parameter outside unit interval"
                              " is not understood.")
 
-        if any(weight <= 0 for weight in weights):
-            raise ValueError("Non-positive weights are not understood.")
+        if any(weight < 0 for weight in weights):
+            raise ValueError("Negative weights are not understood.")
 
         if len(weights) < 4:
             # More than four is not explicitly problematic, as we only use the

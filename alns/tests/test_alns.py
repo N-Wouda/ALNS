@@ -170,7 +170,7 @@ def test_raises_missing_destroy_operator():
     """
     Tests if the algorithm raises when no destroy operators have been set.
     """
-    alns = get_alns_instance([lambda state, rnd: None])
+    alns = get_alns_instance(repair_operators=[lambda state, rnd: None])
 
     with assert_raises(ValueError):
         alns.iterate(One(), [1, 1, 1, 1], 0.95, HillClimbing())
@@ -222,15 +222,12 @@ def test_raises_insufficient_weights():
         alns.iterate(One(), [1, 1, 1], .5, HillClimbing())
 
 
-def test_raises_non_positive_weights():
+def test_raises_negative_weights():
     """
-    The passed-in weights should all be strictly positive.
+    The passed-in weights should all be non-negative.
     """
     alns = get_alns_instance([lambda state, rnd: None],
                              [lambda state, rnd: None])
-
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 0, 1], .5, HillClimbing())
 
     with assert_raises(ValueError):
         alns.iterate(One(), [1, 1, -5, 1], .5, HillClimbing())

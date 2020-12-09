@@ -46,13 +46,6 @@ how the ALNS library may be used. Of particular interest are,
   180 beams over 165 distinct sizes to within 1.35% of optimality in
   only a very limited number of iterations.
 
-## Cite
-
-In case you have used this package in a published work, please consider
-citing it as
-
-> Wouda, N.A. 2019. A Python package for the adaptive large neighbourhood search metaheuristic. https://github.com/N-Wouda/ALNS.
-
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.
   Gendreau (Ed.), _Handbook of Metaheuristics_ (2 ed., pp. 399-420).

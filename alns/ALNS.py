@@ -7,6 +7,7 @@ import numpy.random as rnd
 from .Result import Result
 from .State import State  # pylint: disable=unused-import
 from .Statistics import Statistics
+from .Weights import Weights
 from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
 from .select_operator import select_operator
 from .tools.warnings import OverwriteWarning
@@ -16,9 +17,6 @@ _IS_BEST = 0
 _IS_BETTER = 1
 _IS_ACCEPTED = 2
 _IS_REJECTED = 3
-
-# Callbacks
-_ON_BEST = 0
 
 
 class ALNS:
@@ -47,7 +45,17 @@ class ALNS:
 
         self._destroy_operators = OrderedDict()
         self._repair_operators = OrderedDict()
-        self._callbacks = {}
+
+        # These are (optional) callbacks
+        self._on_best = None
+        self._after_iteration = None
+
+        # Current and best solutions
+        self._best = None
+        self._curr = None
+
+        # Operator weights
+        self._weights = None
 
         self._rnd_state = rnd_state
 
@@ -109,7 +117,7 @@ class ALNS:
         """
         self._add_operator(self._repair_operators, operator, name)
 
-    def iterate(self, initial_solution, weights, operator_decay, criterion,
+    def iterate(self, initial_solution, weights, op_decay, crit,
                 iterations=10000, collect_stats=True):
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
@@ -126,10 +134,10 @@ class ALNS:
             updates when the candidate solution results in a new global best
             (idx 0), is better than the current solution (idx 1), the solution
             is accepted (idx 2), or rejected (idx 3).
-        operator_decay : float
+        op_decay : float
             The operator decay parameter, as a float in the unit interval,
             [0, 1] (inclusive).
-        criterion : AcceptanceCriterion
+        crit : AcceptanceCriterion
             The acceptance criterion to use for candidate states. See also
             the `alns.criteria` module for an overview.
         iterations : int
@@ -161,50 +169,48 @@ class ALNS:
         """
         weights = np.asarray(weights, dtype=np.float16)
 
-        self._validate_parameters(weights, operator_decay, iterations)
+        self._validate_parameters(weights, op_decay, iterations)
 
-        current = best = initial_solution
+        self._curr = self._best = initial_solution
+        self._weights = Weights(len(self.destroy_operators),
+                                len(self.repair_operators))
 
-        d_weights = np.ones(len(self.destroy_operators), dtype=np.float16)
-        r_weights = np.ones(len(self.repair_operators), dtype=np.float16)
-
-        statistics = Statistics()
+        stats = Statistics()
 
         if collect_stats:
-            statistics.collect_objective(initial_solution.objective())
+            stats.collect_objective(initial_solution.objective())
 
         for iteration in range(iterations):
-            d_idx = select_operator(self.destroy_operators, d_weights,
+            d_idx = select_operator(self.destroy_operators,
+                                    self._weights.d_weights,
                                     self._rnd_state)
 
-            r_idx = select_operator(self.repair_operators, r_weights,
+            r_idx = select_operator(self.repair_operators,
+                                    self._weights.r_weights,
                                     self._rnd_state)
 
             d_name, d_operator = self.destroy_operators[d_idx]
-            destroyed = d_operator(current, self._rnd_state)
+            destroyed = d_operator(self._curr, self._rnd_state)
 
             r_name, r_operator = self.repair_operators[r_idx]
-            candidate = r_operator(destroyed, self._rnd_state)
+            cand = r_operator(destroyed, self._rnd_state)
 
-            best, current, weight_idx = self._consider_candidate(best,
-                                                                 current,
-                                                                 candidate,
-                                                                 criterion)
+            self._best, self._curr, w_idx = self._consider_candidate(cand, crit)
 
             # The weights are updated as convex combinations of the current
             # weight and the update parameter. See eq. (2), p. 12.
-            d_weights[d_idx] *= operator_decay
-            d_weights[d_idx] += (1 - operator_decay) * weights[weight_idx]
-
-            r_weights[r_idx] *= operator_decay
-            r_weights[r_idx] += (1 - operator_decay) * weights[weight_idx]
+            self._weights.update_destroy(d_idx, op_decay, weights[w_idx])
+            self._weights.update_repair(r_idx, op_decay, weights[w_idx])
 
             if collect_stats:
-                statistics.collect_objective(current.objective())
-                statistics.collect_destroy_operator(d_name, weight_idx)
-                statistics.collect_repair_operator(r_name, weight_idx)
+                stats.collect_objective(self._curr.objective())
+                stats.collect_destroy_operator(d_name, w_idx)
+                stats.collect_repair_operator(r_name, w_idx)
 
-        return Result(best, statistics if collect_stats else None)
+            if self._after_iteration:
+                self._after_iteration()
+
+        return Result(self._best, stats if collect_stats else None)
 
     def on_best(self, func):
         """
@@ -223,7 +229,17 @@ class ALNS:
         OverwriteWarning
             When a callback has already been set.
         """
-        self._set_callback(_ON_BEST, func)
+        if self._on_best:
+            warnings.warn("A callback function has already been set to be "
+                          "performed when a new best solution has been found."
+                          " This callback will now be replaced by the newly"
+                          " passed-in callback.",
+                          OverwriteWarning)
+
+        self._on_best = func
+
+    def after_iterations(self, func):
+        pass
 
     @staticmethod
     def _add_operator(operators, operator, name=None):
@@ -260,7 +276,7 @@ class ALNS:
 
         operators[name] = operator
 
-    def _consider_candidate(self, best, current, candidate, criterion):
+    def _consider_candidate(self, candidate, criterion):
         """
         Considers the candidate solution by comparing it against the best and
         current solutions. Returns the new solution when it is better or
@@ -269,10 +285,6 @@ class ALNS:
 
         Parameters
         ----------
-        best : State
-            Best solution encountered so far.
-        current : State
-            Current solution.
         candidate : State
             Candidate solution.
         criterion : AcceptanceCriterion
@@ -287,30 +299,25 @@ class ALNS:
         int
             The weight index to use when updating the operator weights.
         """
-        if criterion.accept(self._rnd_state, best, current, candidate):
-            if candidate.objective() < current.objective():
-                weight = _IS_BETTER
-            else:
-                weight = _IS_ACCEPTED
+        weight = _IS_REJECTED
+
+        if criterion.accept(self._rnd_state, self._best, self._curr, candidate):
+            weight = (_IS_BETTER
+                      if candidate.objective() < self._curr.objective()
+                      else _IS_ACCEPTED)
 
             current = candidate
-        else:
-            weight = _IS_REJECTED
 
-        if candidate.objective() < best.objective():
-            # Is a new global best, so we might want to do something to further
-            # improve the solution.
-            if _ON_BEST in self._callbacks:
-                callback = self._callbacks[_ON_BEST]
-                candidate = callback(candidate, self._rnd_state)
+        if candidate.objective() < self._best.objective():  # is new best?
+            if self._on_best:
+                candidate = self._on_best(candidate, self._rnd_state)
 
-            # Global best solution becomes the new starting point for further
-            # iterations.
+            # New best solution becomes starting point in next iteration.
             return candidate, candidate, _IS_BEST
 
         # Best has not been updated if we get here, but the current state might
         # have (if the candidate was accepted).
-        return best, current, weight
+        return self._best, self._curr, weight
 
     def _validate_parameters(self, weights, operator_decay, iterations):
         """
@@ -334,16 +341,3 @@ class ALNS:
 
         if iterations < 0:
             raise ValueError("Negative number of iterations.")
-
-    def _set_callback(self, flag, func):
-        """
-        Sets the passed-in callback func for the passed-in flag. Warns if this
-        would overwrite an existing callback.
-        """
-        if flag in self._callbacks:
-            warnings.warn("A callback function has already been set for the"
-                          " `{0}' flag. This callback will now be replaced by"
-                          " the newly passed-in callback.".format(flag),
-                          OverwriteWarning)
-
-        self._callbacks[flag] = func

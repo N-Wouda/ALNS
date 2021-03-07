@@ -1,43 +1,44 @@
+from typing import Any, Dict, List, Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.pyplot import Axes, Figure  # pylint: disable=unused-import
+from matplotlib.pyplot import Axes, Figure
 
-from .State import State  # pylint: disable=unused-import
-from .Statistics import Statistics  # pylint: disable=unused-import
+from .State import State
+from .Statistics import Statistics
 from .tools.exceptions import NotCollectedError
 
 
 class Result:
 
-    def __init__(self, best, statistics=None):
+    def __init__(self, best: State, statistics: Optional[Statistics] = None):
         """
         Stores ALNS results. An instance of this class is returned once the
         algorithm completes.
 
         Parameters
         ----------
-        best : State
+        best
             The best state observed during the entire iteration.
-        statistics : Statistics
+        statistics
             Statistics optionally collected during iteration.
         """
         self._best = best
         self._statistics = statistics
 
     @property
-    def best_state(self):
+    def best_state(self) -> State:
         """
         The best state observed during the entire iteration.
 
         Returns
         -------
-        State
-            The associated State object
+        The associated State object.
         """
         return self._best
 
     @property
-    def statistics(self):
+    def statistics(self) -> Statistics:
         """
         The statistics object populated during iteration.
 
@@ -49,8 +50,7 @@ class Result:
 
         Returns
         -------
-        Statistics
-            The statistics object.
+        The Statistics object.
         """
         if self._statistics is None:
             raise NotCollectedError("Statistics were not collected during "
@@ -58,18 +58,21 @@ class Result:
 
         return self._statistics
 
-    def plot_objectives(self, ax=None, title=None, **kwargs):
+    def plot_objectives(self,
+                        ax: Optional[Axes] = None,
+                        title: Optional[str] = None,
+                        **kwargs: Dict[str, Any]):
         """
         Plots the collected objective values at each iteration.
 
         Parameters
         ----------
-        ax : Axes
+        ax
             Optional axes argument. If not passed, a new figure and axes are
             constructed.
-        title : str
+        title
             Optional title argument. When not passed, a default is set.
-        kwargs : dict
+        kwargs
             Optional arguments passed to ``ax.plot``.
         """
         if ax is None:
@@ -91,19 +94,22 @@ class Result:
 
         plt.draw_if_interactive()
 
-    def plot_operator_counts(self, figure=None, title=None, legend=None,
-                             **kwargs):
+    def plot_operator_counts(self,
+                             figure: Optional[Figure] = None,
+                             title: Optional[str] = None,
+                             legend: Optional[List[str]] = None,
+                             **kwargs: Dict[str, Any]):
         """
         Plots an overview of the destroy and repair operators' performance.
 
         Parameters
         ----------
-        figure : Figure
+        figure
             Optional figure. If not passed, a new figure is constructed, and
             some default margins are set.
-        title : str
+        title
             Optional figure title. When not passed, no title is set.
-        legend : list
+        legend
             Optional legend entries. When passed, this should be a list of at
             most four strings. The first string describes the number of times
             a best solution was found, the second a better, the third a solution
@@ -112,7 +118,7 @@ class Result:
             than four strings are passed, only the first len(legend) count types
             are plotted. When not passed, a sensible default is set and all
             counts are shown.
-        kwargs : dict
+        kwargs
             Optional arguments passed to each call of ``ax.barh``.
 
         Raises

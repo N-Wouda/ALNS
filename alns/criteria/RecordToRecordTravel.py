@@ -4,7 +4,11 @@ from .update import update
 
 class RecordToRecordTravel(AcceptanceCriterion):
 
-    def __init__(self, start_threshold, end_threshold, step, method="linear"):
+    def __init__(self,
+                 start_threshold: float,
+                 end_threshold: float,
+                 step: float,
+                 method: str = "linear"):
         """
         Record-to-record travel, using an updating threshold. The threshold is
         updated as,
@@ -17,13 +21,13 @@ class RecordToRecordTravel(AcceptanceCriterion):
 
         Parameters
         ----------
-        start_threshold : float
+        start_threshold
             The initial threshold.
-        end_threshold : float
+        end_threshold
             The final threshold.
-        step : float
+        step
             The updating step.
-        method : str
+        method
             The updating method, one of {'linear', 'exponential'}. Default
             'linear'.
 
@@ -55,19 +59,19 @@ class RecordToRecordTravel(AcceptanceCriterion):
         self._threshold = start_threshold
 
     @property
-    def start_threshold(self):
+    def start_threshold(self) -> float:
         return self._start_threshold
 
     @property
-    def end_threshold(self):
+    def end_threshold(self) -> float:
         return self._end_threshold
 
     @property
-    def step(self):
+    def step(self) -> float:
         return self._step
 
     @property
-    def method(self):
+    def method(self) -> str:
         return self._method
 
     def accept(self, rnd, best, current, candidate):

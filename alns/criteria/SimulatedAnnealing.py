@@ -6,8 +6,11 @@ from .update import update
 
 class SimulatedAnnealing(AcceptanceCriterion):
 
-    def __init__(self, start_temperature, end_temperature, step,
-                 method="linear"):
+    def __init__(self,
+                 start_temperature: float,
+                 end_temperature: float,
+                 step: float,
+                 method: str = "exponential"):
         """
         Simulated annealing, using an updating temperature. The temperature is
         updated as,
@@ -20,15 +23,15 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
         Parameters
         ----------
-        start_temperature : float
+        start_temperature
             The initial temperature.
-        end_temperature : float
+        end_temperature
             The final temperature.
-        step : float
+        step
             The updating step.
-        method : str
+        method
             The updating method, one of {'linear', 'exponential'}. Default
-            'linear'.
+            'exponential'.
 
         References
         ----------
@@ -57,19 +60,19 @@ class SimulatedAnnealing(AcceptanceCriterion):
         self._temperature = start_temperature
 
     @property
-    def start_temperature(self):
+    def start_temperature(self) -> float:
         return self._start_temperature
 
     @property
-    def end_temperature(self):
+    def end_temperature(self) -> float:
         return self._end_temperature
 
     @property
-    def step(self):
+    def step(self) -> float:
         return self._step
 
     @property
-    def method(self):
+    def method(self) -> str:
         return self._method
 
     def accept(self, rnd, best, current, candidate):
@@ -88,3 +91,9 @@ class SimulatedAnnealing(AcceptanceCriterion):
             return probability >= rnd.random()
         except AttributeError:
             return probability >= rnd.random_sample()
+
+    def autofit(self):
+        """
+        TODO autofit (see issue #35)
+        """
+        pass

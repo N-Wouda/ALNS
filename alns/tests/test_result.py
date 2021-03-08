@@ -5,7 +5,6 @@ from numpy.testing import assert_, assert_raises
 
 from alns.Result import Result
 from alns.Statistics import Statistics
-from alns.tools.exceptions import NotCollectedError
 from .states import Sentinel
 
 try:
@@ -123,20 +122,6 @@ def test_result_state():
     best = Sentinel()
 
     assert_(get_result(best).best_state is best)
-
-
-def test_raises_missing_statistics():
-    """
-    Accessing the statistics object when no statistics have been passed-in
-    should raise.
-    """
-    result = Result(Sentinel())
-
-    with assert_raises(NotCollectedError):
-        result.statistics  # pylint: disable=pointless-statement
-
-    result = Result(Sentinel(), Statistics())
-    result.statistics  # pylint: disable=pointless-statement
 
 
 @pytest.mark.matplotlib

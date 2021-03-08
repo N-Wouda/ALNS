@@ -36,11 +36,11 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
         References
         ----------
-        - Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-          criteria for the adaptive large neighbourhood search metaheuristic.
-          *Journal of Heuristics* (2018) 24 (5): 783–815.
-        - Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
-          by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
+        [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+             criteria for the adaptive large neighbourhood search metaheuristic.
+             *Journal of Heuristics* (2018) 24 (5): 783–815.
+        [2]: Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
+             by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
         """
         if start_temperature <= 0 or end_temperature <= 0 or step < 0:
             raise ValueError("Temperatures must be strictly positive.")
@@ -76,7 +76,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
     def method(self) -> str:
         return self._method
 
-    def accept(self, rnd, best, current, candidate):
+    def __call__(self, rnd, best, current, candidate):
         probability = np.exp((current.objective() - candidate.objective())
                              / self._temperature)
 
@@ -106,7 +106,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
         that the temperature reaches 1 in ``num_iters`` iterations.
 
         This procedure was originally proposed by Ropke and Pisinger (2006),
-        and has seen some use since.
+        and has seen some use since - i.a. Roozbeh et al. (2018).
 
         Parameters
         ----------
@@ -125,7 +125,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
         Raises
         ------
         ValueError
-            When ``worse`` not in [0, 1] or when ``accept_prob``not in (0, 1].
+            When ``worse`` not in [0, 1] or when ``accept_prob``not in (0, 1).
 
         Returns
         -------
@@ -133,20 +133,25 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
         References
         ----------
-        - Ropke, Stefan, and David Pisinger. 2006. "An Adaptive Large
-          Neighborhood Search Heuristic for the Pickup and Delivery Problem with
-          Time Windows." _Transportation Science_ 40 (4): 455-72.
+        [1]: Ropke, Stefan, and David Pisinger. 2006. "An Adaptive Large
+             Neighborhood Search Heuristic for the Pickup and Delivery Problem
+             with Time Windows." _Transportation Science_ 40 (4): 455 - 472.
+        [2]: Roozbeh et al. 2018. "An Adaptive Large Neighbourhood Search for
+             asset protection during escaped wildfires." _Computers & Operations
+             Research_ 97: 125 - 134.
         """
         if not (0 <= worse <= 1):
             raise ValueError("worse outside [0, 1] not understood.")
 
-        if not (0 < accept_prob <= 1):
-            raise ValueError("accept_prob outside (0, 1] not understood.")
+        if not (0 < accept_prob < 1):
+            raise ValueError("accept_prob outside (0, 1) not understood.")
 
         if num_iters < 0:
             raise ValueError("Negative number of iterations not understood.")
 
-        start_temp = worse * init_sol.objective() / np.log(accept_prob)
+        # Depending on the objective values, this expression might be negative.
+        # In that case we need the absolute value.
+        start_temp = np.abs(worse * init_sol.objective() / np.log(accept_prob))
         step = (1 / start_temp) ** (1 / num_iters)
 
         return cls(start_temp, 1, step, method="exponential")

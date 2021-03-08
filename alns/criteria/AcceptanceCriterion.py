@@ -11,11 +11,11 @@ class AcceptanceCriterion(ABC):
     """
 
     @abstractmethod
-    def accept(self,
-               rnd: RandomState,
-               best: State,
-               current: State,
-               candidate: State) -> bool:
+    def __call__(self,
+                 rnd: RandomState,
+                 best: State,
+                 current: State,
+                 candidate: State) -> bool:
         """
         Determines whether to accept the proposed, candidate solution based on
         this acceptance criterion and the other solution states.

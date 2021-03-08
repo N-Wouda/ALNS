@@ -33,12 +33,12 @@ class RecordToRecordTravel(AcceptanceCriterion):
 
         References
         ----------
-        - Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-          criteria for the adaptive large neighbourhood search metaheuristic.
-          *Journal of Heuristics* (2018) 24 (5): 783–815.
-        - Dueck, G., Scheuer, T. Threshold accepting: A general purpose
-          optimization algorithm appearing superior to simulated annealing.
-          *Journal of Computational Physics* (1990) 90 (1): 161-175.
+        [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+             criteria for the adaptive large neighbourhood search metaheuristic.
+             *Journal of Heuristics* (2018) 24 (5): 783–815.
+        [2]: Dueck, G., Scheuer, T. Threshold accepting: A general purpose
+             optimization algorithm appearing superior to simulated annealing.
+             *Journal of Computational Physics* (1990) 90 (1): 161-175.
         """
         if start_threshold < 0 or end_threshold < 0 or step < 0:
             raise ValueError("Thresholds must be positive.")
@@ -74,7 +74,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
     def method(self) -> str:
         return self._method
 
-    def accept(self, rnd, best, current, candidate):
+    def __call__(self, rnd, best, current, candidate):
         # This follows from the paper by Dueck and Scheueur (1990), p. 162.
         result = (candidate.objective() - best.objective()) <= self._threshold
 

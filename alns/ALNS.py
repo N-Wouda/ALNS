@@ -36,9 +36,9 @@ class ALNS:
 
         References
         ----------
-        - Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In M.
-          Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399-420).
-          Springer.
+        [1]: Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In
+             M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
+             - 420). Springer.
         """
         self._destroy_operators = OrderedDict()
         self._repair_operators = OrderedDict()
@@ -78,7 +78,8 @@ class ALNS:
         return list(self._repair_operators.items())
 
     def add_destroy_operator(self,
-                             operator: Callable[[State, rnd.RandomState], State],
+                             operator: Callable[
+                                 [State, rnd.RandomState], State],
                              name: Optional[str] = None):
         """
         Adds a destroy operator to the heuristic instance.
@@ -116,9 +117,8 @@ class ALNS:
     def iterate(self,
                 init_sol: State,
                 weight_scheme: WeightScheme,
-                crit: AcceptanceCriterion,
-                iters: int = 10_000,
-                collect_stats: bool = True) -> Result:
+                crit: Callable[[rnd.RandomState, State, State, State], bool],
+                iters: int = 10_000) -> Result:
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -133,12 +133,9 @@ class ALNS:
             TODO
         crit
             The acceptance criterion to use for candidate states. See also
-            the `alns.criteria` module for an overview.
+            the ``alns.criteria`` module for an overview.
         iters
-            The number of iterations. Default 10000.
-        collect_stats
-            Should statistics be collected during iteration? Default True, but
-            may be turned off for long runs to reduce memory consumption.
+            The number of iterations. Default 10_000.
 
         Raises
         ------
@@ -169,30 +166,28 @@ class ALNS:
         self._curr = self._best = init_sol
 
         stats = Statistics()
-
-        if collect_stats:
-            stats.collect_objective(init_sol.objective())
+        stats.collect_objective(init_sol.objective())
 
         for iteration in range(iters):
-            d_idx = weight_scheme.select_destroy_operator(self._rnd_state)
-            d_name, d_operator = self.destroy_operators[d_idx]
-            destroyed = d_operator(self._curr, self._rnd_state)
+            weight_scheme.at_iteration_start(iteration, iters)
 
-            r_idx = weight_scheme.select_repair_operator(self._rnd_state)
+            d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)
+
+            d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
+
+            destroyed = d_operator(self._curr, self._rnd_state)
             cand = r_operator(destroyed, self._rnd_state)
 
             self._best, self._curr, w_idx = self._consider_candidate(cand, crit)
 
-            weight_scheme.update_destroy_weight(d_idx)
-            weight_scheme.update_repair_weight(r_idx)
+            weight_scheme.update_weights(d_idx, r_idx, w_idx)
 
-            if collect_stats:
-                stats.collect_objective(self._curr.objective())
-                stats.collect_destroy_operator(d_name, w_idx)
-                stats.collect_repair_operator(r_name, w_idx)
+            stats.collect_objective(self._curr.objective())
+            stats.collect_destroy_operator(d_name, w_idx)
+            stats.collect_repair_operator(r_name, w_idx)
 
-        return Result(self._best, stats if collect_stats else None)
+        return Result(self._best, stats)
 
     def on_best(self, func: Callable[[State, rnd.RandomState], State]):
         """
@@ -280,7 +275,7 @@ class ALNS:
         """
         weight = _IS_REJECTED
 
-        if crit.accept(self._rnd_state, self._best, self._curr, cand):
+        if crit(self._rnd_state, self._best, self._curr, cand):
             weight = (_IS_BETTER
                       if cand.objective() < self._curr.objective()
                       else _IS_ACCEPTED)

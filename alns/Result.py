@@ -6,7 +6,6 @@ from matplotlib.pyplot import Axes, Figure
 
 from .State import State
 from .Statistics import Statistics
-from .tools.exceptions import NotCollectedError
 
 
 class Result:
@@ -30,10 +29,6 @@ class Result:
     def best_state(self) -> State:
         """
         The best state observed during the entire iteration.
-
-        Returns
-        -------
-        The associated State object.
         """
         return self._best
 
@@ -41,21 +36,7 @@ class Result:
     def statistics(self) -> Statistics:
         """
         The statistics object populated during iteration.
-
-        Raises
-        ------
-        NotCollectedError
-            When statistics were not collected during iteration. This may be
-            remedied by setting the appropriate flag.
-
-        Returns
-        -------
-        The Statistics object.
         """
-        if self._statistics is None:
-            raise NotCollectedError("Statistics were not collected during "
-                                    "iteration.")
-
         return self._statistics
 
     def plot_objectives(self,

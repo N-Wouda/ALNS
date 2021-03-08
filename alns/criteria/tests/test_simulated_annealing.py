@@ -1,3 +1,6 @@
+from types import SimpleNamespace
+
+import numpy as np
 import numpy.random as rnd
 from numpy.testing import (assert_, assert_almost_equal, assert_equal,
                            assert_raises)
@@ -87,11 +90,7 @@ def test_end_temperature(end: float):
 def test_accepts_better():
     for _ in range(1, 100):
         simulated_annealing = SimulatedAnnealing(2, 1, 1)
-
-        assert_(simulated_annealing.accept(rnd.RandomState(),
-                                           One(),
-                                           Zero(),
-                                           Zero()))
+        assert_(simulated_annealing(rnd.RandomState(), One(), Zero(), Zero()))
 
 
 def test_accepts_equal():
@@ -100,10 +99,7 @@ def test_accepts_equal():
     for _ in range(100):
         # This results in an acceptance probability of exp{0}, that is, one.
         # Thus, the candidate state should always be accepted.
-        assert_(simulated_annealing.accept(rnd.RandomState(),
-                                           One(),
-                                           One(),
-                                           One()))
+        assert_(simulated_annealing(rnd.RandomState(), One(), One(), One()))
 
 
 def test_linear_random_solutions():
@@ -119,8 +115,8 @@ def test_linear_random_solutions():
     # respectively. The acceptance probability is 0.61 first, so the first
     # should be accepted (0.61 > 0.55). Thereafter, it drops to 0.37, so the
     # second should not (0.37 < 0.72).
-    assert_(simulated_annealing.accept(state, Zero(), Zero(), One()))
-    assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
+    assert_(simulated_annealing(state, Zero(), Zero(), One()))
+    assert_(not simulated_annealing(state, Zero(), Zero(), One()))
 
 
 def test_exponential_random_solutions():
@@ -133,8 +129,8 @@ def test_exponential_random_solutions():
 
     state = rnd.RandomState(0)
 
-    assert_(simulated_annealing.accept(state, Zero(), Zero(), One()))
-    assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
+    assert_(simulated_annealing(state, Zero(), Zero(), One()))
+    assert_(not simulated_annealing(state, Zero(), Zero(), One()))
 
 
 def test_accepts_generator_and_random_state():
@@ -150,23 +146,24 @@ def test_accepts_generator_and_random_state():
             return 0.5
 
     simulated_annealing = SimulatedAnnealing(2, 1, 1)
-    assert_(simulated_annealing.accept(Old(), One(), One(), Zero()))
+    assert_(simulated_annealing(Old(), One(), One(), Zero()))
 
     class New:  # new Generator interface mock
         def random(self):  # pylint: disable=no-self-use
             return 0.5
 
     simulated_annealing = SimulatedAnnealing(2, 1, 1)
-    assert_(simulated_annealing.accept(New(), One(), One(), Zero()))
+    assert_(simulated_annealing(New(), One(), One(), Zero()))
 
 
 @mark.parametrize("worse,accept_prob,iters",
                   [(1, 0, 10),  # zero accept prob
                    (1, 1.2, 10),  # prob outside unit interval
+                   (1, 1, 10),  # unit accept prob
                    (-1, 0.5, 10),  # negative worse
                    (0, -1, 10),  # negative prob
                    (1.5, 0.5, 10),  # worse outside unit interval
-                   (1, 1, -10)])  # negative number of iterations
+                   (1, .9, -10)])  # negative number of iterations
 def test_autofit_raises_for_invalid_inputs(worse: float,
                                            accept_prob: float,
                                            iters: int):
@@ -175,12 +172,29 @@ def test_autofit_raises_for_invalid_inputs(worse: float,
 
 
 @mark.parametrize("worse,accept_prob,iters",
-                  [])
+                  [(1, .9, 1),
+                   (.5, .05, 1)])
 def test_autofit_on_several_examples(worse: float,
                                      accept_prob: float,
                                      iters: int):
-    sa = SimulatedAnnealing.autofit(One(), worse, accept_prob, iters)
+    init = SimpleNamespace(objective=lambda: 1_000)
 
-    assert_almost_equal()
-    assert_almost_equal()
-    assert_almost_equal()
+    # We have:
+    # prob = exp{(f^i - f^c) / T},
+    # where T is start temp, f^i is init sol objective, and f^c is the candidate
+    # solution objective. We also have that f^c is at worst (1 - worst) f^i.
+    # Substituting and solving for T, we then find:
+    # T = worst * f^i / ln(p).
+    # We take the absolute value because we want a positive temperature.
+    sa_start = np.abs(worse * init.objective() / np.log(accept_prob))
+    sa_end = 1
+
+    # end = r ** iters * start, so r = (end / start) ** (1 / iters).
+    sa_step = (sa_end / sa_start) ** (1 / iters)
+
+    sa = SimulatedAnnealing.autofit(init, worse, accept_prob, iters)
+
+    assert_almost_equal(sa.start_temperature, sa_start)
+    assert_almost_equal(sa.end_temperature, sa_end)
+    assert_almost_equal(sa.step, sa_step)
+    assert_equal(sa.method, "exponential")

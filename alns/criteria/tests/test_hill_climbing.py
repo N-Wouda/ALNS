@@ -10,7 +10,7 @@ def test_accepts_better():
     Tests if the hill climbing method accepts a better solution.
     """
     hill_climbing = HillClimbing()
-    assert_(hill_climbing.accept(rnd.RandomState(), One(), One(), Zero()))
+    assert_(hill_climbing(rnd.RandomState(), One(), One(), Zero()))
 
 
 def test_rejects_worse():
@@ -18,7 +18,7 @@ def test_rejects_worse():
     Tests if the hill climbing method accepts a worse solution.
     """
     hill_climbing = HillClimbing()
-    assert_(not hill_climbing.accept(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(not hill_climbing(rnd.RandomState(), Zero(), Zero(), One()))
 
 
 def test_accepts_equal():
@@ -27,4 +27,4 @@ def test_accepts_equal():
     same objective value.
     """
     hill_climbing = HillClimbing()
-    assert_(hill_climbing.accept(rnd.RandomState(), Zero(), Zero(), Zero()))
+    assert_(hill_climbing(rnd.RandomState(), Zero(), Zero(), Zero()))

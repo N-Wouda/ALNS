@@ -130,7 +130,8 @@ class ALNS:
         init_sol
             The initial solution, as a State object.
         weight_scheme
-            TODO
+            The weight scheme to use for updating the (adaptive) weights. See
+            also the ``alns.weight_schemes`` module for an overview.
         crit
             The acceptance criterion to use for candidate states. See also
             the ``alns.criteria`` module for an overview.

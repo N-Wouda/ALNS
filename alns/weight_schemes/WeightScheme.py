@@ -7,7 +7,7 @@ from numpy.random import RandomState
 
 class WeightScheme(ABC):
     """
-    TODO
+    Base class from which to implement a weight scheme.
     """
 
     def __init__(self, weights: List[float], num_destroy: int, num_repair: int):

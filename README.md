@@ -18,11 +18,25 @@ may be used to run the ALNS algorithm, the second may be subclassed to
 store a solution state - all it requires is to define an `objective`
 member function, returning an objective value.
 
-The ALNS algorithm must be supplied with an acceptance criterion, to
-determine the acceptance of a new solution state at each iteration.
-An overview of common acceptance criteria is given in [Santini et al.
-(2018)][3]. Several have already been implemented for you, in
-`alns.criteria`,
+The ALNS algorithm must be supplied with a _weight scheme_ and an _acceptance
+criterion_.
+
+### Weight scheme
+The weight scheme determines how to select destroy and repair operators in each
+iteration of the ALNS algorithm. Several have already been implemented for you,
+in `alns.weight_schemes`:
+
+- `ConvexWeights`. TODO
+- `SegmentedWeights`. TODO 
+
+Each weight scheme inherites from `WeightScheme`, which may be used to write 
+your own.
+
+### Acceptance criterion
+The acceptance criterion determines the acceptance of a new solution state at
+each iteration. An overview of common acceptance criteria is given in
+[Santini et al. (2018)][3]. Several have already been implemented for you, in
+`alns.criteria`:
 
 - `HillClimbing`. The simplest acceptance criterion, hill-climbing
   solely accepts solutions improving the objective value.
@@ -37,7 +51,7 @@ be used to write your own.
 
 ### Examples
 The `examples/` directory features some example notebooks showcasing
-how the ALNS library may be used. Of particular interest are,
+how the ALNS library may be used. These include:
 
 - The travelling salesman problem (TSP), [here][2]. We solve an
   instance of 131 cities to within 2.1% of optimality, using simple
@@ -45,6 +59,11 @@ how the ALNS library may be used. Of particular interest are,
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with
   180 beams over 165 distinct sizes to within 1.35% of optimality in
   only a very limited number of iterations.
+
+Finally, the weight schemes and acceptance criteria notebook gives an overview
+of various options available in the `alns` package. This is a good starting 
+point to using the different schemes and criteria yourself. It is available 
+[here][5].
 
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.
@@ -58,3 +77,4 @@ how the ALNS library may be used. Of particular interest are,
 [2]: https://github.com/N-Wouda/ALNS/blob/master/examples/travelling_salesman_problem.ipynb
 [3]: https://link.springer.com/article/10.1007%2Fs10732-018-9377-x
 [4]: https://github.com/N-Wouda/ALNS/blob/master/examples/cutting_stock_problem.ipynb
+[5]: https://github.com/N-Wouda/ALNS/blob/master/examples/weight_schemes_acceptance_criteria.ipynb

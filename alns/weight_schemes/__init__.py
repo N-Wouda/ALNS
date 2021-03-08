@@ -1,3 +1,3 @@
-from .ConvexWeights import ConvexWeights
+from .SimpleWeights import SimpleWeights
 from .SegmentedWeights import SegmentedWeights
 from .WeightScheme import WeightScheme

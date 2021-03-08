@@ -168,31 +168,29 @@ def test_autofit_raises_for_invalid_inputs(worse: float,
                                            accept_prob: float,
                                            iters: int):
     with assert_raises(ValueError):
-        SimulatedAnnealing.autofit(One(), worse, accept_prob, iters)
+        SimulatedAnnealing.autofit(1., worse, accept_prob, iters)
 
 
-@mark.parametrize("worse,accept_prob,iters",
-                  [(1, .9, 1),
-                   (.5, .05, 1)])
-def test_autofit_on_several_examples(worse: float,
+@mark.parametrize("init_obj,worse,accept_prob,iters",
+                  [(1_000, 1, .9, 1),
+                   (1_000, .5, .05, 1)])
+def test_autofit_on_several_examples(init_obj: float,
+                                     worse: float,
                                      accept_prob: float,
                                      iters: int):
-    init = SimpleNamespace(objective=lambda: 1_000)
-
     # We have:
-    # prob = exp{(f^i - f^c) / T},
+    # prob = exp{-(f^c - f^i) / T},
     # where T is start temp, f^i is init sol objective, and f^c is the candidate
-    # solution objective. We also have that f^c is at worst (1 - worst) f^i.
+    # solution objective. We also have that f^c is at worst (1 + worse) f^i.
     # Substituting and solving for T, we then find:
-    # T = worst * f^i / ln(p).
-    # We take the absolute value because we want a positive temperature.
-    sa_start = np.abs(worse * init.objective() / np.log(accept_prob))
+    # T = -worse * f^i / ln(p).
+    sa_start = -worse * init_obj / np.log(accept_prob)
     sa_end = 1
 
     # end = r ** iters * start, so r = (end / start) ** (1 / iters).
     sa_step = (sa_end / sa_start) ** (1 / iters)
 
-    sa = SimulatedAnnealing.autofit(init, worse, accept_prob, iters)
+    sa = SimulatedAnnealing.autofit(init_obj, worse, accept_prob, iters)
 
     assert_almost_equal(sa.start_temperature, sa_start)
     assert_almost_equal(sa.end_temperature, sa_end)

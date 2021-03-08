@@ -95,7 +95,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
     @classmethod
     def autofit(cls,
-                init_sol: State,
+                init_obj: float,
                 worse: float,
                 accept_prob: float,
                 num_iters: int) -> "SimulatedAnnealing":
@@ -110,8 +110,8 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
         Parameters
         ----------
-        init_sol
-            The initial solution state.
+        init_obj
+            The initial solution objective.
         worse
             Percentage (between 0 and 1) the candidate solution may be worse
             than initial solution for it to be accepted with probability
@@ -149,9 +149,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
         if num_iters < 0:
             raise ValueError("Negative number of iterations not understood.")
 
-        # Depending on the objective values, this expression might be negative.
-        # In that case we need the absolute value.
-        start_temp = np.abs(worse * init_sol.objective() / np.log(accept_prob))
+        start_temp = -worse * init_obj / np.log(accept_prob)
         step = (1 / start_temp) ** (1 / num_iters)
 
         return cls(start_temp, 1, step, method="exponential")

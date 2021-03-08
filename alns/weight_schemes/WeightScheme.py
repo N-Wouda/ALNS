@@ -6,15 +6,26 @@ from numpy.random import RandomState
 
 
 class WeightScheme(ABC):
-    """
-    Base class from which to implement a weight scheme.
-    """
 
-    def __init__(self, weights: List[float], num_destroy: int, num_repair: int):
-        self._validate_arguments(weights, num_destroy, num_repair)
+    def __init__(self, scores: List[float], num_destroy: int, num_repair: int):
+        """
+        Base class from which to implement a weight scheme.
 
-        self._weights = weights
+        Parameters
+        ----------
+        scores
+            A list of four non-negative elements, representing the weight
+            updates when the candidate solution results in a new global best
+            (idx 0), is better than the current solution (idx 1), the solution
+            is accepted (idx 2), or rejected (idx 3).
+        num_destroy
+            Number of destroy operators.
+        num_repair
+            Number of repair operators.
+        """
+        self._validate_arguments(scores, num_destroy, num_repair)
 
+        self._scores = scores
         self._d_weights = np.ones(num_destroy, dtype=float)
         self._r_weights = np.ones(num_repair, dtype=float)
 
@@ -33,10 +44,11 @@ class WeightScheme(ABC):
         """
         pass
 
-    @abstractmethod
     def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.
+        The default implementation uses a roulette wheel mechanism, where each
+        operator is selected based on the normalised weights.
 
         Parameters
         ----------
@@ -48,13 +60,18 @@ class WeightScheme(ABC):
         A tuple of (d_idx, r_idx), which are indices into the destroy and repair
         operator lists, respectively.
         """
-        return NotImplemented
+
+        def select(op_weights):
+            probs = op_weights / np.sum(op_weights)
+            return rnd_state.choice(range(len(op_weights)), p=probs)
+
+        return select(self._d_weights), select(self._r_weights)
 
     @abstractmethod
-    def update_weights(self, d_idx: int, r_idx: int, w_idx: int):
+    def update_weights(self, d_idx: int, r_idx: int, s_idx: int):
         """
         Updates the weights associated with the applied destroy (d_idx) and
-        repair (r_idx) operators. The final weight index (w_idx) indicates the
+        repair (r_idx) operators. The score index (s_idx) indicates the
         outcome.
 
         Parameters
@@ -63,20 +80,20 @@ class WeightScheme(ABC):
             Destroy operator index.
         r_idx
             Repair operator index
-        w_idx
-            Weight index.
+        s_idx
+            Score index.
         """
         return NotImplemented
 
     @staticmethod
-    def _validate_arguments(weights, num_destroy, num_repair):
-        if any(weight < 0 for weight in weights):
-            raise ValueError("Negative weights are not understood")
+    def _validate_arguments(scores, num_destroy, num_repair):
+        if any(score < 0 for score in scores):
+            raise ValueError("Negative scores are not understood.")
 
-        if len(weights) < 4:
+        if len(scores) < 4:
             # More than four is not problematic, but we only use the first four.
-            raise ValueError("Unsupported number of weights: expected 4, "
-                             "found {0}".format(len(weights)))
+            raise ValueError("Unsupported number of scores: expected 4, "
+                             "found {0}".format(len(scores)))
 
         if num_destroy <= 0 or num_repair <= 0:
             raise ValueError("Missing at least one destroy or repair operator.")

@@ -11,7 +11,7 @@ from .criteria import AcceptanceCriterion
 from .tools.warnings import OverwriteWarning
 from .weight_schemes import WeightScheme
 
-# Weights
+# Candidate solution outcomes.
 _IS_BEST = 0
 _IS_BETTER = 1
 _IS_ACCEPTED = 2
@@ -118,7 +118,8 @@ class ALNS:
                 init_sol: State,
                 weight_scheme: WeightScheme,
                 crit: Callable[[rnd.RandomState, State, State, State], bool],
-                iters: int = 10_000) -> Result:
+                iters: int = 10_000,
+                stats: Statistics = Statistics()) -> Result:
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -137,6 +138,8 @@ class ALNS:
             the ``alns.criteria`` module for an overview.
         iters
             The number of iterations. Default 10_000.
+        stats
+            Optional Statistics object.
 
         Raises
         ------
@@ -166,7 +169,6 @@ class ALNS:
 
         self._curr = self._best = init_sol
 
-        stats = Statistics()
         stats.collect_objective(init_sol.objective())
 
         for iteration in range(iters):
@@ -180,13 +182,13 @@ class ALNS:
             destroyed = d_operator(self._curr, self._rnd_state)
             cand = r_operator(destroyed, self._rnd_state)
 
-            self._best, self._curr, w_idx = self._consider_candidate(cand, crit)
+            self._best, self._curr, s_idx = self._consider_candidate(cand, crit)
 
-            weight_scheme.update_weights(d_idx, r_idx, w_idx)
+            weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
             stats.collect_objective(self._curr.objective())
-            stats.collect_destroy_operator(d_name, w_idx)
-            stats.collect_repair_operator(r_name, w_idx)
+            stats.collect_destroy_operator(d_name, s_idx)
+            stats.collect_repair_operator(r_name, s_idx)
 
         return Result(self._best, stats)
 

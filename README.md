@@ -26,7 +26,7 @@ The weight scheme determines how to select destroy and repair operators in each
 iteration of the ALNS algorithm. Several have already been implemented for you,
 in `alns.weight_schemes`:
 
-- `ConvexWeights`. TODO
+- `SimpleWeights`. TODO
 - `SegmentedWeights`. TODO 
 
 Each weight scheme inherites from `WeightScheme`, which may be used to write 

@@ -1,8 +1,8 @@
 import setuptools
 
-MAJOR = 1
-MINOR = 3
-MAINTENANCE = 2
+MAJOR = 2
+MINOR = 0
+MAINTENANCE = 0
 MODIFIER = ""
 
 VERSION = "{0}.{1}.{2}{3}".format(MAJOR, MINOR, MAINTENANCE, MODIFIER)

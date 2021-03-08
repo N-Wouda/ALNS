@@ -2,6 +2,7 @@ import numpy as np
 
 from .AcceptanceCriterion import AcceptanceCriterion
 from .update import update
+from ..State import State
 
 
 class SimulatedAnnealing(AcceptanceCriterion):
@@ -92,8 +93,60 @@ class SimulatedAnnealing(AcceptanceCriterion):
         except AttributeError:
             return probability >= rnd.random_sample()
 
-    def autofit(self):
+    @classmethod
+    def autofit(cls,
+                init_sol: State,
+                worse: float,
+                accept_prob: float,
+                num_iters: int) -> "SimulatedAnnealing":
         """
-        TODO autofit (see issue #35)
+        Returns an SA object with initial temperature such that there is a
+        ``accept_prob`` chance of selecting a solution up to ``worse`` percent
+        worse than the initial solution. The step parameter is then chosen such
+        that the temperature reaches 1 in ``num_iters`` iterations.
+
+        This procedure was originally proposed by Ropke and Pisinger (2006),
+        and has seen some use since.
+
+        Parameters
+        ----------
+        init_sol
+            The initial solution state.
+        worse
+            Percentage (between 0 and 1) the candidate solution may be worse
+            than initial solution for it to be accepted with probability
+            ``accept_prob``.
+        accept_prob
+            Initial acceptance probability for a solution at most ``worse``
+            worse than the initial solution.
+        num_iters
+            Number of iterations the ALNS algorithm will run.
+
+        Raises
+        ------
+        ValueError
+            When ``worse`` not in [0, 1] or when ``accept_prob``not in (0, 1].
+
+        Returns
+        -------
+        An autofitted SimulatedAnnealing acceptance criterion.
+
+        References
+        ----------
+        - Ropke, Stefan, and David Pisinger. 2006. "An Adaptive Large
+          Neighborhood Search Heuristic for the Pickup and Delivery Problem with
+          Time Windows." _Transportation Science_ 40 (4): 455-72.
         """
-        pass
+        if not (0 <= worse <= 1):
+            raise ValueError("worse outside [0, 1] not understood.")
+
+        if not (0 < accept_prob <= 1):
+            raise ValueError("accept_prob outside (0, 1] not understood.")
+
+        if num_iters < 0:
+            raise ValueError("Negative number of iterations not understood.")
+
+        start_temp = worse * init_sol.objective() / np.log(accept_prob)
+        step = (1 / start_temp) ** (1 / num_iters)
+
+        return cls(start_temp, 1, step, method="exponential")

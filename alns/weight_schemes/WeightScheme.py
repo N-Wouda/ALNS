@@ -29,6 +29,14 @@ class WeightScheme(ABC):
         self._d_weights = np.ones(num_destroy, dtype=float)
         self._r_weights = np.ones(num_repair, dtype=float)
 
+    @property
+    def destroy_weights(self) -> np.array:
+        return self._d_weights
+
+    @property
+    def repair_weights(self) -> np.array:
+        return self._r_weights
+
     def at_iteration_start(self, iteration: int, max_iterations: int):
         """
         A simple observer hook that is called at the start of each iteration.

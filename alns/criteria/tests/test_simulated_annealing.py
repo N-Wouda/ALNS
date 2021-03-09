@@ -1,5 +1,3 @@
-from types import SimpleNamespace
-
 import numpy as np
 import numpy.random as rnd
 from numpy.testing import (assert_, assert_almost_equal, assert_equal,

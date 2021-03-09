@@ -2,7 +2,6 @@ import numpy as np
 
 from .AcceptanceCriterion import AcceptanceCriterion
 from .update import update
-from ..State import State
 
 
 class SimulatedAnnealing(AcceptanceCriterion):

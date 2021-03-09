@@ -78,15 +78,14 @@ class ALNS:
         return list(self._repair_operators.items())
 
     def add_destroy_operator(self,
-                             operator: Callable[
-                                 [State, rnd.RandomState], State],
+                             op: Callable[[State, rnd.RandomState], State],
                              name: Optional[str] = None):
         """
         Adds a destroy operator to the heuristic instance.
 
         Parameters
         ----------
-        operator
+        op
             An operator that, when applied to the current state, returns a new
             state reflecting its implemented destroy action. The second argument
             is the random state constructed from the passed-in seed.
@@ -94,17 +93,17 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        self._add_operator(self._destroy_operators, operator, name)
+        self._add_operator(self._destroy_operators, op, name)
 
     def add_repair_operator(self,
-                            operator: Callable[[State, rnd.RandomState], State],
+                            op: Callable[[State, rnd.RandomState], State],
                             name: Optional[str] = None):
         """
         Adds a repair operator to the heuristic instance.
 
         Parameters
         ----------
-        operator
+        op
             An operator that, when applied to the destroyed state, returns a
             new state reflecting its implemented repair action. The second
             argument is the random state constructed from the passed-in seed.
@@ -112,7 +111,7 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        self._add_operator(self._repair_operators, operator, name)
+        self._add_operator(self._repair_operators, op, name)
 
     def iterate(self,
                 init_sol: State,
@@ -182,7 +181,7 @@ class ALNS:
             destroyed = d_operator(self._curr, self._rnd_state)
             cand = r_operator(destroyed, self._rnd_state)
 
-            self._best, self._curr, s_idx = self._consider_candidate(cand, crit)
+            s_idx = self._consider_candidate(cand, crit)
 
             weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
@@ -253,28 +252,20 @@ class ALNS:
 
         operators[name] = operator
 
-    def _consider_candidate(self, cand, crit):
+    def _consider_candidate(self,
+                            cand: State,
+                            crit: Callable[..., bool]) -> int:
         """
         Considers the candidate solution by comparing it against the best and
-        current solutions. Returns the new solution when it is better or
-        accepted, or the current in case it is rejected. Candidate solutions
-        are accepted based on the passed-in acceptance criterion.
+        current solutions. Candidate solutions are accepted based on the
+        passed-in acceptance criterion. The weight index (best, better,
+        accepted, rejected) is returned.
 
-        Parameters
-        ----------
-        cand : State
-            Candidate solution.
-        crit : AcceptanceCriterion
-            The chosen acceptance criterion.
+        The best/current solutions are updated as a side-effect.
 
         Returns
         -------
-        State
-            The (possibly new) best state.
-        State
-            The (possibly new) current state.
-        int
-            The weight index to use when updating the operator weights.
+        A weight index. This index indicates the consideration outcome.
         """
         weight = _IS_REJECTED
 
@@ -290,8 +281,11 @@ class ALNS:
                 cand = self._on_best(cand, self._rnd_state)
 
             # New best solution becomes starting point in next iteration.
-            return cand, cand, _IS_BEST
+            self._best = cand
+            self._current = cand
+
+            return _IS_BEST
 
         # Best has not been updated if we get here, but the current state might
         # have (if the candidate was accepted).
-        return self._best, self._curr, weight
+        return weight

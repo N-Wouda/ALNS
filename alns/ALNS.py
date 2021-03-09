@@ -7,15 +7,14 @@ import numpy.random as rnd
 from .Result import Result
 from .State import State
 from .Statistics import Statistics
-from .criteria import AcceptanceCriterion
 from .tools.warnings import OverwriteWarning
 from .weight_schemes import WeightScheme
 
-# Candidate solution outcomes.
-_IS_BEST = 0
-_IS_BETTER = 1
-_IS_ACCEPTED = 2
-_IS_REJECTED = 3
+# Potential candidate solution consideration outcomes.
+_BEST = 0
+_BETTER = 1
+_ACCEPTED = 2
+_REJECTED = 3
 
 
 class ALNS:
@@ -267,12 +266,12 @@ class ALNS:
         -------
         A weight index. This index indicates the consideration outcome.
         """
-        weight = _IS_REJECTED
+        w_idx = _REJECTED
 
         if crit(self._rnd_state, self._best, self._curr, cand):
-            weight = (_IS_BETTER
-                      if cand.objective() < self._curr.objective()
-                      else _IS_ACCEPTED)
+            w_idx = (_BETTER
+                     if cand.objective() < self._curr.objective()
+                     else _ACCEPTED)
 
             self._curr = cand
 
@@ -284,8 +283,8 @@ class ALNS:
             self._best = cand
             self._current = cand
 
-            return _IS_BEST
+            return _BEST
 
         # Best has not been updated if we get here, but the current state might
         # have (if the candidate was accepted).
-        return weight
+        return w_idx

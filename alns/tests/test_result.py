@@ -272,3 +272,9 @@ def test_plot_operator_counts_legend_length(fig_test, fig_ref):
                       result.statistics.destroy_operator_counts,
                       result.statistics.repair_operator_counts,
                       legend=["Best"])
+
+
+@pytest.mark.matplotlib
+@check_figures_equal(extensions=['png'])
+def test_plot_operator_weights(fig_test, fig_ref):
+    pass  # TODO

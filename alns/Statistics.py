@@ -16,6 +16,9 @@ class Statistics:
         self._destroy_operator_counts = defaultdict(lambda: [0, 0, 0, 0])
         self._repair_operator_counts = defaultdict(lambda: [0, 0, 0, 0])
 
+        self._destroy_weights = []
+        self._repair_weights = []
+
     @property
     def objectives(self) -> np.array:
         """
@@ -50,6 +53,14 @@ class Statistics:
         Repair operator counts.
         """
         return self._repair_operator_counts
+
+    @property
+    def destroy_weights(self) -> np.array:
+        return np.array(self._destroy_weights)
+
+    @property
+    def repair_weights(self) -> np.array:
+        return np.array(self._repair_weights)
 
     def collect_objective(self, objective: float):
         """
@@ -93,3 +104,9 @@ class Statistics:
             Score indices used for the various iteration outcomes.
         """
         self._repair_operator_counts[operator_name][s_idx] += 1
+
+    def collect_destroy_weights(self, weights: np.array):
+        self._destroy_weights.append(weights)
+
+    def collect_repair_weights(self, weights: np.array):
+        self._repair_weights.append(weights)

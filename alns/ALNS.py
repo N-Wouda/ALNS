@@ -169,6 +169,9 @@ class ALNS:
 
         stats.collect_objective(init_sol.objective())
 
+        stats.collect_destroy_weights(weight_scheme.destroy_weights)
+        stats.collect_repair_weights(weight_scheme.repair_weights)
+
         for iteration in range(iters):
             weight_scheme.at_iteration_start(iteration, iters)
 
@@ -185,8 +188,12 @@ class ALNS:
             weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
             stats.collect_objective(self._curr.objective())
+
             stats.collect_destroy_operator(d_name, s_idx)
             stats.collect_repair_operator(r_name, s_idx)
+
+            stats.collect_destroy_weights(weight_scheme.destroy_weights)
+            stats.collect_repair_weights(weight_scheme.repair_weights)
 
         return Result(self._best, stats)
 

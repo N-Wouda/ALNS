@@ -75,8 +75,34 @@ class Result:
 
         plt.draw_if_interactive()
 
+    def plot_operator_weights(self,
+                              fig: Optional[Axes] = None,
+                              title: Optional[str] = None,
+                              **kwargs: Dict[str, Any]):
+        """
+        TODO
+        """
+        if fig is None:
+            fig, (d_ax, r_ax) = plt.subplots(nrows=2)
+        else:
+            d_ax, r_ax = fig.subplots(nrows=2)
+
+        if title is None:
+            fig.suptitle(title)
+
+        def plot(ax, weights, ax_title):
+            for w in weights:  # TODO names
+                ax.plot(w, **kwargs)
+
+            ax.set_title(ax_title)
+            ax.set_xlabel("Iteration (#)")
+            ax.set_ylabel("Weight")
+
+        plot(d_ax, self.statistics.destroy_weights, "Destroy operators")
+        plot(r_ax, self.statistics.repair_weights, "Repair operators")
+
     def plot_operator_counts(self,
-                             figure: Optional[Figure] = None,
+                             fig: Optional[Figure] = None,
                              title: Optional[str] = None,
                              legend: Optional[List[str]] = None,
                              **kwargs: Dict[str, Any]):
@@ -85,7 +111,7 @@ class Result:
 
         Parameters
         ----------
-        figure
+        fig
             Optional figure. If not passed, a new figure is constructed, and
             some default margins are set.
         title
@@ -107,19 +133,19 @@ class Result:
         ValueError
             When the legend contains more than four elements.
         """
-        if figure is None:
-            figure, (d_ax, r_ax) = plt.subplots(nrows=2)
+        if fig is None:
+            fig, (d_ax, r_ax) = plt.subplots(nrows=2)
 
             # Ensures there is generally sufficient white space between the
             # operator subplots, and we have some space to put the legend. When
             # a figure is passed-in, these sorts of modifications are assumed
             # to have been performed at the call site.
-            figure.subplots_adjust(hspace=0.7, bottom=0.2)
+            fig.subplots_adjust(hspace=0.7, bottom=0.2)
         else:
-            d_ax, r_ax = figure.subplots(nrows=2)
+            d_ax, r_ax = fig.subplots(nrows=2)
 
         if title is not None:
-            figure.suptitle(title)
+            fig.suptitle(title)
 
         if legend is None:
             legend = ["Best", "Better", "Accepted", "Rejected"]
@@ -127,24 +153,24 @@ class Result:
             raise ValueError("Legend not understood. Expected at most 4 items,"
                              " found {0}.".format(len(legend)))
 
-        self._plot_operator_counts(d_ax,
-                                   self.statistics.destroy_operator_counts,
-                                   "Destroy operators",
-                                   len(legend),
-                                   **kwargs)
+        self._plot_op_counts(d_ax,
+                             self.statistics.destroy_operator_counts,
+                             "Destroy operators",
+                             len(legend),
+                             **kwargs)
 
-        self._plot_operator_counts(r_ax,
-                                   self.statistics.repair_operator_counts,
-                                   "Repair operators",
-                                   len(legend),
-                                   **kwargs)
+        self._plot_op_counts(r_ax,
+                             self.statistics.repair_operator_counts,
+                             "Repair operators",
+                             len(legend),
+                             **kwargs)
 
-        figure.legend(legend, ncol=len(legend), loc="lower center")
+        fig.legend(legend, ncol=len(legend), loc="lower center")
 
         plt.draw_if_interactive()
 
     @staticmethod
-    def _plot_operator_counts(ax, operator_counts, title, num_types, **kwargs):
+    def _plot_op_counts(ax, operator_counts, title, num_types, **kwargs):
         """
         Internal helper that plots the passed-in operator_counts on the given
         ax object.

@@ -26,8 +26,7 @@ classifiers = [
 ]
 
 [tool.poetry.urls]
-"Tracker" = "https://github.com/python-poetry/poetry/issues"
-"Source" = "https://github.com/N-Wouda/ALNS"
+"Tracker" = "https://github.com/N-Wouda/ALNS/issues"
 
 [tool.poetry.dependencies]
 python = "^3.7"

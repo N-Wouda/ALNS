@@ -2,7 +2,7 @@
 name = "alns"
 version = "1.4.0"
 description = "A flexible implementation of the adaptive large neighbourhood search (ALNS) algorithm."
-authors = ["Niels Wouda <nielswouda@gmail.com>"]
+authors = ["Niels Wouda <n.wouda@apium.nl>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/N-Wouda/ALNS"

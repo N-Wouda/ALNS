@@ -1,5 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/alns.svg)](https://badge.fury.io/py/alns)
-[![Build Status](https://travis-ci.com/N-Wouda/ALNS.svg?branch=master)](https://travis-ci.com/N-Wouda/ALNS)
+[![Build Status](https://app.travis-ci.com/N-Wouda/ALNS.svg?branch=master)](https://app.travis-ci.com/N-Wouda/ALNS)
 [![codecov](https://codecov.io/gh/N-Wouda/ALNS/branch/master/graph/badge.svg)](https://codecov.io/gh/N-Wouda/ALNS)
 
 This package offers a general, well-documented and tested

@@ -1,6 +1,6 @@
 os: linux
 
-dist: xenial
+dist: bionic
 
 language: python
 
@@ -8,7 +8,6 @@ python:
   - "3.7"
   - "3.8"
   - "3.9"
-  - "3.10"
 
 # TODO eventually I want a better build matrix here, i.a. for numpy versions
 

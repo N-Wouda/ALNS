@@ -3,16 +3,16 @@ dist: xenial
 language: python
 
 python:
-  - 3.6
-  - 3.7
-  - 3.8
-  - 3.9
+  - "3.7"
+  - "3.8"
+  - "3.9"
+  - "3.10"
 
 # TODO eventually I want a better build matrix here, i.a. for numpy versions
 
 install:
-  - pip install pipenv
-  - pipenv install --dev --skip-lock
+  - pip install poetry
+  - poetry install
 
 git:
   depth: 3
@@ -23,18 +23,20 @@ branches:       # since the master branch is the only one where PRs are
     - /^v\d+\.\d+(\.\d+)?(-\S*)?$/    # for release tags
 
 script:
-  - pipenv run pytest
-  - pipenv run mypy ./ || true
+  - poetry run pytest
+  - poetry run mypy alns
+
+before_deploy:
+  - poetry config http-basic.pypi $PYPI_USER $PYPI_PASS
+  - poetry build
 
 deploy:         # deploy to PyPI on tagged commits.
-  provider: pypi
-  user: N-Wouda
-  password:
-    secure: jEir1QB2CIAfTeJZU2DXtHBSQj2TAZx6fTkONbAsN7a8KAm0edhgkiYqly9+M3wmnFTr1Q+ycjbuStCkgreC7AOYwpQLi8BjVdm13SVpGCkVXX6hK/AW+J+WWlBZfg8TxNYBauPVJBIFyEuU6NqGxqrLHu3u+DVaIvBHNgTCMixClvODwhwA0P3o1XJTe0dCZWZHGtyHUpzx1N2oSCOOtCZJJfiFOPAWV5efWe04c5n6ymUOiq3WeNydJmrpRswaA2IH2AhFRjTdyVzYEbke5P+WkwXj/Kw4tU9pyyUtMMAbZODkCZn40KUnlr37HyQ2egsGWJ5J5B93pEJg/6QZneIwFFCsXwTJqKeCKojCD6zcTvlwqfINs75xR9L20Hce0evg8RckSRy1cw8s8wEpS89JPPlj03kq5Huu4BFkiYHojSzVJXRqPFBrkx2ao66US5zvCvg9I4WTkTQ/3gWptgI+r4gM1qdeWp5PFr0irVSjUgCQ43d3zkCEtPxAte2RVr6QoIxjMAEgwSle83eqdl67QYMMb4dpdbkQHoJPFh5Sn80dEPYXyOPSVnPbHEgX1GtXnI5cMY20G7TiRxutXag24CNWdMjj6sAZhiym2zWFca2fjaUApv+JRRIZ2GsZ0GqHXmE948Fe0gH0UCLRs6FmYiQwptKUCeGfjvCm+6Q=
+  provider: script
+  script: poetry publish
+  skip_cleanup: true
+  skip_existing: true
   on:
     tags: true
-  distributions: "sdist bdist_wheel"
-  skip_existing: true
 
 after_success:
   - codecov

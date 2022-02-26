@@ -68,3 +68,5 @@ venv/
 
 # Jupyter
 .ipynb_checkpoints/
+
+*.lock

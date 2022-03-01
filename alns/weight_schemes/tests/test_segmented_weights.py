@@ -28,7 +28,7 @@ def test_does_not_raise_valid_seg_decay(seg_decay: float):
 def test_update_weights(scores: List[float],
                         seg_decay: float,
                         expected: List[float]):
-    rnd_state = np.random.RandomState(sum(scores))
+    rnd_state = np.random.RandomState(1)
     weights = SegmentedWeights(scores, 1, 1, seg_decay, 1)
 
     # TODO other weights?

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alns"
-version = "1.4.2"
+version = "2.0.0"
 description = "A flexible implementation of the adaptive large neighbourhood search (ALNS) algorithm."
 authors = ["Niels Wouda <n.wouda@apium.nl>"]
 license = "MIT"
@@ -18,6 +18,7 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Development Status :: 5 - Production/Stable",

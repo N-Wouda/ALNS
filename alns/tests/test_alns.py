@@ -1,11 +1,10 @@
 import numpy.random as rnd
 from numpy.testing import (assert_, assert_almost_equal, assert_equal,
-                           assert_no_warnings, assert_raises, assert_warns)
+                           assert_raises)
 from pytest import mark
 
 from alns import ALNS, State
 from alns.criteria import HillClimbing, SimulatedAnnealing
-from alns.tools.warnings import OverwriteWarning
 from alns.weight_schemes import SimpleWeights
 from .states import One, Zero
 
@@ -43,24 +42,6 @@ class ValueState(State):
 
 
 # CALLBACKS --------------------------------------------------------------------
-
-def dummy_callback():
-    return None
-
-
-def test_overwrite_warns_on_best():
-    """
-    There can only be a single callback for each event point, so inserting two
-    (or more) should warn the previous callback for ``on_best`` is overwritten.
-    """
-    alns = get_alns_instance([lambda state, rnd: Zero()],
-                             [lambda state, rnd: Zero()])
-
-    with assert_no_warnings():  # first insert is fine..
-        alns.on_best(dummy_callback)
-
-    with assert_warns(OverwriteWarning):  # .. but second insert should warn
-        alns.on_best(dummy_callback)
 
 
 def test_on_best_is_called():
@@ -143,27 +124,6 @@ def test_add_repair_operator_name():
 
     assert_equal(name, "repair_operator")
     assert_(operator is repair_operator)
-
-
-def test_add_operator_same_name_warns_per_type():
-    """
-    Adding an operator with the same name as an already added operator (of the
-    same type) should warn that the previous operator will be overwritten.
-    """
-    alns = ALNS()
-
-    with assert_no_warnings():
-        # The same name is allowed for different types of operators.
-        alns.add_destroy_operator(lambda state, rnd: None, "test")
-        alns.add_repair_operator(lambda state, rnd: None, "test")
-
-    with assert_warns(OverwriteWarning):
-        # Already exists as a destroy operator.
-        alns.add_destroy_operator(lambda state, rnd: None, "test")
-
-    with assert_warns(OverwriteWarning):
-        # Already exists as a repair operator.
-        alns.add_repair_operator(lambda state, rnd: None, "test")
 
 
 # PARAMETERS -------------------------------------------------------------------

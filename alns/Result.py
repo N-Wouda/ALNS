@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.pyplot import Axes, Figure
 
-from .State import State
-from .Statistics import Statistics
+from alns.State import State
+from alns.Statistics import Statistics
 
 
 class Result:

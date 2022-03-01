@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from numpy.random import RandomState
 
-from ..State import State
+from alns.State import State
 
 
 class AcceptanceCriterion(ABC):

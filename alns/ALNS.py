@@ -1,20 +1,20 @@
-import warnings
-from collections import OrderedDict
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Tuple
 
 import numpy.random as rnd
 
-from .Result import Result
-from .State import State
-from .Statistics import Statistics
-from .tools.warnings import OverwriteWarning
-from .weight_schemes import WeightScheme
+from alns.Result import Result
+from alns.State import State
+from alns.Statistics import Statistics
+from alns.criteria import AcceptanceCriterion
+from alns.weight_schemes import WeightScheme
 
 # Potential candidate solution consideration outcomes.
 _BEST = 0
 _BETTER = 1
 _ACCEPTED = 2
 _REJECTED = 3
+
+_OperatorType = Callable[[State, rnd.RandomState], State]
 
 
 class ALNS:
@@ -39,8 +39,8 @@ class ALNS:
              M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
              - 420). Springer.
         """
-        self._destroy_operators = OrderedDict()
-        self._repair_operators = OrderedDict()
+        self._destroy_operators = {}
+        self._repair_operators = {}
 
         # Optional callback that may be used to improve a new best solution
         # further, via e.g. local search.
@@ -53,7 +53,7 @@ class ALNS:
         self._rnd_state = rnd_state
 
     @property
-    def destroy_operators(self) -> List[Tuple[str, Callable]]:
+    def destroy_operators(self) -> List[Tuple[str, _OperatorType]]:
         """
         Returns the destroy operators set for the ALNS algorithm.
 
@@ -65,7 +65,7 @@ class ALNS:
         return list(self._destroy_operators.items())
 
     @property
-    def repair_operators(self) -> List[Tuple[str, Callable]]:
+    def repair_operators(self) -> List[Tuple[str, _OperatorType]]:
         """
         Returns the repair operators set for the ALNS algorithm.
 
@@ -76,9 +76,7 @@ class ALNS:
         """
         return list(self._repair_operators.items())
 
-    def add_destroy_operator(self,
-                             op: Callable[[State, rnd.RandomState], State],
-                             name: Optional[str] = None):
+    def add_destroy_operator(self, op: _OperatorType, name: str = None):
         """
         Adds a destroy operator to the heuristic instance.
 
@@ -92,11 +90,9 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        self._add_operator(self._destroy_operators, op, name)
+        self._destroy_operators[op.__name__ if name is None else name] = op
 
-    def add_repair_operator(self,
-                            op: Callable[[State, rnd.RandomState], State],
-                            name: Optional[str] = None):
+    def add_repair_operator(self, op: _OperatorType, name: str = None):
         """
         Adds a repair operator to the heuristic instance.
 
@@ -110,12 +106,12 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        self._add_operator(self._repair_operators, op, name)
+        self._repair_operators[name if name else op.__name__] = op
 
     def iterate(self,
                 init_sol: State,
                 weight_scheme: WeightScheme,
-                crit: Callable[[rnd.RandomState, State, State, State], bool],
+                crit: AcceptanceCriterion,
                 iters: int = 10_000,
                 stats: Statistics = Statistics()) -> Result:
         """
@@ -197,7 +193,7 @@ class ALNS:
 
         return Result(self._best, stats)
 
-    def on_best(self, func: Callable[[State, rnd.RandomState], State]):
+    def on_best(self, func: _OperatorType):
         """
         Sets a callback function to be called when ALNS finds a new global best
         solution state.
@@ -208,59 +204,12 @@ class ALNS:
             A function that should take a solution State as its first parameter,
             and a numpy RandomState as its second (cf. the operator signature).
             It should return a (new) solution State.
-
-        Warns
-        -----
-        OverwriteWarning
-            When a callback has already been set.
         """
-        if self._on_best:
-            warnings.warn("A callback function has already been set to be "
-                          "performed when a new best solution has been found."
-                          " This callback will now be replaced by the newly"
-                          " passed-in callback.",
-                          OverwriteWarning)
-
         self._on_best = func
-
-    @staticmethod
-    def _add_operator(operators, operator, name=None):
-        """
-        Internal helper that adds an operator to the passed-in operator
-        dictionary. See `add_destroy_operator` and `add_repair_operator` for
-        public methods that use this helper.
-
-        Parameters
-        ----------
-        operators : dict
-            Dictionary of (name, operator) key-value pairs.
-        operator : Callable[[State, RandomState], State]
-            Callable operator function.
-        name : str
-            Optional operator name.
-
-        Warns
-        -----
-        OverwriteWarning
-            When the operator name already maps to an operator on this ALNS
-            instance.
-        """
-        if name is None:
-            name = operator.__name__
-
-        if name in operators:
-            warnings.warn("The ALNS instance already knows an operator by the"
-                          " name `{0}'. This operator will now be replaced with"
-                          " the newly passed-in operator. If this is not what"
-                          " you intended, consider explicitly naming your"
-                          " operators via the `name' argument.".format(name),
-                          OverwriteWarning)
-
-        operators[name] = operator
 
     def _consider_candidate(self,
                             cand: State,
-                            crit: Callable[..., bool]) -> int:
+                            crit: AcceptanceCriterion) -> int:
         """
         Considers the candidate solution by comparing it against the best and
         current solutions. Candidate solutions are accepted based on the
@@ -282,16 +231,14 @@ class ALNS:
 
             self._curr = cand
 
-        if cand.objective() < self._best.objective():  # is new best?
+        if cand.objective() < self._best.objective():  # is new best
             if self._on_best:
                 cand = self._on_best(cand, self._rnd_state)
 
             # New best solution becomes starting point in next iteration.
             self._best = cand
-            self._current = cand
+            self._curr = cand
 
             return _BEST
 
-        # Best has not been updated if we get here, but the current state might
-        # have (if the candidate was accepted).
         return w_idx

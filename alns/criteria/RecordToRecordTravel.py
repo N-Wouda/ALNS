@@ -1,5 +1,5 @@
-from .AcceptanceCriterion import AcceptanceCriterion
-from .update import update
+from alns.criteria.AcceptanceCriterion import AcceptanceCriterion
+from alns.criteria.update import update
 
 
 class RecordToRecordTravel(AcceptanceCriterion):

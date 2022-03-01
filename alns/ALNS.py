@@ -105,7 +105,7 @@ class ALNS:
         self._repair_operators[name if name else op.__name__] = op
 
     def iterate(self,
-                init_sol: State,
+                initial_solution: State,
                 weight_scheme: WeightScheme,
                 crit: AcceptanceCriterion,
                 iterations: int = 10_000) -> Result:
@@ -117,7 +117,7 @@ class ALNS:
 
         Parameters
         ----------
-        init_sol
+        initial_solution
             The initial solution, as a State object.
         weight_scheme
             The weight scheme to use for updating the (adaptive) weights. See
@@ -154,10 +154,10 @@ class ALNS:
         if iterations < 0:
             raise ValueError("Negative number of iterations.")
 
-        curr = best = init_sol
+        curr = best = initial_solution
 
         stats = Statistics()
-        stats.collect_objective(init_sol.objective())
+        stats.collect_objective(initial_solution.objective())
 
         for iteration in range(iterations):
             d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)

@@ -35,8 +35,11 @@ class Result:
     @property
     def statistics(self) -> Statistics:
         """
-        The statistics object populated during iteration.
+        The statistics object populated during iteration, if collected.
         """
+        if not self._statistics:
+            raise ValueError("No statistics collected during this run.")
+
         return self._statistics
 
     def plot_objectives(self,

@@ -1,4 +1,4 @@
-from typing import Callable, List, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy.random as rnd
 
@@ -11,8 +11,8 @@ from alns.weight_schemes import WeightScheme
 # Potential candidate solution consideration outcomes.
 _BEST = 0
 _BETTER = 1
-_ACCEPTED = 2
-_REJECTED = 3
+_ACCEPT = 2
+_REJECT = 3
 
 _OperatorType = Callable[[State, rnd.RandomState], State]
 
@@ -39,16 +39,12 @@ class ALNS:
              M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
              - 420). Springer.
         """
-        self._destroy_operators = {}
-        self._repair_operators = {}
+        self._destroy_operators: Dict[str, _OperatorType] = {}
+        self._repair_operators: Dict[str, _OperatorType] = {}
 
         # Optional callback that may be used to improve a new best solution
         # further, via e.g. local search.
-        self._on_best = None
-
-        # Current and best solutions
-        self._best = None
-        self._curr = None
+        self._on_best: Optional[_OperatorType] = None
 
         self._rnd_state = rnd_state
 
@@ -161,7 +157,7 @@ class ALNS:
         if iters < 0:
             raise ValueError("Negative number of iterations.")
 
-        self._curr = self._best = init_sol
+        curr = best = init_sol
 
         stats.collect_objective(init_sol.objective())
 
@@ -176,14 +172,14 @@ class ALNS:
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
 
-            destroyed = d_operator(self._curr, self._rnd_state)
+            destroyed = d_operator(curr, self._rnd_state)
             cand = r_operator(destroyed, self._rnd_state)
 
-            s_idx = self._consider_candidate(cand, crit)
+            best, curr, s_idx = self._consider_candidate(crit, best, curr, cand)
 
             weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
-            stats.collect_objective(self._curr.objective())
+            stats.collect_objective(curr.objective())
 
             stats.collect_destroy_operator(d_name, s_idx)
             stats.collect_repair_operator(r_name, s_idx)
@@ -191,7 +187,7 @@ class ALNS:
             stats.collect_destroy_weights(weight_scheme.destroy_weights)
             stats.collect_repair_weights(weight_scheme.repair_weights)
 
-        return Result(self._best, stats)
+        return Result(best, stats)
 
     def on_best(self, func: _OperatorType):
         """
@@ -207,38 +203,34 @@ class ALNS:
         """
         self._on_best = func
 
-    def _consider_candidate(self,
-                            cand: State,
-                            crit: AcceptanceCriterion) -> int:
+    def _consider_candidate(
+            self,
+            crit: AcceptanceCriterion,
+            best: State,
+            curr: State,
+            cand: State
+    ) -> Tuple[State, State, int]:
         """
         Considers the candidate solution by comparing it against the best and
         current solutions. Candidate solutions are accepted based on the
-        passed-in acceptance criterion. The weight index (best, better,
-        accepted, rejected) is returned.
-
-        The best/current solutions are updated as a side-effect.
+        passed-in acceptance criterion. The (possibly new) best and current
+        solutions are returned, along with a weight index (best, better,
+        accepted, rejected).
 
         Returns
         -------
-        A weight index. This index indicates the consideration outcome.
+        A tuple of the best and current solution, along with the weight index.
         """
-        w_idx = _REJECTED
+        w_idx = _REJECT
 
-        if crit(self._rnd_state, self._best, self._curr, cand):
-            w_idx = (_BETTER
-                     if cand.objective() < self._curr.objective()
-                     else _ACCEPTED)
+        if crit(self._rnd_state, best, curr, cand):  # accept candidate
+            w_idx = _BETTER if cand.objective() < curr.objective() else _ACCEPT
+            curr = cand
 
-            self._curr = cand
-
-        if cand.objective() < self._best.objective():  # is new best
+        if cand.objective() < best.objective():  # candidate is new best
             if self._on_best:
                 cand = self._on_best(cand, self._rnd_state)
 
-            # New best solution becomes starting point in next iteration.
-            self._best = cand
-            self._curr = cand
+            return cand, cand, _BEST
 
-            return _BEST
-
-        return w_idx
+        return best, curr, w_idx

@@ -30,11 +30,11 @@ class WeightScheme(ABC):
         self._r_weights = np.ones(num_repair, dtype=float)
 
     @property
-    def destroy_weights(self) -> np.array:
+    def destroy_weights(self) -> np.ndarray:
         return self._d_weights
 
     @property
-    def repair_weights(self) -> np.array:
+    def repair_weights(self) -> np.ndarray:
         return self._r_weights
 
     def at_iteration_start(self, iteration: int, max_iterations: int):

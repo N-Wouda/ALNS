@@ -108,8 +108,7 @@ class ALNS:
                 init_sol: State,
                 weight_scheme: WeightScheme,
                 crit: AcceptanceCriterion,
-                iters: int = 10_000,
-                stats: Statistics = Statistics()) -> Result:
+                iterations: int = 10_000) -> Result:
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -126,10 +125,8 @@ class ALNS:
         crit
             The acceptance criterion to use for candidate states. See also
             the ``alns.criteria`` module for an overview.
-        iters
+        iterations
             The number of iterations. Default 10_000.
-        stats
-            Optional Statistics object.
 
         Raises
         ------
@@ -154,14 +151,15 @@ class ALNS:
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing at least one destroy or repair operator.")
 
-        if iters < 0:
+        if iterations < 0:
             raise ValueError("Negative number of iterations.")
 
         curr = best = init_sol
 
+        stats = Statistics()
         stats.collect_objective(init_sol.objective())
 
-        for iteration in range(iters):
+        for iteration in range(iterations):
             d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)
 
             d_name, d_operator = self.destroy_operators[d_idx]

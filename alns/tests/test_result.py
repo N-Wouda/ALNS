@@ -115,16 +115,6 @@ def get_operator_plot(figure, destroy, repair, legend=None, suptitle=None,
 # TESTS ------------------------------------------------------------------------
 
 
-def test_getting_statistics_when_not_collected_should_raise():
-    res = Result(Sentinel(), None)
-
-    with assert_raises(ValueError):
-        res.statistics  # noqa
-
-    res = Result(Sentinel(), Statistics())
-    res.statistics  # noqa
-
-
 def test_result_state():
     """
     Tests if the result object correctly returns the passed-in state.

@@ -25,10 +25,15 @@ The weight scheme determines how to select destroy and repair operators in each
 iteration of the ALNS algorithm. Several have already been implemented for you,
 in `alns.weight_schemes`:
 
-- `SimpleWeights`. TODO
-- `SegmentedWeights`. TODO 
+- `SimpleWeights`. This weight scheme applies a convex combination of the 
+   existing weight vector, and a reward given for the current candidate 
+   solution.
+- `SegmentedWeights`. This weight scheme divides the iteration horizon into
+   segments. In each segment, scores are summed for each operator. At the end
+   of each segment, the weight vector is updated as a convex combination of 
+   the existing weight vector, and these summed scores.
 
-Each weight scheme inherites from `WeightScheme`, which may be used to write 
+Each weight scheme inherits from `WeightScheme`, which may be used to write 
 your own.
 
 ### Acceptance criterion

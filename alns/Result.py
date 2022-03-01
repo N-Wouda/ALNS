@@ -10,7 +10,7 @@ from alns.Statistics import Statistics
 
 class Result:
 
-    def __init__(self, best: State, statistics: Optional[Statistics] = None):
+    def __init__(self, best: State, statistics: Statistics):
         """
         Stores ALNS results. An instance of this class is returned once the
         algorithm completes.
@@ -20,7 +20,7 @@ class Result:
         best
             The best state observed during the entire iteration.
         statistics
-            Statistics optionally collected during iteration.
+            Statistics collected during iteration.
         """
         self._best = best
         self._statistics = statistics
@@ -35,11 +35,8 @@ class Result:
     @property
     def statistics(self) -> Statistics:
         """
-        The statistics object populated during iteration, if collected.
+        The statistics object populated during iteration.
         """
-        if not self._statistics:
-            raise ValueError("No statistics collected during this run.")
-
         return self._statistics
 
     def plot_objectives(self,

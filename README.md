@@ -42,10 +42,10 @@ each iteration. An overview of common acceptance criteria is given in
 [Santini et al. (2018)][3]. Several have already been implemented for you, in
 `alns.criteria`:
 
-- `HillClimbing`. The simplest acceptance criterion, hill-climbing
-  solely accepts solutions improving the objective value.
-- `RecordToRecordTravel`. This criterion only accepts solutions when
-  the improvement meets some updating threshold.
+- `HillClimbing`. The simplest acceptance criterion, hill-climbing solely
+  accepts solutions improving the objective value.
+- `RecordToRecordTravel`. This criterion accepts solutions when the improvement
+  meets some updating threshold.
 - `SimulatedAnnealing`. This criterion accepts solutions when the
   scaled probability is bigger than some random number, using an
   updating temperature.
@@ -65,9 +65,10 @@ how the ALNS library may be used. These include:
   only a very limited number of iterations.
 
 Finally, the weight schemes and acceptance criteria notebook gives an overview
-of various options available in the `alns` package. This is a good starting 
-point to using the different schemes and criteria yourself. It is available 
-[here][5].
+of various options available in the `alns` package. In the notebook we use these
+different options to solve a toy 0/1-knapsack problem. The notebook is a good
+starting point for when you want to use the different schemes and criteria 
+yourself. It is available [here][5].
 
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.

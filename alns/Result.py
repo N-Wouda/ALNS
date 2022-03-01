@@ -78,32 +78,6 @@ class Result:
 
         plt.draw_if_interactive()
 
-    def plot_operator_weights(self,
-                              fig: Optional[Axes] = None,
-                              title: Optional[str] = None,
-                              **kwargs: Dict[str, Any]):
-        """
-        TODO
-        """
-        if fig is None:
-            fig, (d_ax, r_ax) = plt.subplots(nrows=2)
-        else:
-            d_ax, r_ax = fig.subplots(nrows=2)
-
-        if title is None:
-            fig.suptitle(title)
-
-        def plot(ax, weights, ax_title):
-            for w in weights:  # TODO names
-                ax.plot(w, **kwargs)
-
-            ax.set_title(ax_title)
-            ax.set_xlabel("Iteration (#)")
-            ax.set_ylabel("Weight")
-
-        plot(d_ax, self.statistics.destroy_weights, "Destroy operators")
-        plot(r_ax, self.statistics.repair_weights, "Repair operators")
-
     def plot_operator_counts(self,
                              fig: Optional[Figure] = None,
                              title: Optional[str] = None,
@@ -130,19 +104,9 @@ class Result:
             counts are shown.
         kwargs
             Optional arguments passed to each call of ``ax.barh``.
-
-        Raises
-        ------
-        ValueError
-            When the legend contains more than four elements.
         """
         if fig is None:
             fig, (d_ax, r_ax) = plt.subplots(nrows=2)
-
-            # Ensures there is generally sufficient white space between the
-            # operator subplots, and we have some space to put the legend. When
-            # a figure is passed-in, these sorts of modifications are assumed
-            # to have been performed at the call site.
             fig.subplots_adjust(hspace=0.7, bottom=0.2)
         else:
             d_ax, r_ax = fig.subplots(nrows=2)
@@ -152,23 +116,20 @@ class Result:
 
         if legend is None:
             legend = ["Best", "Better", "Accepted", "Rejected"]
-        elif len(legend) > 4:
-            raise ValueError("Legend not understood. Expected at most 4 items,"
-                             " found {0}.".format(len(legend)))
 
         self._plot_op_counts(d_ax,
                              self.statistics.destroy_operator_counts,
                              "Destroy operators",
-                             len(legend),
+                             min(len(legend), 4),
                              **kwargs)
 
         self._plot_op_counts(r_ax,
                              self.statistics.repair_operator_counts,
                              "Repair operators",
-                             len(legend),
+                             min(len(legend), 4),
                              **kwargs)
 
-        fig.legend(legend, ncol=len(legend), loc="lower center")
+        fig.legend(legend[:4], ncol=len(legend), loc="lower center")
 
         plt.draw_if_interactive()
 

@@ -185,7 +185,7 @@ def test_autofit_on_several_examples(init_obj: float,
     sa_start = -worse * init_obj / np.log(accept_prob)
     sa_end = 1
 
-    # end = r ** iters * start, so r = (end / start) ** (1 / iters).
+    # We have end = r ** iters * start, so r = (end / start) ** (1 / iters).
     sa_step = (sa_end / sa_start) ** (1 / iters)
 
     sa = SimulatedAnnealing.autofit(init_obj, worse, accept_prob, iters)

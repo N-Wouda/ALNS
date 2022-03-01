@@ -199,22 +199,6 @@ def test_plot_operator_counts(fig_test, fig_ref):
                       result.statistics.repair_operator_counts)
 
 
-def test_plot_operator_counts_raises_legend():
-    """
-    Tests if the ``plot_operator_counts`` method raises when the passed-in
-    legend is of insufficient length.
-    """
-    result = get_result(Sentinel())
-
-    with assert_raises(ValueError):
-        # Legend should be of length at most four.
-        result.plot_operator_counts(legend=["test"] * 5)
-
-    # This should work.
-    result.plot_operator_counts(legend=["test"] * 2)
-    result.plot_operator_counts(legend=["test"] * 4)
-
-
 @pytest.mark.matplotlib
 @check_figures_equal(extensions=['png'])
 def test_plot_operator_counts_title(fig_test, fig_ref):

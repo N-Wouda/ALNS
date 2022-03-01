@@ -42,11 +42,14 @@ class SegmentedWeights(WeightScheme):
 
         self._seg_decay = seg_decay
         self._seg_length = seg_length
+        self._iter = 0
 
         self._reset_segment_weights()
 
-    def at_iteration_start(self, iteration, max_iterations):
-        if iteration % self._seg_length == 0:
+    def select_operators(self, rnd_state):
+        self._iter += 1
+
+        if self._iter % self._seg_length == 0:
             self._d_weights *= self._seg_decay
             self._d_weights += (1 - self._seg_decay) * self._d_seg_weights
 
@@ -54,6 +57,8 @@ class SegmentedWeights(WeightScheme):
             self._r_weights += (1 - self._seg_decay) * self._r_seg_weights
 
             self._reset_segment_weights()
+
+        return super().select_operators(rnd_state)
 
     def update_weights(self, d_idx, r_idx, s_idx):
         self._d_seg_weights[d_idx] += self._scores[s_idx]

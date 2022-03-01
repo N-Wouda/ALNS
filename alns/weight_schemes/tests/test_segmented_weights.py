@@ -28,11 +28,12 @@ def test_does_not_raise_valid_seg_decay(seg_decay: float):
 def test_update_weights(scores: List[float],
                         seg_decay: float,
                         expected: List[float]):
+    rnd_state = np.random.RandomState(sum(scores))
     weights = SegmentedWeights(scores, 1, 1, seg_decay, 1)
 
     # TODO other weights?
     weights.update_weights(0, 0, 1)
-    weights.at_iteration_start(1, 1)
+    weights.select_operators(rnd_state)
 
     assert_almost_equal(weights.destroy_weights[0], expected[0])
     assert_almost_equal(weights.repair_weights[0], expected[1])

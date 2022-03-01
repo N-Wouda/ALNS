@@ -37,21 +37,6 @@ class WeightScheme(ABC):
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
 
-    def at_iteration_start(self, iteration: int, max_iterations: int):
-        """
-        A simple observer hook that is called at the start of each iteration.
-        This may be used to update the weights/operator selection mechanism
-        from time to time.
-
-        Parameters
-        ----------
-        iteration
-            The current iteration number.
-        max_iterations
-            Maximum number of iterations.
-        """
-        pass
-
     def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.

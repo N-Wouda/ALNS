@@ -40,6 +40,9 @@ class SegmentedWeights(WeightScheme):
         if not (0 <= seg_decay <= 1):
             raise ValueError("seg_decay outside [0, 1] not understood.")
 
+        if seg_length < 1:
+            raise ValueError("seg_length < 1 not understood.")
+
         self._seg_decay = seg_decay
         self._seg_length = seg_length
         self._iter = 0

@@ -38,4 +38,25 @@ def test_update_weights(scores: List[float],
     assert_almost_equal(weights.destroy_weights[0], expected[0])
     assert_almost_equal(weights.repair_weights[0], expected[1])
 
+
+@mark.parametrize("scores,num_destroy,num_repair,seg_decay,seg_length",
+                  [
+                      ([5, 3, 2, -1], 1, 1, 0, 1),  # negative score
+                      ([5, 3, 2], 1, 1, 0, 1),      # len(score) < 4
+                      ([5, 3, 2, 1], 0, 1, 0, 1),   # no destroy operator
+                      ([5, 3, 2, 1], 1, 0, 0, 1),   # no repair operator
+                      ([5, 3, 2, 1], 1, 1, -1, 1),  # seg_decay < 0
+                      ([5, 3, 2, 1], 1, 1, 2, 1),   # seg_decay > 1
+                      ([5, 3, 2, 1], 1, 1, 2, 0),   # seg_length < 1
+                  ])
+def test_raises_invalid_arguments(scores: List[float],
+                                  num_destroy: int,
+                                  num_repair: int,
+                                  seg_decay: float,
+                                  seg_length: int):
+    with assert_raises(ValueError):
+        SegmentedWeights(scores, num_destroy, num_repair, seg_decay,
+                         seg_length)
+
+
 # TODO test select weights, at iteration start

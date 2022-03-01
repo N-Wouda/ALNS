@@ -135,8 +135,11 @@ def test_raises_missing_destroy_operator():
     """
     alns = get_alns_instance(repair_operators=[lambda state, rnd: None])
 
+    # Pretend we have a destroy operator for the weight scheme, so that
+    # does not raise an error.
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
+
     with assert_raises(ValueError):
-        weights = SimpleWeights([1, 1, 1, 1], 0, 1, 0.95)
         alns.iterate(One(), weights, HillClimbing())
 
 
@@ -146,8 +149,11 @@ def test_raises_missing_repair_operator():
     """
     alns = get_alns_instance(destroy_operators=[lambda state, rnd: None])
 
+    # Pretend we have a destroy operator for the weight scheme, so that
+    # does not raise an error.
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
+
     with assert_raises(ValueError):
-        weights = SimpleWeights([1, 1, 1, 1], 1, 0, 0.95)
         alns.iterate(One(), weights, HillClimbing())
 
 

@@ -47,7 +47,7 @@ def test_update_weights(scores: List[float],
                       ([5, 3, 2, 1], 1, 0, 0, 1),   # no repair operator
                       ([5, 3, 2, 1], 1, 1, -1, 1),  # seg_decay < 0
                       ([5, 3, 2, 1], 1, 1, 2, 1),   # seg_decay > 1
-                      ([5, 3, 2, 1], 1, 1, 2, 0),   # seg_length < 1
+                      ([5, 3, 2, 1], 1, 1, .5, 0),   # seg_length < 1
                   ])
 def test_raises_invalid_arguments(scores: List[float],
                                   num_destroy: int,

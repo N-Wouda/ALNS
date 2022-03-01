@@ -1,0 +1,83 @@
+[tool.poetry]
+name = "alns"
+version = "1.4.2"
+description = "A flexible implementation of the adaptive large neighbourhood search (ALNS) algorithm."
+authors = ["Niels Wouda <n.wouda@apium.nl>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/N-Wouda/ALNS"
+include = [
+    "LICENSE.md",
+]
+packages = [
+    {include = "alns"},
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering",
+]
+
+[tool.poetry.urls]
+"Tracker" = "https://github.com/N-Wouda/ALNS/issues"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+numpy = ">=1.15.2"
+matplotlib = ">=2.2.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=6.0.0"
+pytest-cov = ">=2.6.1"
+mypy = ">=0.670"
+codecov = "*"
+
+# These are solely for work on the example notebooks, and not required for
+# the package itself.
+networkx = ">=2.4.0"
+tsplib95 = ">=0.7.0"
+
+
+
+[tool.mypy]
+# These are generally already settled anyway, so there's no real
+# need to worry about them here
+ignore_missing_imports = true
+
+
+
+[tool.pytest.ini_options]
+markers = [
+    "matplotlib: test related to matplotlib functionality.",
+]
+
+addopts = "--cov=. --cov-config .coveragerc"
+
+
+
+[tool.coverage.run]
+omit = [
+    "*/tests/*",
+    "venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    # This excludes all abstract methods from code coverage checks,
+    # as they are never instantiated directly anyway
+    "pragma: no cover",
+    "@abstract"
+]
+
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

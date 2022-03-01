@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import DefaultDict, List
 
 import numpy as np
 
@@ -16,14 +17,14 @@ class Statistics:
         self._repair_operator_counts = defaultdict(lambda: [0, 0, 0, 0])
 
     @property
-    def objectives(self):
+    def objectives(self) -> np.ndarray:
         """
         Returns an array of previous objective values, tracking progress.
         """
         return np.array(self._objectives)
 
     @property
-    def destroy_operator_counts(self):
+    def destroy_operator_counts(self) -> DefaultDict[str, List[float]]:
         """
         Returns the destroy operator counts, as a dictionary of operator names
         to lists of counts. Such a list consists of four elements, one for
@@ -32,13 +33,12 @@ class Statistics:
 
         Returns
         -------
-        defaultdict
-            Destroy operator counts.
+        Destroy operator counts.
         """
         return self._destroy_operator_counts
 
     @property
-    def repair_operator_counts(self):
+    def repair_operator_counts(self) -> DefaultDict[str, List[float]]:
         """
         Returns the repair operator counts, as a dictionary of operator names
         to lists of counts. Such a list consists of four elements, one for
@@ -47,50 +47,49 @@ class Statistics:
 
         Returns
         -------
-        defaultdict
-            Repair operator counts.
+        Repair operator counts.
         """
         return self._repair_operator_counts
 
-    def collect_objective(self, objective):
+    def collect_objective(self, objective: float):
         """
         Collects an objective value.
 
         Parameters
         ----------
-        objective : float
+        objective
             The objective value to be collected.
         """
         self._objectives.append(objective)
 
-    def collect_destroy_operator(self, operator_name, weight_idx):
+    def collect_destroy_operator(self, operator_name: str, s_idx: int):
         """
-        Collects a weight (index) for a used destroy operator. This maintains
+        Collects a score (index) for a used destroy operator. This maintains
         count of the number of times this operator was used, and what result
         came from its use.
 
         Parameters
         ----------
-        operator_name : str
+        operator_name
             Operator name. This was set when the operator was passed to the
             ALNS instance.
-        weight_idx : int
-            Weight indices used for the various iteration outcomes.
+        s_idx
+            Score indices used for the various iteration outcomes.
         """
-        self._destroy_operator_counts[operator_name][weight_idx] += 1
+        self._destroy_operator_counts[operator_name][s_idx] += 1
 
-    def collect_repair_operator(self, operator_name, weight_idx):
+    def collect_repair_operator(self, operator_name: str, s_idx: int):
         """
-        Collects a weight (index) for a used repair operator. This maintains
+        Collects a score (index) for a used repair operator. This maintains
         count of the number of times this operator was used, and what result
         came from its use.
 
         Parameters
         ----------
-        operator_name : str
+        operator_name
             Operator name. This was set when the operator was passed to the
             ALNS instance.
-        weight_idx : int
-            Weight indices used for the various iteration outcomes.
+        s_idx
+            Score indices used for the various iteration outcomes.
         """
-        self._repair_operator_counts[operator_name][weight_idx] += 1
+        self._repair_operator_counts[operator_name][s_idx] += 1

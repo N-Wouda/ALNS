@@ -1,29 +1,25 @@
-import warnings
-from collections import OrderedDict
+from typing import Callable, Dict, List, Optional, Tuple
 
-import numpy as np
 import numpy.random as rnd
 
-from .Result import Result
-from .State import State  # pylint: disable=unused-import
-from .Statistics import Statistics
-from .criteria import AcceptanceCriterion  # pylint: disable=unused-import
-from .select_operator import select_operator
-from .tools.warnings import OverwriteWarning
+from alns.Result import Result
+from alns.State import State
+from alns.Statistics import Statistics
+from alns.criteria import AcceptanceCriterion
+from alns.weight_schemes import WeightScheme
 
-# Weights
-_IS_BEST = 0
-_IS_BETTER = 1
-_IS_ACCEPTED = 2
-_IS_REJECTED = 3
+# Potential candidate solution consideration outcomes.
+_BEST = 0
+_BETTER = 1
+_ACCEPT = 2
+_REJECT = 3
 
-# Callbacks
-_ON_BEST = 0
+_OperatorType = Callable[[State, rnd.RandomState], State]
 
 
 class ALNS:
 
-    def __init__(self, rnd_state=rnd.RandomState()):
+    def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
         """
         Implements the adaptive large neighbourhood search (ALNS) algorithm.
         The implementation optimises for a minimisation problem, as explained
@@ -31,7 +27,7 @@ class ALNS:
 
         Parameters
         ----------
-        rnd_state : rnd.RandomState
+        rnd_state
             Optional random state to use for random number generation. When
             passed, this state is used for operator selection and general
             computations requiring random numbers. It is also passed to the
@@ -39,78 +35,80 @@ class ALNS:
 
         References
         ----------
-        - Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In M.
-          Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399-420).
-          Springer.
+        [1]: Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In
+             M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
+             - 420). Springer.
         """
-        super().__init__()
+        self._destroy_operators: Dict[str, _OperatorType] = {}
+        self._repair_operators: Dict[str, _OperatorType] = {}
 
-        self._destroy_operators = OrderedDict()
-        self._repair_operators = OrderedDict()
-        self._callbacks = {}
+        # Optional callback that may be used to improve a new best solution
+        # further, via e.g. local search.
+        self._on_best: Optional[_OperatorType] = None
 
         self._rnd_state = rnd_state
 
     @property
-    def destroy_operators(self):
+    def destroy_operators(self) -> List[Tuple[str, _OperatorType]]:
         """
         Returns the destroy operators set for the ALNS algorithm.
 
         Returns
         -------
-        list
-            A list of (name, operator) tuples. Their order is the same as the
-            one in which they were passed to the ALNS instance.
+        A list of (name, operator) tuples. Their order is the same as the one in
+        which they were passed to the ALNS instance.
         """
         return list(self._destroy_operators.items())
 
     @property
-    def repair_operators(self):
+    def repair_operators(self) -> List[Tuple[str, _OperatorType]]:
         """
         Returns the repair operators set for the ALNS algorithm.
 
         Returns
         -------
-        list
-            A list of (name, operator) tuples. Their order is the same as the
-            one in which they were passed to the ALNS instance.
+        A list of (name, operator) tuples. Their order is the same as the one in
+        which they were passed to the ALNS instance.
         """
         return list(self._repair_operators.items())
 
-    def add_destroy_operator(self, operator, name=None):
+    def add_destroy_operator(self, op: _OperatorType, name: str = None):
         """
         Adds a destroy operator to the heuristic instance.
 
         Parameters
         ----------
-        operator : Callable[[State, RandomState], State]
+        op
             An operator that, when applied to the current state, returns a new
             state reflecting its implemented destroy action. The second argument
             is the random state constructed from the passed-in seed.
-        name : str
+        name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        self._add_operator(self._destroy_operators, operator, name)
+        self._destroy_operators[op.__name__ if name is None else name] = op
 
-    def add_repair_operator(self, operator, name=None):
+    def add_repair_operator(self, op: _OperatorType, name: str = None):
         """
         Adds a repair operator to the heuristic instance.
 
         Parameters
         ----------
-        operator : Callable[[State, RandomState], State]
+        op
             An operator that, when applied to the destroyed state, returns a
             new state reflecting its implemented repair action. The second
             argument is the random state constructed from the passed-in seed.
-        name : str
+        name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
-        self._add_operator(self._repair_operators, operator, name)
+        self._repair_operators[name if name else op.__name__] = op
 
-    def iterate(self, initial_solution, weights, operator_decay, criterion,
-                iterations=10000, collect_stats=True):
+    def iterate(self,
+                initial_solution: State,
+                weight_scheme: WeightScheme,
+                crit: AcceptanceCriterion,
+                iterations: int = 10_000) -> Result:
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -119,24 +117,16 @@ class ALNS:
 
         Parameters
         ----------
-        initial_solution : State
+        initial_solution
             The initial solution, as a State object.
-        weights: array_like
-            A list of four non-negative elements, representing the weight
-            updates when the candidate solution results in a new global best
-            (idx 0), is better than the current solution (idx 1), the solution
-            is accepted (idx 2), or rejected (idx 3).
-        operator_decay : float
-            The operator decay parameter, as a float in the unit interval,
-            [0, 1] (inclusive).
-        criterion : AcceptanceCriterion
+        weight_scheme
+            The weight scheme to use for updating the (adaptive) weights. See
+            also the ``alns.weight_schemes`` module for an overview.
+        crit
             The acceptance criterion to use for candidate states. See also
-            the `alns.criteria` module for an overview.
-        iterations : int
-            The number of iterations. Default 10000.
-        collect_stats : bool
-            Should statistics be collected during iteration? Default True, but
-            may be turned off for long runs to reduce memory consumption.
+            the ``alns.criteria`` module for an overview.
+        iterations
+            The number of iterations. Default 10_000.
 
         Raises
         ------
@@ -145,9 +135,8 @@ class ALNS:
 
         Returns
         -------
-        Result
-            A result object, containing the best solution and some additional
-            statistics.
+        A result object, containing the best solution and some additional
+        statistics.
 
         References
         ----------
@@ -159,191 +148,78 @@ class ALNS:
         class of vehicle routing problems with backhauls. *European Journal of
         Operational Research*, 171: 750–775, 2006.
         """
-        weights = np.asarray(weights, dtype=np.float16)
+        if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
+            raise ValueError("Missing at least one destroy or repair operator.")
 
-        self._validate_parameters(weights, operator_decay, iterations)
+        if iterations < 0:
+            raise ValueError("Negative number of iterations.")
 
-        current = best = initial_solution
+        curr = best = initial_solution
 
-        d_weights = np.ones(len(self.destroy_operators), dtype=np.float16)
-        r_weights = np.ones(len(self.repair_operators), dtype=np.float16)
-
-        statistics = Statistics()
-
-        if collect_stats:
-            statistics.collect_objective(initial_solution.objective())
+        stats = Statistics()
+        stats.collect_objective(initial_solution.objective())
 
         for iteration in range(iterations):
-            d_idx = select_operator(self.destroy_operators, d_weights,
-                                    self._rnd_state)
-
-            r_idx = select_operator(self.repair_operators, r_weights,
-                                    self._rnd_state)
+            d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)
 
             d_name, d_operator = self.destroy_operators[d_idx]
-            destroyed = d_operator(current, self._rnd_state)
-
             r_name, r_operator = self.repair_operators[r_idx]
-            candidate = r_operator(destroyed, self._rnd_state)
 
-            best, current, weight_idx = self._consider_candidate(best,
-                                                                 current,
-                                                                 candidate,
-                                                                 criterion)
+            destroyed = d_operator(curr, self._rnd_state)
+            cand = r_operator(destroyed, self._rnd_state)
 
-            # The weights are updated as convex combinations of the current
-            # weight and the update parameter. See eq. (2), p. 12.
-            d_weights[d_idx] *= operator_decay
-            d_weights[d_idx] += (1 - operator_decay) * weights[weight_idx]
+            best, curr, s_idx = self._consider_candidate(crit, best, curr, cand)
 
-            r_weights[r_idx] *= operator_decay
-            r_weights[r_idx] += (1 - operator_decay) * weights[weight_idx]
+            weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
-            if collect_stats:
-                statistics.collect_objective(current.objective())
-                statistics.collect_destroy_operator(d_name, weight_idx)
-                statistics.collect_repair_operator(r_name, weight_idx)
+            stats.collect_objective(curr.objective())
+            stats.collect_destroy_operator(d_name, s_idx)
+            stats.collect_repair_operator(r_name, s_idx)
 
-        return Result(best, statistics if collect_stats else None)
+        return Result(best, stats)
 
-    def on_best(self, func):
+    def on_best(self, func: _OperatorType):
         """
         Sets a callback function to be called when ALNS finds a new global best
         solution state.
 
         Parameters
         ----------
-        func : callable
+        func
             A function that should take a solution State as its first parameter,
             and a numpy RandomState as its second (cf. the operator signature).
             It should return a (new) solution State.
-
-        Warns
-        -----
-        OverwriteWarning
-            When a callback has already been set.
         """
-        self._set_callback(_ON_BEST, func)
+        self._on_best = func
 
-    @staticmethod
-    def _add_operator(operators, operator, name=None):
-        """
-        Internal helper that adds an operator to the passed-in operator
-        dictionary. See `add_destroy_operator` and `add_repair_operator` for
-        public methods that use this helper.
-
-        Parameters
-        ----------
-        operators : dict
-            Dictionary of (name, operator) key-value pairs.
-        operator : Callable[[State, RandomState], State]
-            Callable operator function.
-        name : str
-            Optional operator name.
-
-        Warns
-        -----
-        OverwriteWarning
-            When the operator name already maps to an operator on this ALNS
-            instance.
-        """
-        if name is None:
-            name = operator.__name__
-
-        if name in operators:
-            warnings.warn("The ALNS instance already knows an operator by the"
-                          " name `{0}'. This operator will now be replaced with"
-                          " the newly passed-in operator. If this is not what"
-                          " you intended, consider explicitly naming your"
-                          " operators via the `name' argument.".format(name),
-                          OverwriteWarning)
-
-        operators[name] = operator
-
-    def _consider_candidate(self, best, current, candidate, criterion):
+    def _consider_candidate(
+            self,
+            crit: AcceptanceCriterion,
+            best: State,
+            curr: State,
+            cand: State
+    ) -> Tuple[State, State, int]:
         """
         Considers the candidate solution by comparing it against the best and
-        current solutions. Returns the new solution when it is better or
-        accepted, or the current in case it is rejected. Candidate solutions
-        are accepted based on the passed-in acceptance criterion.
-
-        Parameters
-        ----------
-        best : State
-            Best solution encountered so far.
-        current : State
-            Current solution.
-        candidate : State
-            Candidate solution.
-        criterion : AcceptanceCriterion
-            The chosen acceptance criterion.
+        current solutions. Candidate solutions are accepted based on the
+        passed-in acceptance criterion. The (possibly new) best and current
+        solutions are returned, along with a weight index (best, better,
+        accepted, rejected).
 
         Returns
         -------
-        State
-            The (possibly new) best state.
-        State
-            The (possibly new) current state.
-        int
-            The weight index to use when updating the operator weights.
+        A tuple of the best and current solution, along with the weight index.
         """
-        if criterion.accept(self._rnd_state, best, current, candidate):
-            if candidate.objective() < current.objective():
-                weight = _IS_BETTER
-            else:
-                weight = _IS_ACCEPTED
+        w_idx = _REJECT
 
-            current = candidate
-        else:
-            weight = _IS_REJECTED
+        if crit(self._rnd_state, best, curr, cand):  # accept candidate
+            w_idx = _BETTER if cand.objective() < curr.objective() else _ACCEPT
+            curr = cand
 
-        if candidate.objective() < best.objective():
-            # Is a new global best, so we might want to do something to further
-            # improve the solution.
-            if _ON_BEST in self._callbacks:
-                callback = self._callbacks[_ON_BEST]
-                candidate = callback(candidate, self._rnd_state)
+        if cand.objective() < best.objective():  # candidate is new best
+            if self._on_best:
+                cand = self._on_best(cand, self._rnd_state)
 
-            # Global best solution becomes the new starting point for further
-            # iterations.
-            return candidate, candidate, _IS_BEST
+            return cand, cand, _BEST
 
-        # Best has not been updated if we get here, but the current state might
-        # have (if the candidate was accepted).
-        return best, current, weight
-
-    def _validate_parameters(self, weights, operator_decay, iterations):
-        """
-        Helper method to validate the passed-in ALNS parameters.
-        """
-        if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
-            raise ValueError("Missing at least one destroy or repair operator.")
-
-        if not (0 <= operator_decay <= 1):
-            raise ValueError("Operator decay parameter outside unit interval"
-                             " is not understood.")
-
-        if any(weight < 0 for weight in weights):
-            raise ValueError("Negative weights are not understood.")
-
-        if len(weights) < 4:
-            # More than four is not explicitly problematic, as we only use the
-            # first four anyways.
-            raise ValueError("Unsupported number of weights: expected 4,"
-                             " found {0}.".format(len(weights)))
-
-        if iterations < 0:
-            raise ValueError("Negative number of iterations.")
-
-    def _set_callback(self, flag, func):
-        """
-        Sets the passed-in callback func for the passed-in flag. Warns if this
-        would overwrite an existing callback.
-        """
-        if flag in self._callbacks:
-            warnings.warn("A callback function has already been set for the"
-                          " `{0}' flag. This callback will now be replaced by"
-                          " the newly passed-in callback.".format(flag),
-                          OverwriteWarning)
-
-        self._callbacks[flag] = func
+        return best, curr, w_idx

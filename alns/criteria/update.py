@@ -1,4 +1,4 @@
-def update(current, step, method):
+def update(current: float, step: float, method: str) -> float:
     """
     Updates the passed-in criterion threshold parameter. This is done in one of
     two ways, determined via ``method``. If ``method`` is linear, then ``step``
@@ -7,17 +7,21 @@ def update(current, step, method):
 
     Parameters
     ----------
-    current : float
+    current
         The current criterion threshold.
-    step : float
+    step
         The chosen step size.
-    method : str
+    method
         The updating method, one of {'linear', 'exponential'}.
+
+    Raises
+    ------
+    ValueError
+        When the method is not understood.
 
     Returns
     -------
-    float
-        The new criterion threshold.
+    The new criterion threshold.
     """
     method = method.lower()
 

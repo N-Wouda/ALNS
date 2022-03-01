@@ -1,4 +1,4 @@
-from .AcceptanceCriterion import AcceptanceCriterion
+from alns.criteria.AcceptanceCriterion import AcceptanceCriterion
 
 
 class HillClimbing(AcceptanceCriterion):
@@ -7,5 +7,5 @@ class HillClimbing(AcceptanceCriterion):
     that result in a worse objective value.
     """
 
-    def accept(self, rnd, best, current, candidate):
+    def __call__(self, rnd, best, current, candidate):
         return candidate.objective() <= current.objective()

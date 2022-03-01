@@ -1,10 +1,11 @@
 import numpy.random as rnd
 from numpy.testing import (assert_, assert_almost_equal, assert_equal,
-                           assert_no_warnings, assert_raises, assert_warns)
+                           assert_raises)
+from pytest import mark
 
 from alns import ALNS, State
 from alns.criteria import HillClimbing, SimulatedAnnealing
-from alns.tools.warnings import OverwriteWarning
+from alns.weight_schemes import SimpleWeights
 from .states import One, Zero
 
 
@@ -42,24 +43,6 @@ class ValueState(State):
 
 # CALLBACKS --------------------------------------------------------------------
 
-def dummy_callback():
-    return None
-
-
-def test_overwrite_warns_on_best():
-    """
-    There can only be a single callback for each event point, so inserting two
-    (or more) should warn the previous callback for ``on_best`` is overwritten.
-    """
-    alns = get_alns_instance([lambda state, rnd: Zero()],
-                             [lambda state, rnd: Zero()])
-
-    with assert_no_warnings():  # first insert is fine..
-        alns.on_best(dummy_callback)
-
-    with assert_warns(OverwriteWarning):  # .. but second insert should warn
-        alns.on_best(dummy_callback)
-
 
 def test_on_best_is_called():
     """
@@ -73,7 +56,8 @@ def test_on_best_is_called():
     # should then also be returned by the entire algorithm.
     alns.on_best(lambda *args: ValueState(10))
 
-    result = alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 1)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    result = alns.iterate(One(), weights, HillClimbing(), 1)
     assert_equal(result.best_state.objective(), 10)
 
 
@@ -142,27 +126,6 @@ def test_add_repair_operator_name():
     assert_(operator is repair_operator)
 
 
-def test_add_operator_same_name_warns_per_type():
-    """
-    Adding an operator with the same name as an already added operator (of the
-    same type) should warn that the previous operator will be overwritten.
-    """
-    alns = ALNS()
-
-    with assert_no_warnings():
-        # The same name is allowed for different types of operators.
-        alns.add_destroy_operator(lambda state, rnd: None, "test")
-        alns.add_repair_operator(lambda state, rnd: None, "test")
-
-    with assert_warns(OverwriteWarning):
-        # Already exists as a destroy operator.
-        alns.add_destroy_operator(lambda state, rnd: None, "test")
-
-    with assert_warns(OverwriteWarning):
-        # Already exists as a repair operator.
-        alns.add_repair_operator(lambda state, rnd: None, "test")
-
-
 # PARAMETERS -------------------------------------------------------------------
 
 
@@ -172,8 +135,12 @@ def test_raises_missing_destroy_operator():
     """
     alns = get_alns_instance(repair_operators=[lambda state, rnd: None])
 
+    # Pretend we have a destroy operator for the weight scheme, so that
+    # does not raise an error.
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
+
     with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], 0.95, HillClimbing())
+        alns.iterate(One(), weights, HillClimbing())
 
 
 def test_raises_missing_repair_operator():
@@ -182,55 +149,12 @@ def test_raises_missing_repair_operator():
     """
     alns = get_alns_instance(destroy_operators=[lambda state, rnd: None])
 
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], 0.95, HillClimbing())
-
-
-def test_raises_negative_operator_decay():
-    """
-    Tests if the algorithm raises when a negative operator decay parameter is
-    passed.
-    """
-    alns = get_alns_instance([lambda state, rnd: None],
-                             [lambda state, rnd: None])
+    # Pretend we have a destroy operator for the weight scheme, so that
+    # does not raise an error.
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
 
     with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], -0.5, HillClimbing())
-
-
-def test_raises_explosive_operator_decay():
-    """
-    Tests if the algorithm raises when an explosive operator decay parameter is
-    passed.
-    """
-    alns = get_alns_instance([lambda state, rnd: None],
-                             [lambda state, rnd: None])
-
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1, 1], 1.2, HillClimbing())
-
-
-def test_raises_insufficient_weights():
-    """
-    We need (at least) four weights to be passed-in, one for each updating
-    scenario.
-    """
-    alns = get_alns_instance([lambda state, rnd: None],
-                             [lambda state, rnd: None])
-
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, 1], .5, HillClimbing())
-
-
-def test_raises_negative_weights():
-    """
-    The passed-in weights should all be non-negative.
-    """
-    alns = get_alns_instance([lambda state, rnd: None],
-                             [lambda state, rnd: None])
-
-    with assert_raises(ValueError):
-        alns.iterate(One(), [1, 1, -5, 1], .5, HillClimbing())
+        alns.iterate(One(), weights, HillClimbing())
 
 
 def test_raises_negative_iterations():
@@ -241,29 +165,16 @@ def test_raises_negative_iterations():
                              [lambda state, rnd: None])
 
     initial_solution = One()
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
 
     # A negative iteration count is not understood, for obvious reasons.
     with assert_raises(ValueError):
-        alns.iterate(initial_solution, [1, 1, 1, 1], .5, HillClimbing(), -1)
+        alns.iterate(initial_solution, weights, HillClimbing(), -1)
 
     # But zero should just return the initial solution.
-    result = alns.iterate(initial_solution, [1, 1, 1, 1], .5, HillClimbing(), 0)
+    result = alns.iterate(initial_solution, weights, HillClimbing(), 0)
 
     assert_(result.best_state is initial_solution)
-
-
-def test_does_not_raise():
-    """
-    This set of parameters, on the other hand, should work correctly.
-    """
-    alns = get_alns_instance([lambda state, rnd: One()],
-                             [lambda state, rnd: One()])
-
-    alns.iterate(Zero(), [1, 1, 1, 1], .5, HillClimbing(), 100)
-
-    # 0 and 1 are both acceptable decay parameters (since v1.2.0).
-    alns.iterate(Zero(), [1, 1, 1, 1], 0., HillClimbing(), 100)
-    alns.iterate(Zero(), [1, 1, 1, 1], 1., HillClimbing(), 100)
 
 
 # EXAMPLES ---------------------------------------------------------------------
@@ -272,33 +183,32 @@ def test_does_not_raise():
 def test_trivial_example():
     """
     This tests the ALNS algorithm on a trivial example, where the initial
-    solution is zero, and any other operator returns one.
+    solution is one, and any other operator returns zero.
     """
     alns = get_alns_instance([lambda state, rnd: Zero()],
                              [lambda state, rnd: Zero()])
 
-    result = alns.iterate(One(), [1, 1, 1, 1], .5, HillClimbing(), 100)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    result = alns.iterate(One(), weights, HillClimbing(), 100)
 
     assert_equal(result.best_state.objective(), 0)
 
 
-def test_fixed_seed_outcomes():
+@mark.parametrize("seed,desired", [(0, 0.01171), (1, 0.00011), (2, 0.01025)])
+def test_fixed_seed_outcomes(seed: int, desired: float):
     """
     Tests if fixing a seed results in deterministic outcomes even when using a
     'random' acceptance criterion (here SA).
     """
-    outcomes = [0.01171, 0.00011, 0.01025]
+    alns = get_alns_instance(
+        [lambda state, rnd: ValueState(rnd.random_sample())],
+        [lambda state, rnd: None],
+        seed)
 
-    for seed, desired in enumerate(outcomes):  # idx is seed
-        alns = get_alns_instance(
-            [lambda state, rnd: ValueState(rnd.random_sample())],
-            [lambda state, rnd: None],
-            seed)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    sa = SimulatedAnnealing(1, .25, 1 / 100)
 
-        simulated_annealing = SimulatedAnnealing(1, .25, 1 / 100)
-
-        result = alns.iterate(One(), [1, 1, 1, 1], .5, simulated_annealing, 100)
-
-        assert_almost_equal(result.best_state.objective(), desired, decimal=5)
+    result = alns.iterate(One(), weights, sa, 100)
+    assert_almost_equal(result.best_state.objective(), desired, decimal=5)
 
 # TODO test more complicated examples?

@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
-from ..State import State  # pylint: disable=unused-import
-from numpy.random import RandomState  # pylint: disable=unused-import
+from numpy.random import RandomState
+
+from alns.State import State
 
 
 class AcceptanceCriterion(ABC):
@@ -10,25 +11,28 @@ class AcceptanceCriterion(ABC):
     """
 
     @abstractmethod
-    def accept(self, rnd, best, current, candidate):
+    def __call__(self,
+                 rnd: RandomState,
+                 best: State,
+                 current: State,
+                 candidate: State) -> bool:
         """
         Determines whether to accept the proposed, candidate solution based on
         this acceptance criterion and the other solution states.
 
         Parameters
         ----------
-        rnd : RandomState
+        rnd
             May be used to draw random numbers from.
-        best : State
+        best
             The best solution state observed so far.
-        current : State
+        current
             The current solution state.
-        candidate : State
+        candidate
             The proposed solution state.
 
         Returns
         -------
-        bool
-            Whether to accept the candidate state (True), or not (False).
+        Whether to accept the candidate state (True), or not (False).
         """
         return NotImplemented

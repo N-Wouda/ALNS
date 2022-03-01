@@ -8,8 +8,14 @@ python:
   - "3.7"
   - "3.8"
   - "3.9"
+  - "3.10"
 
 # TODO eventually I want a better build matrix here, i.a. for numpy versions
+
+cache:
+  pip: true
+  directories:
+    - "$HOME/.cache/pypoetry"
 
 install:
   - pip install poetry

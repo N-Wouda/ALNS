@@ -1,23 +1,24 @@
+import numpy as np
 import numpy.random as rnd
-from numpy.testing import assert_, assert_equal, assert_raises
+from numpy.testing import (assert_, assert_almost_equal, assert_equal,
+                           assert_raises)
+from pytest import mark
 
 from alns.criteria import SimulatedAnnealing
 from alns.tests.states import One, Zero
 
 
-def test_raises_negative_parameters():
+@mark.parametrize("start,end,step",
+                  [(-1, 1, 1),  # negative start temp
+                   (1, -1, 1),  # negative end temp
+                   (1, 1, -1)])  # negative step
+def test_raises_negative_parameters(start: float, end: float, step: float):
     """
     Simulated annealing does not work with negative parameters, so those should
     not be accepted.
     """
-    with assert_raises(ValueError):  # start temperature cannot be
-        SimulatedAnnealing(-1, 1, 1)  # negative
-
-    with assert_raises(ValueError):  # nor can the end temperature
-        SimulatedAnnealing(1, -1, 1)
-
-    with assert_raises(ValueError):  # nor the updating step
-        SimulatedAnnealing(1, 1, -1)
+    with assert_raises(ValueError):
+        SimulatedAnnealing(start, end, step)
 
 
 def test_raises_explosive_step():
@@ -53,43 +54,41 @@ def test_raises_start_smaller_than_end():
 
 def test_does_not_raise():
     """
-    This set of parameters should work correctly.
+    These sets of parameters should work correctly.
     """
-    SimulatedAnnealing(10, 5, 2)
+    SimulatedAnnealing(10, 5, 1, "exponential")
+    SimulatedAnnealing(10, 5, 2, "linear")
 
 
-def test_step():
+@mark.parametrize("step", range(10))
+def test_step(step: int):
     """
     Tests if the step parameter is correctly set.
     """
-    for step in range(100):
-        assert_equal(SimulatedAnnealing(1, 1, step).step, step)
+    # Linear because exponential does not take explosive step parameters.
+    assert_equal(SimulatedAnnealing(1, 1, step, "linear").step, step)
 
 
-def test_start_temperature():
+@mark.parametrize("start", range(1, 10))
+def test_start_temperature(start: int):
     """
     Tests if the start_temperature parameter is correctly set.
     """
-    for start in range(1, 100):
-        assert_equal(SimulatedAnnealing(start, 1, 1).start_temperature, start)
+    assert_equal(SimulatedAnnealing(start, 1, 1).start_temperature, start)
 
 
-def test_end_temperature():
+@mark.parametrize("end", range(1, 10))
+def test_end_temperature(end: float):
     """
     Tests if the end_temperature parameter is correctly set.
     """
-    for end in range(1, 100):
-        assert_equal(SimulatedAnnealing(100, end, 1).end_temperature, end)
+    assert_equal(SimulatedAnnealing(10, end, 1).end_temperature, end)
 
 
 def test_accepts_better():
     for _ in range(1, 100):
         simulated_annealing = SimulatedAnnealing(2, 1, 1)
-
-        assert_(simulated_annealing.accept(rnd.RandomState(),
-                                           One(),
-                                           Zero(),
-                                           Zero()))
+        assert_(simulated_annealing(rnd.RandomState(), One(), Zero(), Zero()))
 
 
 def test_accepts_equal():
@@ -98,10 +97,7 @@ def test_accepts_equal():
     for _ in range(100):
         # This results in an acceptance probability of exp{0}, that is, one.
         # Thus, the candidate state should always be accepted.
-        assert_(simulated_annealing.accept(rnd.RandomState(),
-                                           One(),
-                                           One(),
-                                           One()))
+        assert_(simulated_annealing(rnd.RandomState(), One(), One(), One()))
 
 
 def test_linear_random_solutions():
@@ -109,7 +105,7 @@ def test_linear_random_solutions():
     Checks if the linear ``accept`` method correctly decides in two known cases
     for a fixed seed.
     """
-    simulated_annealing = SimulatedAnnealing(2, 1, 1)
+    simulated_annealing = SimulatedAnnealing(2, 1, 1, "linear")
 
     state = rnd.RandomState(0)
 
@@ -117,8 +113,8 @@ def test_linear_random_solutions():
     # respectively. The acceptance probability is 0.61 first, so the first
     # should be accepted (0.61 > 0.55). Thereafter, it drops to 0.37, so the
     # second should not (0.37 < 0.72).
-    assert_(simulated_annealing.accept(state, Zero(), Zero(), One()))
-    assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
+    assert_(simulated_annealing(state, Zero(), Zero(), One()))
+    assert_(not simulated_annealing(state, Zero(), Zero(), One()))
 
 
 def test_exponential_random_solutions():
@@ -131,8 +127,8 @@ def test_exponential_random_solutions():
 
     state = rnd.RandomState(0)
 
-    assert_(simulated_annealing.accept(state, Zero(), Zero(), One()))
-    assert_(not simulated_annealing.accept(state, Zero(), Zero(), One()))
+    assert_(simulated_annealing(state, Zero(), Zero(), One()))
+    assert_(not simulated_annealing(state, Zero(), Zero(), One()))
 
 
 def test_accepts_generator_and_random_state():
@@ -148,11 +144,53 @@ def test_accepts_generator_and_random_state():
             return 0.5
 
     simulated_annealing = SimulatedAnnealing(2, 1, 1)
-    assert_(simulated_annealing.accept(Old(), One(), One(), Zero()))
+    assert_(simulated_annealing(Old(), One(), One(), Zero()))
 
     class New:  # new Generator interface mock
         def random(self):  # pylint: disable=no-self-use
             return 0.5
 
     simulated_annealing = SimulatedAnnealing(2, 1, 1)
-    assert_(simulated_annealing.accept(New(), One(), One(), Zero()))
+    assert_(simulated_annealing(New(), One(), One(), Zero()))
+
+
+@mark.parametrize("worse,accept_prob,iters",
+                  [(1, 0, 10),  # zero accept prob
+                   (1, 1.2, 10),  # prob outside unit interval
+                   (1, 1, 10),  # unit accept prob
+                   (-1, 0.5, 10),  # negative worse
+                   (0, -1, 10),  # negative prob
+                   (1.5, 0.5, 10),  # worse outside unit interval
+                   (1, .9, -10)])  # negative number of iterations
+def test_autofit_raises_for_invalid_inputs(worse: float,
+                                           accept_prob: float,
+                                           iters: int):
+    with assert_raises(ValueError):
+        SimulatedAnnealing.autofit(1., worse, accept_prob, iters)
+
+
+@mark.parametrize("init_obj,worse,accept_prob,iters",
+                  [(1_000, 1, .9, 1),
+                   (1_000, .5, .05, 1)])
+def test_autofit_on_several_examples(init_obj: float,
+                                     worse: float,
+                                     accept_prob: float,
+                                     iters: int):
+    # We have:
+    # prob = exp{-(f^c - f^i) / T},
+    # where T is start temp, f^i is init sol objective, and f^c is the candidate
+    # solution objective. We also have that f^c is at worst (1 + worse) f^i.
+    # Substituting and solving for T, we then find:
+    # T = -worse * f^i / ln(p).
+    sa_start = -worse * init_obj / np.log(accept_prob)
+    sa_end = 1
+
+    # We have end = r ** iters * start, so r = (end / start) ** (1 / iters).
+    sa_step = (sa_end / sa_start) ** (1 / iters)
+
+    sa = SimulatedAnnealing.autofit(init_obj, worse, accept_prob, iters)
+
+    assert_almost_equal(sa.start_temperature, sa_start)
+    assert_almost_equal(sa.end_temperature, sa_end)
+    assert_almost_equal(sa.step, sa_step)
+    assert_equal(sa.method, "exponential")

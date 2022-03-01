@@ -5,7 +5,6 @@ from numpy.testing import assert_, assert_raises
 
 from alns.Result import Result
 from alns.Statistics import Statistics
-from alns.tools.exceptions import NotCollectedError
 from .states import Sentinel
 
 try:
@@ -125,20 +124,6 @@ def test_result_state():
     assert_(get_result(best).best_state is best)
 
 
-def test_raises_missing_statistics():
-    """
-    Accessing the statistics object when no statistics have been passed-in
-    should raise.
-    """
-    result = Result(Sentinel())
-
-    with assert_raises(NotCollectedError):
-        result.statistics  # pylint: disable=pointless-statement
-
-    result = Result(Sentinel(), Statistics())
-    result.statistics  # pylint: disable=pointless-statement
-
-
 @pytest.mark.matplotlib
 @check_figures_equal(extensions=['png'])
 def test_plot_objectives(fig_test, fig_ref):
@@ -202,22 +187,6 @@ def test_plot_operator_counts(fig_test, fig_ref):
     get_operator_plot(fig_ref,
                       result.statistics.destroy_operator_counts,
                       result.statistics.repair_operator_counts)
-
-
-def test_plot_operator_counts_raises_legend():
-    """
-    Tests if the ``plot_operator_counts`` method raises when the passed-in
-    legend is of insufficient length.
-    """
-    result = get_result(Sentinel())
-
-    with assert_raises(ValueError):
-        # Legend should be of length at most four.
-        result.plot_operator_counts(legend=["test"] * 5)
-
-    # This should work.
-    result.plot_operator_counts(legend=["test"] * 2)
-    result.plot_operator_counts(legend=["test"] * 4)
 
 
 @pytest.mark.matplotlib

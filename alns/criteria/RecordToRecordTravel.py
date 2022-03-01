@@ -1,10 +1,14 @@
-from .AcceptanceCriterion import AcceptanceCriterion
-from .update import update
+from alns.criteria.AcceptanceCriterion import AcceptanceCriterion
+from alns.criteria.update import update
 
 
 class RecordToRecordTravel(AcceptanceCriterion):
 
-    def __init__(self, start_threshold, end_threshold, step, method="linear"):
+    def __init__(self,
+                 start_threshold: float,
+                 end_threshold: float,
+                 step: float,
+                 method: str = "linear"):
         """
         Record-to-record travel, using an updating threshold. The threshold is
         updated as,
@@ -17,24 +21,24 @@ class RecordToRecordTravel(AcceptanceCriterion):
 
         Parameters
         ----------
-        start_threshold : float
+        start_threshold
             The initial threshold.
-        end_threshold : float
+        end_threshold
             The final threshold.
-        step : float
+        step
             The updating step.
-        method : str
+        method
             The updating method, one of {'linear', 'exponential'}. Default
             'linear'.
 
         References
         ----------
-        - Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-          criteria for the adaptive large neighbourhood search metaheuristic.
-          *Journal of Heuristics* (2018) 24 (5): 783–815.
-        - Dueck, G., Scheuer, T. Threshold accepting: A general purpose
-          optimization algorithm appearing superior to simulated annealing.
-          *Journal of Computational Physics* (1990) 90 (1): 161-175.
+        [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+             criteria for the adaptive large neighbourhood search metaheuristic.
+             *Journal of Heuristics* (2018) 24 (5): 783–815.
+        [2]: Dueck, G., Scheuer, T. Threshold accepting: A general purpose
+             optimization algorithm appearing superior to simulated annealing.
+             *Journal of Computational Physics* (1990) 90 (1): 161-175.
         """
         if start_threshold < 0 or end_threshold < 0 or step < 0:
             raise ValueError("Thresholds must be positive.")
@@ -55,22 +59,22 @@ class RecordToRecordTravel(AcceptanceCriterion):
         self._threshold = start_threshold
 
     @property
-    def start_threshold(self):
+    def start_threshold(self) -> float:
         return self._start_threshold
 
     @property
-    def end_threshold(self):
+    def end_threshold(self) -> float:
         return self._end_threshold
 
     @property
-    def step(self):
+    def step(self) -> float:
         return self._step
 
     @property
-    def method(self):
+    def method(self) -> str:
         return self._method
 
-    def accept(self, rnd, best, current, candidate):
+    def __call__(self, rnd, best, current, candidate):
         # This follows from the paper by Dueck and Scheueur (1990), p. 162.
         result = (candidate.objective() - best.objective()) <= self._threshold
 

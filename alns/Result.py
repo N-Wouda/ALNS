@@ -1,75 +1,59 @@
+from typing import Any, Dict, List, Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.pyplot import Axes, Figure  # pylint: disable=unused-import
+from matplotlib.pyplot import Axes, Figure
 
-from .State import State  # pylint: disable=unused-import
-from .Statistics import Statistics  # pylint: disable=unused-import
-from .tools.exceptions import NotCollectedError
+from alns.State import State
+from alns.Statistics import Statistics
 
 
 class Result:
 
-    def __init__(self, best, statistics=None):
+    def __init__(self, best: State, statistics: Statistics):
         """
         Stores ALNS results. An instance of this class is returned once the
         algorithm completes.
 
         Parameters
         ----------
-        best : State
+        best
             The best state observed during the entire iteration.
-        statistics : Statistics
-            Statistics optionally collected during iteration.
+        statistics
+            Statistics collected during iteration.
         """
         self._best = best
         self._statistics = statistics
 
     @property
-    def best_state(self):
+    def best_state(self) -> State:
         """
         The best state observed during the entire iteration.
-
-        Returns
-        -------
-        State
-            The associated State object
         """
         return self._best
 
     @property
-    def statistics(self):
+    def statistics(self) -> Statistics:
         """
         The statistics object populated during iteration.
-
-        Raises
-        ------
-        NotCollectedError
-            When statistics were not collected during iteration. This may be
-            remedied by setting the appropriate flag.
-
-        Returns
-        -------
-        Statistics
-            The statistics object.
         """
-        if self._statistics is None:
-            raise NotCollectedError("Statistics were not collected during "
-                                    "iteration.")
-
         return self._statistics
 
-    def plot_objectives(self, ax=None, title=None, **kwargs):
+    def plot_objectives(self,
+                        ax: Optional[Axes] = None,
+                        title: Optional[str] = None,
+                        **kwargs: Dict[str, Any]):
         """
         Plots the collected objective values at each iteration.
 
         Parameters
         ----------
-        ax : Axes
+        ax
             Optional axes argument. If not passed, a new figure and axes are
             constructed.
-        title : str
+        title
             Optional title argument. When not passed, a default is set.
-        kwargs : dict
+        kwargs
             Optional arguments passed to ``ax.plot``.
         """
         if ax is None:
@@ -91,19 +75,22 @@ class Result:
 
         plt.draw_if_interactive()
 
-    def plot_operator_counts(self, figure=None, title=None, legend=None,
-                             **kwargs):
+    def plot_operator_counts(self,
+                             fig: Optional[Figure] = None,
+                             title: Optional[str] = None,
+                             legend: Optional[List[str]] = None,
+                             **kwargs: Dict[str, Any]):
         """
         Plots an overview of the destroy and repair operators' performance.
 
         Parameters
         ----------
-        figure : Figure
+        fig
             Optional figure. If not passed, a new figure is constructed, and
             some default margins are set.
-        title : str
+        title
             Optional figure title. When not passed, no title is set.
-        legend : list
+        legend
             Optional legend entries. When passed, this should be a list of at
             most four strings. The first string describes the number of times
             a best solution was found, the second a better, the third a solution
@@ -112,52 +99,39 @@ class Result:
             than four strings are passed, only the first len(legend) count types
             are plotted. When not passed, a sensible default is set and all
             counts are shown.
-        kwargs : dict
+        kwargs
             Optional arguments passed to each call of ``ax.barh``.
-
-        Raises
-        ------
-        ValueError
-            When the legend contains more than four elements.
         """
-        if figure is None:
-            figure, (d_ax, r_ax) = plt.subplots(nrows=2)
-
-            # Ensures there is generally sufficient white space between the
-            # operator subplots, and we have some space to put the legend. When
-            # a figure is passed-in, these sorts of modifications are assumed
-            # to have been performed at the call site.
-            figure.subplots_adjust(hspace=0.7, bottom=0.2)
+        if fig is None:
+            fig, (d_ax, r_ax) = plt.subplots(nrows=2)
+            fig.subplots_adjust(hspace=0.7, bottom=0.2)
         else:
-            d_ax, r_ax = figure.subplots(nrows=2)
+            d_ax, r_ax = fig.subplots(nrows=2)
 
         if title is not None:
-            figure.suptitle(title)
+            fig.suptitle(title)
 
         if legend is None:
             legend = ["Best", "Better", "Accepted", "Rejected"]
-        elif len(legend) > 4:
-            raise ValueError("Legend not understood. Expected at most 4 items,"
-                             " found {0}.".format(len(legend)))
 
-        self._plot_operator_counts(d_ax,
-                                   self.statistics.destroy_operator_counts,
-                                   "Destroy operators",
-                                   len(legend),
-                                   **kwargs)
+        self._plot_op_counts(d_ax,
+                             self.statistics.destroy_operator_counts,
+                             "Destroy operators",
+                             min(len(legend), 4),
+                             **kwargs)
 
-        self._plot_operator_counts(r_ax,
-                                   self.statistics.repair_operator_counts,
-                                   "Repair operators",
-                                   len(legend),
-                                   **kwargs)
+        self._plot_op_counts(r_ax,
+                             self.statistics.repair_operator_counts,
+                             "Repair operators",
+                             min(len(legend), 4),
+                             **kwargs)
 
-        figure.legend(legend, ncol=len(legend), loc="lower center")
+        fig.legend(legend[:4], ncol=len(legend), loc="lower center")
 
         plt.draw_if_interactive()
 
     @staticmethod
-    def _plot_operator_counts(ax, operator_counts, title, num_types, **kwargs):
+    def _plot_op_counts(ax, operator_counts, title, num_types, **kwargs):
         """
         Internal helper that plots the passed-in operator_counts on the given
         ax object.

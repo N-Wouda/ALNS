@@ -11,9 +11,25 @@ meta-heuristic, based on the description given in [Pisinger and Ropke
 pip install alns
 ```
 
-## How to use
-_See also the examples below!_
+### Examples
+If you wish to dive right in, the `examples/` directory contains example notebooks
+showing how the ALNS library may be used. These include:
 
+- The travelling salesman problem (TSP), [here][2]. We solve an
+  instance of 131 cities to within 2.1% of optimality, using simple
+  destroy and repair heuristics with a post-processing step.
+- The cutting-stock problem (CSP), [here][4]. We solve an instance with
+  180 beams over 165 distinct sizes to within 1.35% of optimality in
+  only a very limited number of iterations.
+- The resource-constrained project scheduling problem, [here][6]. TODO
+
+Finally, the weight schemes and acceptance criteria notebook gives an overview
+of various options available in the `alns` package (explained below). In the
+notebook we use these different options to solve a toy 0/1-knapsack problem. The
+notebook is a good starting point for when you want to use the different schemes
+and criteria yourself. It is available [here][5].
+
+## How to use
 The `alns` package exposes two classes, `ALNS` and `State`. The first
 may be used to run the ALNS algorithm, the second may be subclassed to
 store a solution state - all it requires is to define an `objective`
@@ -54,24 +70,6 @@ each iteration. An overview of common acceptance criteria is given in
 
 Each acceptance criterion inherits from `AcceptanceCriterion`, which may
 be used to write your own.
-
-### Examples
-The `examples/` directory features some example notebooks showcasing
-how the ALNS library may be used. These include:
-
-- The travelling salesman problem (TSP), [here][2]. We solve an
-  instance of 131 cities to within 2.1% of optimality, using simple
-  destroy and repair heuristics with a post-processing step.
-- The cutting-stock problem (CSP), [here][4]. We solve an instance with
-  180 beams over 165 distinct sizes to within 1.35% of optimality in
-  only a very limited number of iterations.
-- The resource-constrained project scheduling problem, [here][6]. TODO
-
-Finally, the weight schemes and acceptance criteria notebook gives an overview
-of various options available in the `alns` package. In the notebook we use these
-different options to solve a toy 0/1-knapsack problem. The notebook is a good
-starting point for when you want to use the different schemes and criteria 
-yourself. It is available [here][5].
 
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.

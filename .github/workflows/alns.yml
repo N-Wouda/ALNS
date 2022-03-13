@@ -32,6 +32,7 @@ jobs:
       - name: Run static analysis
         run: |
           poetry run mypy alns
+      - uses: codecov/codecov-action@v2
   deploy:
     needs: build
     if: github.event_name == 'release' && github.event.action == 'created'

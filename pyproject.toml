@@ -59,7 +59,7 @@ markers = [
     "matplotlib: test related to matplotlib functionality.",
 ]
 
-addopts = "--cov=. --cov-config .coveragerc"
+addopts = "--cov=. --cov-report=xml"
 
 
 

@@ -1,0 +1,55 @@
+name: ALNS
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.7', '3.8', '3.9', '3.10' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+      - name: Run tests
+        run: |
+          poetry run pytest
+          poetry run mypy alns
+      - name: Run static analysis
+        run: |
+          poetry run mypy alns
+      - uses: codecov/codecov-action@v2
+  deploy:
+    needs: build
+    if: github.event_name == 'release' && github.event.action == 'created'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install
+      - name: Deploy to PyPI
+        run: |
+          poetry config http-basic.pypi ${{ secrets.PYPI_USER }} ${{ secrets.PYPI_PASS }}
+          poetry build
+          poetry publish

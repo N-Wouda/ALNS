@@ -6,7 +6,6 @@ This package offers a general, well-documented and tested
 implementation of the adaptive large neighbourhood search (ALNS)
 meta-heuristic, based on the description given in [Pisinger and Ropke
 (2010)][1]. It may be installed in the usual way as
-
 ```
 pip install alns
 ```
@@ -21,7 +20,10 @@ showing how the ALNS library may be used. These include:
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with
   180 beams over 165 distinct sizes to within 1.35% of optimality in
   only a very limited number of iterations.
-- The resource-constrained project scheduling problem, [here][6]. TODO
+- The resource-constrained project scheduling problem, [here][6]. We solve an
+  instance with 90 jobs and 4 resources to within 4% of the best known solution,
+  using a number of different operators and enhancement techniques from the 
+  literature.
 
 Finally, the weight schemes and acceptance criteria notebook gives an overview
 of various options available in the `alns` package (explained below). In the

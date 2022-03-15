@@ -50,6 +50,6 @@ jobs:
           poetry install
       - name: Deploy to PyPI
         run: |
-          poetry config http-basic.pypi ${{ secrets.PYPI_USER }} ${{ secrets.PYPI_PASS }}
+          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
           poetry build
           poetry publish

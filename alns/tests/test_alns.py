@@ -72,7 +72,7 @@ def test_add_destroy_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_destroy_operator(lambda state, rnd: None, name=str(count))
+        alns.add_destroy_operator(lambda state, rnd: state, name=str(count))
         assert_equal(len(alns.destroy_operators), count)
 
 
@@ -103,7 +103,7 @@ def test_add_repair_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_repair_operator(lambda state, rnd: None, name=str(count))
+        alns.add_repair_operator(lambda state, rnd: state, name=str(count))
         assert_equal(len(alns.repair_operators), count)
 
 
@@ -175,6 +175,21 @@ def test_raises_negative_iterations():
     result = alns.iterate(initial_solution, weights, HillClimbing(), 0)
 
     assert_(result.best_state is initial_solution)
+
+
+def test_iterate_kwargs_are_correctly_passed_to_operators():
+
+    def test_operator(state, rnd, item):
+        assert_(item is orig_item)
+        return state
+
+    alns = get_alns_instance([lambda state, rnd, item: state], [test_operator])
+
+    init_sol = One()
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    orig_item = object()
+
+    alns.iterate(init_sol, weights, HillClimbing(), 10, item=orig_item)
 
 
 # EXAMPLES ---------------------------------------------------------------------

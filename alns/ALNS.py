@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import numpy.random as rnd
 
@@ -14,7 +14,7 @@ _BETTER = 1
 _ACCEPT = 2
 _REJECT = 3
 
-_OperatorType = Callable[[State, rnd.RandomState], State]
+_OperatorType = Callable[[State, rnd.RandomState, Any], State]
 
 
 class ALNS:
@@ -108,7 +108,8 @@ class ALNS:
                 initial_solution: State,
                 weight_scheme: WeightScheme,
                 crit: AcceptanceCriterion,
-                iterations: int = 10_000) -> Result:
+                iterations: int = 10_000,
+                **kwargs) -> Result:
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -127,6 +128,9 @@ class ALNS:
             the ``alns.criteria`` module for an overview.
         iterations
             The number of iterations. Default 10_000.
+        **kwargs
+            Optional keyword arguments. These are passed to the operators,
+            including callbacks.
 
         Raises
         ------
@@ -165,8 +169,8 @@ class ALNS:
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
 
-            destroyed = d_operator(curr, self._rnd_state)
-            cand = r_operator(destroyed, self._rnd_state)
+            destroyed = d_operator(curr, self._rnd_state, **kwargs)
+            cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
             best, curr, s_idx = self._consider_candidate(crit, best, curr, cand)
 
@@ -197,7 +201,8 @@ class ALNS:
             crit: AcceptanceCriterion,
             best: State,
             curr: State,
-            cand: State
+            cand: State,
+            **kwargs
     ) -> Tuple[State, State, int]:
         """
         Considers the candidate solution by comparing it against the best and
@@ -218,7 +223,7 @@ class ALNS:
 
         if cand.objective() < best.objective():  # candidate is new best
             if self._on_best:
-                cand = self._on_best(cand, self._rnd_state)
+                cand = self._on_best(cand, self._rnd_state, **kwargs)
 
             return cand, cand, _BEST
 

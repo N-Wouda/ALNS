@@ -28,7 +28,6 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest
-          poetry run mypy alns
       - name: Run static analysis
         run: |
           poetry run mypy alns

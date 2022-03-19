@@ -14,7 +14,9 @@ _BETTER = 1
 _ACCEPT = 2
 _REJECT = 3
 
-_OperatorType = Callable[[State, rnd.RandomState, Any], State]
+# TODO this should become a Protocol to allow for kwargs. See also this issue:
+#  https://stackoverflow.com/q/61569324/4316405.
+_OperatorType = Callable[[State, rnd.RandomState], State]
 
 
 class ALNS:

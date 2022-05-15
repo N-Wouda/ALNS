@@ -33,12 +33,12 @@ def test_collect_runtimes():
     """
     statistics = Statistics()
 
-    for time in range(1, 100):
+    for time in range(100):
         statistics.collect_runtime(time)
 
-    assert_equal(len(statistics.runtimes), time)
-    assert_almost_equal(statistics.runtimes[0], 0)
-    assert_allclose(statistics.runtimes[1:], 1)
+    # 100 - 1, since the first runtime is assumed to be the start time.
+    assert_equal(len(statistics.runtimes), 99)
+    assert_allclose(statistics.runtimes, 1)  # steps of one
 
 
 def test_collect_destroy_counts_example():

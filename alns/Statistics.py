@@ -29,7 +29,7 @@ class Statistics:
         """
         Returns an array of iteration run times (in seconds).
         """
-        return np.diff(self._runtimes, prepend=self._runtimes[0])
+        return np.diff(self._runtimes)
 
     @property
     def destroy_operator_counts(self) -> DefaultDict[str, List[float]]:

@@ -12,6 +12,7 @@ class Statistics:
         optionally populated by the ALNS algorithm.
         """
         self._objectives = []
+        self._runtimes = []
 
         self._destroy_operator_counts = defaultdict(lambda: [0, 0, 0, 0])
         self._repair_operator_counts = defaultdict(lambda: [0, 0, 0, 0])
@@ -22,6 +23,13 @@ class Statistics:
         Returns an array of previous objective values, tracking progress.
         """
         return np.array(self._objectives)
+
+    @property
+    def runtimes(self) -> np.ndarray:
+        """
+        Returns an array of iteration run times (in seconds).
+        """
+        return np.diff(self._runtimes, prepend=self._runtimes[0])
 
     @property
     def destroy_operator_counts(self) -> DefaultDict[str, List[float]]:
@@ -61,6 +69,17 @@ class Statistics:
             The objective value to be collected.
         """
         self._objectives.append(objective)
+
+    def collect_runtime(self, time: float):
+        """
+        Collects the time one iteration took.
+
+        Parameters
+        ----------
+        time
+            Time in seconds.
+        """
+        self._runtimes.append(time)
 
     def collect_destroy_operator(self, operator_name: str, s_idx: int):
         """

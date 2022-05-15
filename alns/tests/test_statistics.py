@@ -1,4 +1,4 @@
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 
 from alns.Statistics import Statistics
 
@@ -25,6 +25,20 @@ def test_collect_objectives():
 
         assert_equal(len(statistics.objectives), objective)
         assert_almost_equal(statistics.objectives[-1], objective)
+
+
+def test_collect_runtimes():
+    """
+    Tests if a Statistics object properly collects runtime values.
+    """
+    statistics = Statistics()
+
+    for time in range(1, 100):
+        statistics.collect_runtime(time)
+
+    assert_equal(len(statistics.runtimes), time)
+    assert_almost_equal(statistics.runtimes[0], 0)
+    assert_allclose(statistics.runtimes[1:], 1)
 
 
 def test_collect_destroy_counts_example():

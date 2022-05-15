@@ -1,3 +1,4 @@
+import time
 from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy.random as rnd
@@ -164,6 +165,7 @@ class ALNS:
 
         stats = Statistics()
         stats.collect_objective(initial_solution.objective())
+        stats.collect_runtime(time.perf_counter())
 
         for iteration in range(iterations):
             d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)
@@ -181,6 +183,7 @@ class ALNS:
             stats.collect_objective(curr.objective())
             stats.collect_destroy_operator(d_name, s_idx)
             stats.collect_repair_operator(r_name, s_idx)
+            stats.collect_runtime(time.perf_counter())
 
         return Result(best, stats)
 

@@ -192,6 +192,25 @@ def test_iterate_kwargs_are_correctly_passed_to_operators():
     alns.iterate(init_sol, weights, HillClimbing(), 10, item=orig_item)
 
 
+def test_bugfix_pass_kwargs_to_on_best():
+    """
+    Exercises a bug where the on_best callback did not receive the kwargs passed
+    to iterate().
+    """
+    def test_operator(state, rnd, item):
+        assert_(item is orig_item)
+        return Zero()  # better, so on_best is triggered
+
+    alns = get_alns_instance([lambda state, rnd, item: state], [test_operator])
+    alns.on_best(lambda state, rnd, item: state)
+
+    init_sol = One()
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    orig_item = object()
+
+    alns.iterate(init_sol, weights, HillClimbing(), 10, item=orig_item)
+
+
 # EXAMPLES ---------------------------------------------------------------------
 
 

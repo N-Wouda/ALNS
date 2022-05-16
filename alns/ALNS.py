@@ -176,7 +176,11 @@ class ALNS:
             destroyed = d_operator(curr, self._rnd_state, **kwargs)
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
-            best, curr, s_idx = self._consider_candidate(crit, best, curr, cand)
+            best, curr, s_idx = self._eval_cand(crit,
+                                                best,
+                                                curr,
+                                                cand,
+                                                **kwargs)
 
             weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
@@ -201,7 +205,7 @@ class ALNS:
         """
         self._on_best = func
 
-    def _consider_candidate(
+    def _eval_cand(
             self,
             crit: AcceptanceCriterion,
             best: State,

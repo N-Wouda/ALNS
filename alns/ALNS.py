@@ -8,6 +8,7 @@ from alns.State import State
 from alns.Statistics import Statistics
 from alns.criteria import AcceptanceCriterion
 from alns.weight_schemes import WeightScheme
+from alns.stopping_criteria import StoppingCriterion
 
 # Potential candidate solution consideration outcomes.
 _BEST = 0
@@ -21,7 +22,6 @@ _OperatorType = Callable[[State, rnd.RandomState], State]
 
 
 class ALNS:
-
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
         """
         Implements the adaptive large neighbourhood search (ALNS) algorithm.
@@ -107,12 +107,14 @@ class ALNS:
         """
         self._repair_operators[name if name else op.__name__] = op
 
-    def iterate(self,
-                initial_solution: State,
-                weight_scheme: WeightScheme,
-                crit: AcceptanceCriterion,
-                iterations: int = 10_000,
-                **kwargs) -> Result:
+    def iterate(
+        self,
+        initial_solution: State,
+        weight_scheme: WeightScheme,
+        crit: AcceptanceCriterion,
+        stop: StoppingCriterion,
+        **kwargs,
+    ) -> Result:
         """
         Runs the adaptive large neighbourhood search heuristic [1], using the
         previously set destroy and repair operators. The first solution is set
@@ -129,8 +131,10 @@ class ALNS:
         crit
             The acceptance criterion to use for candidate states. See also
             the ``alns.criteria`` module for an overview.
-        iterations
-            The number of iterations. Default 10_000.
+        stop
+            The stopping criterion to use for stopping the iterations.
+            See also the ``alns.stopping_criteria`` module for an overview.
+
         **kwargs
             Optional keyword arguments. These are passed to the operators,
             including callbacks.
@@ -158,16 +162,13 @@ class ALNS:
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing at least one destroy or repair operator.")
 
-        if iterations < 0:
-            raise ValueError("Negative number of iterations.")
-
         curr = best = initial_solution
 
         stats = Statistics()
         stats.collect_objective(initial_solution.objective())
         stats.collect_runtime(time.perf_counter())
 
-        for iteration in range(iterations):
+        while not stop(best, curr):
             d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)
 
             d_name, d_operator = self.destroy_operators[d_idx]
@@ -176,11 +177,7 @@ class ALNS:
             destroyed = d_operator(curr, self._rnd_state, **kwargs)
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
-            best, curr, s_idx = self._eval_cand(crit,
-                                                best,
-                                                curr,
-                                                cand,
-                                                **kwargs)
+            best, curr, s_idx = self._eval_cand(crit, best, curr, cand, **kwargs)
 
             weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
@@ -206,12 +203,7 @@ class ALNS:
         self._on_best = func
 
     def _eval_cand(
-            self,
-            crit: AcceptanceCriterion,
-            best: State,
-            curr: State,
-            cand: State,
-            **kwargs
+        self, crit: AcceptanceCriterion, best: State, curr: State, cand: State, **kwargs
     ) -> Tuple[State, State, int]:
         """
         Considers the candidate solution by comparing it against the best and

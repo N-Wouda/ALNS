@@ -5,7 +5,7 @@ from alns.stopping_criteria.StoppingCriterion import StoppingCriterion
 
 
 class MaxIterations(StoppingCriterion):
-    def __init__(self, max_iterations: int) -> None:
+    def __init__(self, max_iterations: int):
         """
         Criterion that stops after a maximum number of iterations.
         """
@@ -19,11 +19,7 @@ class MaxIterations(StoppingCriterion):
     def max_iterations(self) -> int:
         return self._max_iterations
 
-    @property
-    def current_iteration(self) -> int:
-        return self._current_iteration
-
     def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
         self._current_iteration += 1
 
-        return self.current_iteration > self.max_iterations
+        return self._current_iteration > self.max_iterations

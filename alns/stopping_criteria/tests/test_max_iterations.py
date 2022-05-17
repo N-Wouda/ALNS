@@ -33,23 +33,6 @@ def test_max_iterations(max_iterations):
     assert stop.max_iterations == max_iterations
 
 
-@pytest.mark.parametrize(
-    "max_iterations, iterations", [(1, 0), (1000, 500), (0, 100)]
-)
-def test_current_iteration(max_iterations: int, iterations: int):
-    """
-    Test if the current iteration parameter is correctly set.
-    """
-    stop = MaxIterations(max_iterations)
-    rnd = RandomState()
-    assert_(stop.current_iteration == 0)
-
-    for _ in range(iterations):
-        stop(rnd, Zero(), Zero())
-
-    assert_(stop.current_iteration == iterations)
-
-
 def test_before_max_iterations():
     stop = MaxIterations(100)
     rnd = RandomState(0)

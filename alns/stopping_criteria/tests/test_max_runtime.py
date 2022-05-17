@@ -46,20 +46,6 @@ def test_max_runtime(max_runtime):
     assert_(stop.max_runtime, max_runtime)
 
 
-@pytest.mark.parametrize("target_runtime", [0.01, 0.05, 0.1])
-def test_elapsed_runtime(target_runtime):
-    """
-    Test if the elapsed time parameter is correctly set.
-    """
-    stop = MaxRuntime(100)
-
-    stop(RandomState(), Zero(), Zero())
-    sleep(target_runtime)
-    stop(RandomState(), Zero(), Zero())
-
-    assert_almost_equal(stop.elapsed_runtime, target_runtime, decimal=3)
-
-
 @pytest.mark.parametrize("max_runtime", [0.01, 0.05, 0.10])
 def test_before_max_runtime(max_runtime):
     stop = MaxRuntime(max_runtime)

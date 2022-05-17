@@ -1,7 +1,7 @@
 import pytest
 
 from numpy.testing import assert_, assert_raises
-from .. import MaxIterations
+from alns.stopping_criteria import MaxIterations
 
 
 @pytest.mark.parametrize("max_iterations", [-1, -42, -10000])

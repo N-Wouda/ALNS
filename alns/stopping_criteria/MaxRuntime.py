@@ -7,10 +7,10 @@ from alns.stopping_criteria.StoppingCriterion import StoppingCriterion
 class MaxRuntime(StoppingCriterion):
     def __init__(self, max_runtime: int) -> None:
         """
-        Criterion that stops after a maximum number of iterations.
+        Criterion that stops after a specified maximum runtime.
         """
         if max_runtime < 0:
-            raise ValueError("Max iterations must be non-negative.")
+            raise ValueError("Max runtime must be non-negative.")
 
         self._max_runtime = max_runtime
         self._elapsed_runtime = None

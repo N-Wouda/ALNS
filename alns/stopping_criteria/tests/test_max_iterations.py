@@ -1,7 +1,9 @@
 import pytest
 
 from numpy.testing import assert_, assert_raises
+
 from alns.stopping_criteria import MaxIterations
+from alns.tests.states import Zero
 
 
 @pytest.mark.parametrize("max_iterations", [-1, -42, -10000])
@@ -40,7 +42,7 @@ def test_current_iteration(max_iterations: int, iterations: int):
     assert_(stop.current_iteration == 0)
 
     for _ in range(iterations):
-        stop()
+        stop(Zero(), Zero())
 
     assert_(stop.current_iteration == iterations)
 
@@ -49,14 +51,14 @@ def test_before_max_iterations():
     stop = MaxIterations(100)
 
     for _ in range(100):
-        assert_(not stop())
+        assert_(not stop(Zero(), Zero()))
 
 
 def test_after_max_iterations():
     stop = MaxIterations(100)
 
     for _ in range(100):
-        stop()
+        stop(Zero(), Zero())
 
     for _ in range(100):
-        assert_(stop())
+        assert_(stop(Zero(), Zero()))

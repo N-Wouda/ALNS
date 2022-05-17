@@ -1,6 +1,7 @@
 import time
 
-from .StoppingCriterion import StoppingCriterion
+from alns.State import State
+from alns.stopping_criteria.StoppingCriterion import StoppingCriterion
 
 
 class MaxRuntime(StoppingCriterion):
@@ -33,7 +34,7 @@ class MaxRuntime(StoppingCriterion):
 
         return self._start_runtime
 
-    def __call__(self) -> bool:
+    def __call__(self, best: State, current: State) -> bool:
         # Reverse evaluation order to ensure that start_runtime is called first.
         self._elapsed_runtime = -(self.start_runtime - time.perf_counter())
 

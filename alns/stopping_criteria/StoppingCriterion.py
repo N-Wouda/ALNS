@@ -11,9 +11,16 @@ class StoppingCriterion(ABC):
     """
 
     @abstractmethod
-    def __call__(self) -> bool:
+    def __call__(self, best: State, current: State) -> bool:
         """
         Determines whether to stop based on the implemented stopping criterion.
+
+        Parameters
+        ----------
+        best
+            The best solution state observed so far.
+        current
+            The current solution state.
 
         Returns
         -------

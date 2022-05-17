@@ -1,3 +1,4 @@
+from alns.State import State
 from alns.stopping_criteria.StoppingCriterion import StoppingCriterion
 
 
@@ -20,7 +21,7 @@ class MaxIterations(StoppingCriterion):
     def current_iteration(self) -> int:
         return self._current_iteration
 
-    def __call__(self) -> bool:
+    def __call__(self, best: State, current: State) -> bool:
         self._current_iteration += 1
 
         return self.current_iteration > self.max_iterations

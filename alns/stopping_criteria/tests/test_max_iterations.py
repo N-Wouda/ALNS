@@ -32,7 +32,9 @@ def test_max_iterations(max_iterations):
     assert stop.max_iterations == max_iterations
 
 
-@pytest.mark.parametrize("max_iterations, iterations", [(1, 0), (1000, 500), (0, 100)])
+@pytest.mark.parametrize(
+    "max_iterations, iterations", [(1, 0), (1000, 500), (0, 100)]
+)
 def test_current_iteration(max_iterations: int, iterations: int):
     """
     Test if the current iteration parameter is correctly set.

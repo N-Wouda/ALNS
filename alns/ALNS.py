@@ -160,7 +160,9 @@ class ALNS:
         Operational Research*, 171: 750–775, 2006.
         """
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
-            raise ValueError("Missing at least one destroy or repair operator.")
+            raise ValueError(
+                "Missing at least one destroy or repair operator."
+            )
 
         curr = best = initial_solution
 
@@ -177,7 +179,9 @@ class ALNS:
             destroyed = d_operator(curr, self._rnd_state, **kwargs)
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
-            best, curr, s_idx = self._eval_cand(crit, best, curr, cand, **kwargs)
+            best, curr, s_idx = self._eval_cand(
+                crit, best, curr, cand, **kwargs
+            )
 
             weight_scheme.update_weights(d_idx, r_idx, s_idx)
 
@@ -203,7 +207,12 @@ class ALNS:
         self._on_best = func
 
     def _eval_cand(
-        self, crit: AcceptanceCriterion, best: State, curr: State, cand: State, **kwargs
+        self,
+        crit: AcceptanceCriterion,
+        best: State,
+        curr: State,
+        cand: State,
+        **kwargs,
     ) -> Tuple[State, State, int]:
         """
         Considers the candidate solution by comparing it against the best and

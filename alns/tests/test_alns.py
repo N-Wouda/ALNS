@@ -163,13 +163,16 @@ def test_zero_max_iterations():
     Test that the algorithm return the initial solution when the
     stopping criterion is zero max iterations.
     """
-    alns = get_alns_instance([lambda state, rnd: None],
-                             [lambda state, rnd: None])
+    alns = get_alns_instance(
+        [lambda state, rnd: None], [lambda state, rnd: None]
+    )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
 
-    result = alns.iterate(initial_solution, weights, HillClimbing(), MaxIterations(0))
+    result = alns.iterate(
+        initial_solution, weights, HillClimbing(), MaxIterations(0)
+    )
 
     assert_(result.best_state is initial_solution)
 
@@ -179,19 +182,21 @@ def test_zero_max_runtime():
     Test that the algorithm return the initial solution when the
     stopping criterion is zero max runtime.
     """
-    alns = get_alns_instance([lambda state, rnd: None],
-                             [lambda state, rnd: None])
+    alns = get_alns_instance(
+        [lambda state, rnd: None], [lambda state, rnd: None]
+    )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
 
-    result = alns.iterate(initial_solution, weights, HillClimbing(), MaxRuntime(0))
+    result = alns.iterate(
+        initial_solution, weights, HillClimbing(), MaxRuntime(0)
+    )
 
     assert_(result.best_state is initial_solution)
 
 
 def test_iterate_kwargs_are_correctly_passed_to_operators():
-
     def test_operator(state, rnd, item):
         assert_(item is orig_item)
         return state
@@ -210,6 +215,7 @@ def test_bugfix_pass_kwargs_to_on_best():
     Exercises a bug where the on_best callback did not receive the kwargs passed
     to iterate().
     """
+
     def test_operator(state, rnd, item):
         assert_(item is orig_item)
         return Zero()  # better, so on_best is triggered
@@ -218,10 +224,12 @@ def test_bugfix_pass_kwargs_to_on_best():
     alns.on_best(lambda state, rnd, item: state)
 
     init_sol = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
     orig_item = object()
 
-    alns.iterate(init_sol, weights, HillClimbing(), MaxIterations(10), item=orig_item)
+    alns.iterate(
+        init_sol, weights, HillClimbing(), MaxIterations(10), item=orig_item
+    )
 
 
 # EXAMPLES ---------------------------------------------------------------------
@@ -232,10 +240,11 @@ def test_trivial_example():
     This tests the ALNS algorithm on a trivial example, where the initial
     solution is one, and any other operator returns zero.
     """
-    alns = get_alns_instance([lambda state, rnd: Zero()],
-                             [lambda state, rnd: Zero()])
+    alns = get_alns_instance(
+        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+    )
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
     result = alns.iterate(One(), weights, HillClimbing(), MaxIterations(100))
 
     assert_equal(result.best_state.objective(), 0)
@@ -250,10 +259,11 @@ def test_fixed_seed_outcomes(seed: int, desired: float):
     alns = get_alns_instance(
         [lambda state, rnd: ValueState(rnd.random_sample())],
         [lambda state, rnd: None],
-        seed)
+        seed,
+    )
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
-    sa = SimulatedAnnealing(1, .25, 1 / 100)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    sa = SimulatedAnnealing(1, 0.25, 1 / 100)
 
     result = alns.iterate(One(), weights, sa, MaxIterations(100))
     assert_almost_equal(result.best_state.objective(), desired, decimal=5)
@@ -264,13 +274,19 @@ def test_nonnegative_max_iterations(max_iterations):
     """
     Test that the result statistics have size equal to max iterations (+1).
     """
-    alns = get_alns_instance([lambda state, rnd: Zero()],
-                             [lambda state, rnd: Zero()])
+    alns = get_alns_instance(
+        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+    )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
 
-    result = alns.iterate(initial_solution, weights, HillClimbing(), MaxIterations(max_iterations))
+    result = alns.iterate(
+        initial_solution,
+        weights,
+        HillClimbing(),
+        MaxIterations(max_iterations),
+    )
 
     assert_equal(len(result.statistics.objectives), max_iterations + 1)
     assert_equal(len(result.statistics.runtimes), max_iterations)
@@ -281,15 +297,20 @@ def test_nonnegative_max_runtime(max_runtime):
     """
     Test that the result runtime statistics correspond to the stopping criterion.
     """
-    alns = get_alns_instance([lambda state, rnd: Zero()],
-                             [lambda state, rnd: Zero()])
+    alns = get_alns_instance(
+        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+    )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
 
-    result = alns.iterate(initial_solution, weights, HillClimbing(), MaxRuntime(max_runtime))
+    result = alns.iterate(
+        initial_solution, weights, HillClimbing(), MaxRuntime(max_runtime)
+    )
 
-    assert_almost_equal(sum(result.statistics.runtimes), max_runtime, decimal=3)
+    assert_almost_equal(
+        sum(result.statistics.runtimes), max_runtime, decimal=3
+    )
 
 
 # TODO test more complicated examples?

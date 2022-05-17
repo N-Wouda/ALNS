@@ -170,7 +170,7 @@ class ALNS:
         stats.collect_objective(initial_solution.objective())
         stats.collect_runtime(time.perf_counter())
 
-        while not stop(rnd, best, curr):
+        while not stop(self._rnd_state, best, curr):
             d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)
 
             d_name, d_operator = self.destroy_operators[d_idx]

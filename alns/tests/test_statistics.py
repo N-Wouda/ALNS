@@ -41,6 +41,31 @@ def test_collect_runtimes():
     assert_allclose(statistics.runtimes, 1)  # steps of one
 
 
+def test_start_time():
+    """
+    Tests if the reference start time parameter is correctly set.
+    """
+    statistics = Statistics()
+
+    for time in range(1):
+        statistics.collect_runtime(time)
+
+    assert_equal(statistics.start_time, 0)
+
+
+def test_total_runtime():
+    """
+    Tests if the total runtime parameter is correctly set.
+    """
+    statistics = Statistics()
+
+    for time in range(100):
+        statistics.collect_runtime(time)
+
+    assert_equal(statistics.total_runtime, 99)
+
+
+
 def test_collect_destroy_counts_example():
     """
     Tests if collecting for a destroy operator works as expected in a simple

@@ -1,5 +1,6 @@
 import pytest
 
+from numpy.random import RandomState
 from numpy.testing import assert_, assert_raises
 
 from alns.stopping_criteria import MaxIterations
@@ -40,27 +41,29 @@ def test_current_iteration(max_iterations: int, iterations: int):
     Test if the current iteration parameter is correctly set.
     """
     stop = MaxIterations(max_iterations)
-
+    rnd = RandomState()
     assert_(stop.current_iteration == 0)
 
     for _ in range(iterations):
-        stop(Zero(), Zero())
+        stop(rnd, Zero(), Zero())
 
     assert_(stop.current_iteration == iterations)
 
 
 def test_before_max_iterations():
     stop = MaxIterations(100)
+    rnd = RandomState(0)
 
     for _ in range(100):
-        assert_(not stop(Zero(), Zero()))
+        assert_(not stop(rnd, Zero(), Zero()))
 
 
 def test_after_max_iterations():
     stop = MaxIterations(100)
+    rnd = RandomState()
 
     for _ in range(100):
-        stop(Zero(), Zero())
+        stop(rnd, Zero(), Zero())
 
     for _ in range(100):
-        assert_(stop(Zero(), Zero()))
+        assert_(stop(rnd, Zero(), Zero()))

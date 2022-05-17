@@ -292,7 +292,7 @@ def test_nonnegative_max_iterations(max_iterations):
     assert_equal(len(result.statistics.runtimes), max_iterations)
 
 
-@mark.parametrize("max_runtime", [0.1, 0.5, 1])
+@mark.parametrize("max_runtime", [0.01, 0.05, 0.1])
 def test_nonnegative_max_runtime(max_runtime):
     """
     Test that the result runtime statistics correspond to the stopping criterion.

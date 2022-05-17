@@ -11,12 +11,14 @@ class StoppingCriterion(ABC):
     """
 
     @abstractmethod
-    def __call__(self, best: State, current: State) -> bool:
+    def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
         """
         Determines whether to stop based on the implemented stopping criterion.
 
         Parameters
         ----------
+        rnd
+            May be used to draw random numbers from.
         best
             The best solution state observed so far.
         current

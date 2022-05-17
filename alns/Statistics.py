@@ -25,6 +25,20 @@ class Statistics:
         return np.array(self._objectives)
 
     @property
+    def start_time(self) -> float:
+        """
+        Return the reference start time to compute the runtimes.
+        """
+        return self._runtimes[0]
+
+    @property
+    def total_runtime(self) -> float:
+        """
+        Return the total runtime (in seconds).
+        """
+        return self._runtimes[-1] - self._runtimes[0]
+
+    @property
     def runtimes(self) -> np.ndarray:
         """
         Returns an array of iteration run times (in seconds).

@@ -15,7 +15,7 @@ If you wish to dive right in, the `examples/` directory contains example noteboo
 showing how the ALNS library may be used. These include:
 
 - The travelling salesman problem (TSP), [here][2]. We solve an
-  instance of 131 cities to within 2.1% of optimality, using simple
+  instance of 131 cities to within 2% of optimality, using simple
   destroy and repair heuristics with a post-processing step.
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with
   180 beams over 165 distinct sizes to within 1.35% of optimality in

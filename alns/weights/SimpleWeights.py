@@ -4,28 +4,30 @@ from .WeightScheme import WeightScheme
 
 
 class SimpleWeights(WeightScheme):
+    """
+    A simple weighting scheme, where the operator weights are adjusted
+    continuously throughout the algorithm runs. This works as follows.
+    In each iteration, the old weight is updated with a score based on a
+    convex combination of the existing weight and the new score, as:
 
-    def __init__(self,
-                 scores: List[float],
-                 num_destroy: int,
-                 num_repair: int,
-                 op_decay: float):
-        """
-        A simple weighting scheme, where the operator weights are adjusted
-        continuously throughout the algorithm runs. This works as follows.
-        In each iteration, the old weight is updated with a score based on a
-        convex combination of the existing weight and the new score, as:
+    ``new_weight = op_decay * old_weight + (1 - op_decay) * score``
 
-        ``new_weight = op_decay * old_weight + (1 - op_decay) * score``
+    Parameters
+    ----------
+    (other arguments are explained in ``WeightScheme``)
 
-        Parameters
-        ----------
-        (other arguments are explained in ``WeightScheme``)
+    op_decay
+        Decay parameter in [0, 1]. This parameter is used to weigh the
+        running performance of each operator.
+    """
 
-        op_decay
-            Decay parameter in [0, 1]. This parameter is used to weigh the
-            running performance of each operator.
-        """
+    def __init__(
+        self,
+        scores: List[float],
+        num_destroy: int,
+        num_repair: int,
+        op_decay: float,
+    ):
         super().__init__(scores, num_destroy, num_repair)
 
         if not (0 <= op_decay <= 1):

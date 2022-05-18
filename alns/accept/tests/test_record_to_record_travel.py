@@ -10,13 +10,13 @@ def test_raises_negative_parameters():
     Record-to-record travel does not work with negative parameters, so those
     should not be accepted.
     """
-    with assert_raises(ValueError):         # start threshold cannot be
-        RecordToRecordTravel(-1, 1, 1)      # negative
+    with assert_raises(ValueError):  # start threshold cannot be negative
+        RecordToRecordTravel(-1, 1, 1)
 
-    with assert_raises(ValueError):         # nor can the end threshold
+    with assert_raises(ValueError):  # nor can the end threshold
         RecordToRecordTravel(1, -1, 1)
 
-    with assert_raises(ValueError):         # nor the updating step
+    with assert_raises(ValueError):  # nor the updating step
         RecordToRecordTravel(1, 1, -1)
 
 
@@ -28,7 +28,7 @@ def test_raises_explosive_step():
     with assert_raises(ValueError):
         RecordToRecordTravel(2, 1, 2, "exponential")
 
-    RecordToRecordTravel(2, 1, 1, "exponential")    # boundary should be fine
+    RecordToRecordTravel(2, 1, 1, "exponential")  # boundary should be fine
 
 
 def test_threshold_boundary():
@@ -47,7 +47,7 @@ def test_raises_start_smaller_than_end():
     with assert_raises(ValueError):
         RecordToRecordTravel(0, 1, 1)
 
-    RecordToRecordTravel(1, 1, 1)           # should not raise for equality
+    RecordToRecordTravel(1, 1, 1)  # should not raise for equality
 
 
 def test_does_not_raise():
@@ -123,4 +123,3 @@ def test_exponential_threshold_update():
     # second should be rejected.
     assert_(record_travel(rnd.RandomState(), Zero(), Zero(), One()))
     assert_(not record_travel(rnd.RandomState(), Zero(), Zero(), One()))
-

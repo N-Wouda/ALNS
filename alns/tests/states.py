@@ -32,4 +32,3 @@ class Sentinel(Zero):
     """
     Placeholder state.
     """
-    pass

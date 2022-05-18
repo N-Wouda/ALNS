@@ -9,19 +9,19 @@ from alns.Statistics import Statistics
 
 
 class Result:
+    """
+    Stores ALNS results. An instance of this class is returned once the
+    algorithm completes.
+
+    Parameters
+    ----------
+    best
+        The best state observed during the entire iteration.
+    statistics
+        Statistics collected during iteration.
+    """
 
     def __init__(self, best: State, statistics: Statistics):
-        """
-        Stores ALNS results. An instance of this class is returned once the
-        algorithm completes.
-
-        Parameters
-        ----------
-        best
-            The best state observed during the entire iteration.
-        statistics
-            Statistics collected during iteration.
-        """
         self._best = best
         self._statistics = statistics
 
@@ -39,10 +39,12 @@ class Result:
         """
         return self._statistics
 
-    def plot_objectives(self,
-                        ax: Optional[Axes] = None,
-                        title: Optional[str] = None,
-                        **kwargs: Dict[str, Any]):
+    def plot_objectives(
+        self,
+        ax: Optional[Axes] = None,
+        title: Optional[str] = None,
+        **kwargs: Dict[str, Any]
+    ):
         """
         Plots the collected objective values at each iteration.
 
@@ -75,11 +77,13 @@ class Result:
 
         plt.draw_if_interactive()
 
-    def plot_operator_counts(self,
-                             fig: Optional[Figure] = None,
-                             title: Optional[str] = None,
-                             legend: Optional[List[str]] = None,
-                             **kwargs: Dict[str, Any]):
+    def plot_operator_counts(
+        self,
+        fig: Optional[Figure] = None,
+        title: Optional[str] = None,
+        legend: Optional[List[str]] = None,
+        **kwargs: Dict[str, Any]
+    ):
         """
         Plots an overview of the destroy and repair operators' performance.
 
@@ -114,17 +118,21 @@ class Result:
         if legend is None:
             legend = ["Best", "Better", "Accepted", "Rejected"]
 
-        self._plot_op_counts(d_ax,
-                             self.statistics.destroy_operator_counts,
-                             "Destroy operators",
-                             min(len(legend), 4),
-                             **kwargs)
+        self._plot_op_counts(
+            d_ax,
+            self.statistics.destroy_operator_counts,
+            "Destroy operators",
+            min(len(legend), 4),
+            **kwargs
+        )
 
-        self._plot_op_counts(r_ax,
-                             self.statistics.repair_operator_counts,
-                             "Repair operators",
-                             min(len(legend), 4),
-                             **kwargs)
+        self._plot_op_counts(
+            r_ax,
+            self.statistics.repair_operator_counts,
+            "Repair operators",
+            min(len(legend), 4),
+            **kwargs
+        )
 
         fig.legend(legend[:4], ncol=len(legend), loc="lower center")
 
@@ -155,7 +163,7 @@ class Result:
             ax.barh(operator_names, widths, left=starts, height=0.5, **kwargs)
 
             for y, (x, label) in enumerate(zip(starts + widths / 2, widths)):
-                ax.text(x, y, str(label), ha='center', va='center')
+                ax.text(x, y, str(label), ha="center", va="center")
 
         ax.set_title(title)
         ax.set_xlabel("Iterations where operator resulted in this outcome (#)")

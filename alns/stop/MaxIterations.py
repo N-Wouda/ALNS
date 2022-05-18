@@ -5,11 +5,11 @@ from alns.stop.StoppingCriterion import StoppingCriterion
 
 
 class MaxIterations(StoppingCriterion):
+    """
+    Criterion that stops after a maximum number of iterations.
+    """
 
     def __init__(self, max_iterations: int):
-        """
-        Criterion that stops after a maximum number of iterations.
-        """
         if max_iterations < 0:
             raise ValueError("Max iterations must be non-negative.")
 

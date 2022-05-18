@@ -22,26 +22,27 @@ _OperatorType = Callable[[State, rnd.RandomState], State]
 
 
 class ALNS:
+    """
+    Implements the adaptive large neighbourhood search (ALNS) algorithm.
+    The implementation optimises for a minimisation problem, as explained
+    in the text by Pisinger and Røpke (2010).
+
+    Parameters
+    ----------
+    rnd_state
+        Optional random state to use for random number generation. When
+        passed, this state is used for operator selection and general
+        computations requiring random numbers. It is also passed to the
+        destroy and repair operators, as a second argument.
+
+    References
+    ----------
+    [1]: Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In
+         M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
+         - 420). Springer.
+    """
+
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
-        """
-        Implements the adaptive large neighbourhood search (ALNS) algorithm.
-        The implementation optimises for a minimisation problem, as explained
-        in the text by Pisinger and Røpke (2010).
-
-        Parameters
-        ----------
-        rnd_state
-            Optional random state to use for random number generation. When
-            passed, this state is used for operator selection and general
-            computations requiring random numbers. It is also passed to the
-            destroy and repair operators, as a second argument.
-
-        References
-        ----------
-        [1]: Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In
-             M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
-             - 420). Springer.
-        """
         self._destroy_operators: Dict[str, _OperatorType] = {}
         self._repair_operators: Dict[str, _OperatorType] = {}
 

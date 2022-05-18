@@ -6,18 +6,15 @@ def test_raises_unknown_method():
     with assert_raises(ValueError):
         update(1, 0.5, "unknown_method")
 
-    update(1, 0.5, "linear")            # this should work
+    update(1, 0.5, "linear")  # this should work
 
 
 def test_accepts_any_case_method():
     """
-    ``update`` should be indifferent about the passed-in method casing.
+    ``update`` should be indifferent about the passed-in method case.
     """
-    assert_equal(update(1, 0.5, "linear"),
-                 update(1, 0.5, "LINEAR"))
-
-    assert_equal(update(1, 0.5, "exponential"),
-                 update(1, 0.5, "EXPONENTIAL"))
+    assert_equal(update(1, 0.5, "linear"), update(1, 0.5, "LINEAR"))
+    assert_equal(update(1, 0.5, "exponential"), update(1, 0.5, "EXPONENTIAL"))
 
 
 def test_linear():

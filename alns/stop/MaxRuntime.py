@@ -8,11 +8,11 @@ from alns.stop.StoppingCriterion import StoppingCriterion
 
 
 class MaxRuntime(StoppingCriterion):
+    """
+    Criterion that stops after a specified maximum runtime.
+    """
 
     def __init__(self, max_runtime: float):
-        """
-        Criterion that stops after a specified maximum runtime.
-        """
         if max_runtime < 0:
             raise ValueError("Max runtime must be non-negative.")
 

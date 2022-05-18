@@ -18,13 +18,17 @@ def test_does_not_raise_valid_op_decay(op_decay: float):
     SimpleWeights([0, 0, 0, 0], 1, 1, op_decay)
 
 
-@mark.parametrize("scores,op_decay,expected",
-                  [([0, 0, 0, 0], 1, [1, 1]),  # scores are not used
-                   ([0, 0, 0, 0], 0, [0, 0]),  # initial weights are not used
-                   ([.5, .5, .5, .5], .5, [.75, .75])])  # convex combination
-def test_update_weights(scores: List[float],
-                        op_decay: float,
-                        expected: List[float]):
+@mark.parametrize(
+    "scores,op_decay,expected",
+    [
+        ([0, 0, 0, 0], 1, [1, 1]),  # scores are not used
+        ([0, 0, 0, 0], 0, [0, 0]),  # initial weights are not used
+        ([0.5, 0.5, 0.5, 0.5], 0.5, [0.75, 0.75]),
+    ],
+)  # convex combination
+def test_update_weights(
+    scores: List[float], op_decay: float, expected: List[float]
+):
     weights = SimpleWeights(scores, 1, 1, op_decay)
 
     # TODO other weights?

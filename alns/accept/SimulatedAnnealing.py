@@ -5,52 +5,56 @@ from alns.accept.update import update
 
 
 class SimulatedAnnealing(AcceptanceCriterion):
+    """
+    Simulated annealing, using an updating temperature. The temperature is
+    updated as,
 
-    def __init__(self,
-                 start_temperature: float,
-                 end_temperature: float,
-                 step: float,
-                 method: str = "exponential"):
-        """
-        Simulated annealing, using an updating temperature. The temperature is
-        updated as,
+    ``temperature = max(end_temperature, temperature - step)`` (linear)
 
-        ``temperature = max(end_temperature, temperature - step)`` (linear)
+    ``temperature = max(end_temperature, step * temperature)`` (exponential)
 
-        ``temperature = max(end_temperature, step * temperature)`` (exponential)
+    where the initial temperature is set to ``start_temperature``.
 
-        where the initial temperature is set to ``start_temperature``.
+    Parameters
+    ----------
+    start_temperature
+        The initial temperature.
+    end_temperature
+        The final temperature.
+    step
+        The updating step.
+    method
+        The updating method, one of {'linear', 'exponential'}. Default
+        'exponential'.
 
-        Parameters
-        ----------
-        start_temperature
-            The initial temperature.
-        end_temperature
-            The final temperature.
-        step
-            The updating step.
-        method
-            The updating method, one of {'linear', 'exponential'}. Default
-            'exponential'.
+    References
+    ----------
+    [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+         criteria for the adaptive large neighbourhood search metaheuristic.
+         *Journal of Heuristics* (2018) 24 (5): 783–815.
+    [2]: Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
+         by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
+    """
 
-        References
-        ----------
-        [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-             criteria for the adaptive large neighbourhood search metaheuristic.
-             *Journal of Heuristics* (2018) 24 (5): 783–815.
-        [2]: Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
-             by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
-        """
+    def __init__(
+        self,
+        start_temperature: float,
+        end_temperature: float,
+        step: float,
+        method: str = "exponential",
+    ):
         if start_temperature <= 0 or end_temperature <= 0 or step < 0:
             raise ValueError("Temperatures must be strictly positive.")
 
         if start_temperature < end_temperature:
-            raise ValueError("Start temperature must be bigger than end "
-                             "temperature.")
+            raise ValueError(
+                "Start temperature must be bigger than end temperature."
+            )
 
         if method == "exponential" and step > 1:
-            raise ValueError("For exponential updating, the step parameter "
-                             "must not be explosive.")
+            raise ValueError(
+                "Exponential updating cannot have explosive step parameter."
+            )
 
         self._start_temperature = start_temperature
         self._end_temperature = end_temperature
@@ -76,14 +80,16 @@ class SimulatedAnnealing(AcceptanceCriterion):
         return self._method
 
     def __call__(self, rnd, best, current, candidate):
-        probability = np.exp((current.objective() - candidate.objective())
-                             / self._temperature)
+        probability = np.exp(
+            (current.objective() - candidate.objective()) / self._temperature
+        )
 
         # We should not set a temperature that is lower than the end
         # temperature.
-        self._temperature = max(self.end_temperature, update(self._temperature,
-                                                             self.step,
-                                                             self.method))
+        self._temperature = max(
+            self.end_temperature,
+            update(self._temperature, self.step, self.method),
+        )
 
         # TODO deprecate RandomState in favour of Generator - which uses
         #  random(), rather than random_sample().
@@ -93,11 +99,9 @@ class SimulatedAnnealing(AcceptanceCriterion):
             return probability >= rnd.random_sample()
 
     @classmethod
-    def autofit(cls,
-                init_obj: float,
-                worse: float,
-                accept_prob: float,
-                num_iters: int) -> "SimulatedAnnealing":
+    def autofit(
+        cls, init_obj: float, worse: float, accept_prob: float, num_iters: int
+    ) -> "SimulatedAnnealing":
         """
         Returns an SA object with initial temperature such that there is a
         ``accept_prob`` chance of selecting a solution up to ``worse`` percent

@@ -65,7 +65,6 @@ def test_total_runtime():
     assert_equal(statistics.total_runtime, 99)
 
 
-
 def test_collect_destroy_counts_example():
     """
     Tests if collecting for a destroy operator works as expected in a simple
@@ -79,8 +78,9 @@ def test_collect_destroy_counts_example():
     statistics.collect_destroy_operator("destroy_test", 1)
 
     for idx, count in enumerate([0, 2, 0, 0]):
-        assert_equal(statistics.destroy_operator_counts["destroy_test"][idx],
-                     count)
+        assert_equal(
+            statistics.destroy_operator_counts["destroy_test"][idx], count
+        )
 
 
 def test_collect_repair_counts_example():
@@ -95,5 +95,6 @@ def test_collect_repair_counts_example():
     statistics.collect_repair_operator("repair_test", 2)
 
     for idx, count in enumerate([0, 0, 1, 0]):
-        assert_equal(statistics.repair_operator_counts["repair_test"][idx],
-                     count)
+        assert_equal(
+            statistics.repair_operator_counts["repair_test"][idx], count
+        )

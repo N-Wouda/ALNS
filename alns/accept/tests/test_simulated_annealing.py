@@ -1,17 +1,25 @@
 import numpy as np
 import numpy.random as rnd
-from numpy.testing import (assert_, assert_almost_equal, assert_equal,
-                           assert_raises)
+from numpy.testing import (
+    assert_,
+    assert_almost_equal,
+    assert_equal,
+    assert_raises,
+)
 from pytest import mark
 
-from alns.criteria import SimulatedAnnealing
+from alns.accept import SimulatedAnnealing
 from alns.tests.states import One, Zero
 
 
-@mark.parametrize("start,end,step",
-                  [(-1, 1, 1),  # negative start temp
-                   (1, -1, 1),  # negative end temp
-                   (1, 1, -1)])  # negative step
+@mark.parametrize(
+    "start,end,step",
+    [
+        (-1, 1, 1),
+        (1, -1, 1),
+        (1, 1, -1),
+    ],
+)
 def test_raises_negative_parameters(start: float, end: float, step: float):
     """
     Simulated annealing does not work with negative parameters, so those should
@@ -154,28 +162,32 @@ def test_accepts_generator_and_random_state():
     assert_(simulated_annealing(New(), One(), One(), Zero()))
 
 
-@mark.parametrize("worse,accept_prob,iters",
-                  [(1, 0, 10),  # zero accept prob
-                   (1, 1.2, 10),  # prob outside unit interval
-                   (1, 1, 10),  # unit accept prob
-                   (-1, 0.5, 10),  # negative worse
-                   (0, -1, 10),  # negative prob
-                   (1.5, 0.5, 10),  # worse outside unit interval
-                   (1, .9, -10)])  # negative number of iterations
-def test_autofit_raises_for_invalid_inputs(worse: float,
-                                           accept_prob: float,
-                                           iters: int):
+@mark.parametrize(
+    "worse,accept_prob,iters",
+    [
+        (1, 0, 10),  # zero accept prob
+        (1, 1.2, 10),  # prob outside unit interval
+        (1, 1, 10),  # unit accept prob
+        (-1, 0.5, 10),  # negative worse
+        (0, -1, 10),  # negative prob
+        (1.5, 0.5, 10),  # worse outside unit interval
+        (1, 0.9, -10),
+    ],
+)  # negative number of iterations
+def test_autofit_raises_for_invalid_inputs(
+    worse: float, accept_prob: float, iters: int
+):
     with assert_raises(ValueError):
-        SimulatedAnnealing.autofit(1., worse, accept_prob, iters)
+        SimulatedAnnealing.autofit(1.0, worse, accept_prob, iters)
 
 
-@mark.parametrize("init_obj,worse,accept_prob,iters",
-                  [(1_000, 1, .9, 1),
-                   (1_000, .5, .05, 1)])
-def test_autofit_on_several_examples(init_obj: float,
-                                     worse: float,
-                                     accept_prob: float,
-                                     iters: int):
+@mark.parametrize(
+    "init_obj,worse,accept_prob,iters",
+    [(1_000, 1, 0.9, 1), (1_000, 0.5, 0.05, 1)],
+)
+def test_autofit_on_several_examples(
+    init_obj: float, worse: float, accept_prob: float, iters: int
+):
     # We have:
     # prob = exp{-(f^c - f^i) / T},
     # where T is start temp, f^i is init sol objective, and f^c is the candidate

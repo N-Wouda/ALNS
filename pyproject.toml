@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alns"
-version = "2.1.2"
+version = "3.0.0"
 description = "A flexible implementation of the adaptive large neighbourhood search (ALNS) algorithm."
 authors = ["Niels Wouda <n.wouda@apium.nl>"]
 license = "MIT"
@@ -39,6 +39,7 @@ pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
 mypy = ">=0.670"
 codecov = "*"
+black = "^22.3.0"
 
 # These are solely for work on the example notebooks, and not required for
 # the package itself.
@@ -76,6 +77,11 @@ exclude_lines = [
     "pragma: no cover",
     "@abstract"
 ]
+
+
+
+[tool.black]
+line-length = 79
 
 
 

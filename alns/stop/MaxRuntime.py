@@ -4,14 +4,15 @@ from typing import Optional
 from numpy.random import RandomState
 
 from alns.State import State
-from alns.stopping_criteria.StoppingCriterion import StoppingCriterion
+from alns.stop.StoppingCriterion import StoppingCriterion
 
 
 class MaxRuntime(StoppingCriterion):
+    """
+    Criterion that stops after a specified maximum runtime.
+    """
+
     def __init__(self, max_runtime: float):
-        """
-        Criterion that stops after a specified maximum runtime.
-        """
         if max_runtime < 0:
             raise ValueError("Max runtime must be non-negative.")
 
@@ -26,4 +27,4 @@ class MaxRuntime(StoppingCriterion):
         if self._start_runtime is None:
             self._start_runtime = time.perf_counter()
 
-        return time.perf_counter () - self._start_runtime > self.max_runtime
+        return time.perf_counter() - self._start_runtime > self.max_runtime

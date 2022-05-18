@@ -2,39 +2,41 @@ from typing import List
 
 import numpy as np
 
-from alns.weight_schemes.WeightScheme import WeightScheme
+from alns.weights.WeightScheme import WeightScheme
 
 
 class SegmentedWeights(WeightScheme):
+    """
+    A segmented weight scheme. Weights are not updated in each iteration,
+    but only after each segment. Scores are gathered during each segment,
+    as:
 
-    def __init__(self,
-                 scores: List[float],
-                 num_destroy: int,
-                 num_repair: int,
-                 seg_decay: float,
-                 seg_length: int = 100):
-        """
-        A segmented weight scheme. Weights are not updated in each iteration,
-        but only after each segment. Scores are gathered during each segment,
-        as:
+    ``seg_weight += score``
 
-        ``seg_weight += score``
+    At the start of each segment, ``seg_weight`` is reset to zero. At the
+    end of a segment, the weights are updated as:
 
-        At the start of each segment, ``seg_weight`` is reset to zero. At the
-        end of a segment, the weights are updated as:
+    ``new_weight = seg_decay * old_weight + (1 - seg_decay) * seg_weight``
 
-        ``new_weight = seg_decay * old_weight + (1 - seg_decay) * seg_weight``
+    Parameters
+    ----------
+    (other arguments are explained in ``WeightScheme``)
 
-        Parameters
-        ----------
-        (other arguments are explained in ``WeightScheme``)
+    seg_decay
+        Decay parameter in [0, 1]. This parameter is used to weigh segment
+        and overall performance of each operator.
+    seg_length
+        Length of a single segment. Default 100.
+    """
 
-        seg_decay
-            Decay parameter in [0, 1]. This parameter is used to weigh segment
-            and overall performance of each operator.
-        seg_length
-            Length of a single segment. Default 100.
-        """
+    def __init__(
+        self,
+        scores: List[float],
+        num_destroy: int,
+        num_repair: int,
+        seg_decay: float,
+        seg_length: int = 100,
+    ):
         super().__init__(scores, num_destroy, num_repair)
 
         if not (0 <= seg_decay <= 1):

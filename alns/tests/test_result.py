@@ -10,6 +10,7 @@ from .states import Sentinel
 try:
     from matplotlib.testing.decorators import check_figures_equal
 except ImportError:
+
     def check_figures_equal(*args, **kwargs):  # placeholder
         return check_figures_equal
 
@@ -54,7 +55,7 @@ def get_objective_plot(ax, data, **kwargs):
     """
     Helper method.
     """
-    title = kwargs.pop('title', None)
+    title = kwargs.pop("title", None)
 
     if title is None:
         title = "Objective value at each iteration"
@@ -69,8 +70,9 @@ def get_objective_plot(ax, data, **kwargs):
     ax.legend(["Current", "Best"], loc="upper right")
 
 
-def get_operator_plot(figure, destroy, repair, legend=None, suptitle=None,
-                      **kwargs):
+def get_operator_plot(
+    figure, destroy, repair, legend=None, suptitle=None, **kwargs
+):
     """
     Helper method.
     """
@@ -79,7 +81,7 @@ def get_operator_plot(figure, destroy, repair, legend=None, suptitle=None,
         operator_names = list(operator_counts.keys())
 
         operator_counts = np.array(list(operator_counts.values()))
-        cumulative_counts = operator_counts[:, :len(legend)].cumsum(axis=1)
+        cumulative_counts = operator_counts[:, : len(legend)].cumsum(axis=1)
 
         ax.set_xlim(right=cumulative_counts[:, -1].max())
 
@@ -90,7 +92,7 @@ def get_operator_plot(figure, destroy, repair, legend=None, suptitle=None,
             ax.barh(operator_names, widths, left=starts, height=0.5, **kwargs)
 
             for y, (x, label) in enumerate(zip(starts + widths / 2, widths)):
-                ax.text(x, y, str(label), ha='center', va='center')
+                ax.text(x, y, str(label), ha="center", va="center")
 
         ax.set_title(title)
         ax.set_xlabel("Iterations where operator resulted in this outcome (#)")
@@ -107,9 +109,7 @@ def get_operator_plot(figure, destroy, repair, legend=None, suptitle=None,
     _helper(d_ax, destroy, "Destroy operators")
     _helper(r_ax, repair, "Repair operators")
 
-    figure.legend(legend,
-                  ncol=len(legend),
-                  loc="lower center")
+    figure.legend(legend, ncol=len(legend), loc="lower center")
 
 
 # TESTS ------------------------------------------------------------------------
@@ -125,7 +125,7 @@ def test_result_state():
 
 
 @pytest.mark.matplotlib
-@check_figures_equal(extensions=['png'])
+@check_figures_equal(extensions=["png"])
 def test_plot_objectives(fig_test, fig_ref):
     """
     Tests if the ``plot_objectives`` method returns the same figure as a
@@ -141,22 +141,22 @@ def test_plot_objectives(fig_test, fig_ref):
 
 
 @pytest.mark.matplotlib
-@check_figures_equal(extensions=['png'])
+@check_figures_equal(extensions=["png"])
 def test_plot_objectives_kwargs(fig_test, fig_ref):
     """
     Tests if the passed-in keyword arguments to ``plot_objectives`` are
     correctly passed to the ``plot`` method.
     """
     result = get_result(Sentinel())
-    kwargs = dict(lw=5, marker='*')
+    kwargs = dict(lw=5, marker="*")
 
     # Tested plot
     result.plot_objectives(fig_test.subplots(), **kwargs)
 
     # Reference plot
-    get_objective_plot(fig_ref.subplots(),
-                       result.statistics.objectives,
-                       **kwargs)
+    get_objective_plot(
+        fig_ref.subplots(), result.statistics.objectives, **kwargs
+    )
 
 
 @pytest.mark.matplotlib
@@ -172,7 +172,7 @@ def test_plot_objectives_default_axes():
 
 
 @pytest.mark.matplotlib
-@check_figures_equal(extensions=['png'])
+@check_figures_equal(extensions=["png"])
 def test_plot_operator_counts(fig_test, fig_ref):
     """
     Tests if the ``plot_operator_counts`` method returns the same figure as a
@@ -184,13 +184,15 @@ def test_plot_operator_counts(fig_test, fig_ref):
     result.plot_operator_counts(fig_test)
 
     # Reference plot
-    get_operator_plot(fig_ref,
-                      result.statistics.destroy_operator_counts,
-                      result.statistics.repair_operator_counts)
+    get_operator_plot(
+        fig_ref,
+        result.statistics.destroy_operator_counts,
+        result.statistics.repair_operator_counts,
+    )
 
 
 @pytest.mark.matplotlib
-@check_figures_equal(extensions=['png'])
+@check_figures_equal(extensions=["png"])
 def test_plot_operator_counts_title(fig_test, fig_ref):
     """
     Tests if ``plot_operator_counts`` sets a plot title correctly.
@@ -201,10 +203,12 @@ def test_plot_operator_counts_title(fig_test, fig_ref):
     result.plot_operator_counts(fig_test, title="A random test title")
 
     # Reference plot
-    get_operator_plot(fig_ref,
-                      result.statistics.destroy_operator_counts,
-                      result.statistics.repair_operator_counts,
-                      suptitle="A random test title")
+    get_operator_plot(
+        fig_ref,
+        result.statistics.destroy_operator_counts,
+        result.statistics.repair_operator_counts,
+        suptitle="A random test title",
+    )
 
 
 @pytest.mark.matplotlib
@@ -220,27 +224,29 @@ def test_plot_operator_counts_default_figure():
 
 
 @pytest.mark.matplotlib
-@check_figures_equal(extensions=['png'])
+@check_figures_equal(extensions=["png"])
 def test_plot_operator_counts_kwargs(fig_test, fig_ref):
     """
     Tests if the passed-in keyword arguments to ``plot_operator_counts`` are
     correctly passed to the ``barh`` method.
     """
     result = get_result(Sentinel())
-    kwargs = dict(alpha=.5, lw=2)
+    kwargs = dict(alpha=0.5, lw=2)
 
     # Tested plot
     result.plot_operator_counts(fig_test, **kwargs)
 
     # Reference plot
-    get_operator_plot(fig_ref,
-                      result.statistics.destroy_operator_counts,
-                      result.statistics.repair_operator_counts,
-                      **kwargs)
+    get_operator_plot(
+        fig_ref,
+        result.statistics.destroy_operator_counts,
+        result.statistics.repair_operator_counts,
+        **kwargs
+    )
 
 
 @pytest.mark.matplotlib
-@check_figures_equal(extensions=['png'])
+@check_figures_equal(extensions=["png"])
 def test_plot_operator_counts_legend_length(fig_test, fig_ref):
     """
     Tests if the length of the passed-in legend is used to determine which
@@ -252,7 +258,9 @@ def test_plot_operator_counts_legend_length(fig_test, fig_ref):
     result.plot_operator_counts(fig_test, legend=["Best"])
 
     # Reference plot
-    get_operator_plot(fig_ref,
-                      result.statistics.destroy_operator_counts,
-                      result.statistics.repair_operator_counts,
-                      legend=["Best"])
+    get_operator_plot(
+        fig_ref,
+        result.statistics.destroy_operator_counts,
+        result.statistics.repair_operator_counts,
+        legend=["Best"],
+    )

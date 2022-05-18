@@ -1,4 +1,4 @@
-from alns.criteria.AcceptanceCriterion import AcceptanceCriterion
+from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 
 
 class HillClimbing(AcceptanceCriterion):

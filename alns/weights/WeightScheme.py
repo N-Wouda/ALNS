@@ -6,23 +6,23 @@ from numpy.random import RandomState
 
 
 class WeightScheme(ABC):
+    """
+    Base class from which to implement a weight scheme.
+
+    Parameters
+    ----------
+    scores
+        A list of four non-negative elements, representing the weight
+        updates when the candidate solution results in a new global best
+        (idx 0), is better than the current solution (idx 1), the solution
+        is accepted (idx 2), or rejected (idx 3).
+    num_destroy
+        Number of destroy operators.
+    num_repair
+        Number of repair operators.
+    """
 
     def __init__(self, scores: List[float], num_destroy: int, num_repair: int):
-        """
-        Base class from which to implement a weight scheme.
-
-        Parameters
-        ----------
-        scores
-            A list of four non-negative elements, representing the weight
-            updates when the candidate solution results in a new global best
-            (idx 0), is better than the current solution (idx 1), the solution
-            is accepted (idx 2), or rejected (idx 3).
-        num_destroy
-            Number of destroy operators.
-        num_repair
-            Number of repair operators.
-        """
         self._validate_arguments(scores, num_destroy, num_repair)
 
         self._scores = scores
@@ -85,8 +85,7 @@ class WeightScheme(ABC):
 
         if len(scores) < 4:
             # More than four is not problematic, but we only use the first four.
-            raise ValueError("Unsupported number of scores: expected 4, "
-                             "found {0}".format(len(scores)))
+            raise ValueError(f"Expected four scores, found {len(scores)}")
 
         if num_destroy <= 0 or num_repair <= 0:
-            raise ValueError("Missing at least one destroy or repair operator.")
+            raise ValueError("Missing destroy or repair operators.")

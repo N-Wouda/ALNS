@@ -5,12 +5,12 @@ import numpy as np
 
 
 class Statistics:
+    """
+    Statistics object that stores some iteration results. Populated by the ALNS
+    algorithm.
+    """
 
     def __init__(self):
-        """
-        Statistics object that stores some iteration results, which is
-        optionally populated by the ALNS algorithm.
-        """
         self._objectives = []
         self._runtimes = []
 

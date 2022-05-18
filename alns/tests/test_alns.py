@@ -1,19 +1,25 @@
 import numpy.random as rnd
-from numpy.testing import (assert_, assert_almost_equal, assert_equal,
-                           assert_raises)
+from numpy.testing import (
+    assert_,
+    assert_almost_equal,
+    assert_equal,
+    assert_raises,
+)
 from pytest import mark
 
 from alns import ALNS, State
-from alns.criteria import HillClimbing, SimulatedAnnealing
-from alns.stopping_criteria import MaxIterations, MaxRuntime
-from alns.weight_schemes import SimpleWeights
+from alns.accept import HillClimbing, SimulatedAnnealing
+from alns.stop import MaxIterations, MaxRuntime
+from alns.weights import SimpleWeights
 from .states import One, Zero
 
 
 # HELPERS ----------------------------------------------------------------------
 
 
-def get_alns_instance(repair_operators=None, destroy_operators=None, seed=None):
+def get_alns_instance(
+    repair_operators=None, destroy_operators=None, seed=None
+):
     """
     Test helper method.
     """
@@ -49,15 +55,16 @@ def test_on_best_is_called():
     """
     Tests if the callback is invoked when a new global best is found.
     """
-    alns = get_alns_instance([lambda state, rnd: Zero()],
-                             [lambda state, rnd: Zero()])
+    alns = get_alns_instance(
+        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+    )
 
     # Called when a new global best is found. In this case, that happens once:
     # in the only iteration below. It returns a state with value 10, which
     # should then also be returned by the entire algorithm.
     alns.on_best(lambda *args: ValueState(10))
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
     result = alns.iterate(One(), weights, HillClimbing(), MaxIterations(1))
     assert_equal(result.best_state.objective(), 10)
 
@@ -204,10 +211,12 @@ def test_iterate_kwargs_are_correctly_passed_to_operators():
     alns = get_alns_instance([lambda state, rnd, item: state], [test_operator])
 
     init_sol = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, .5)
+    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
     orig_item = object()
 
-    alns.iterate(init_sol, weights, HillClimbing(), MaxIterations(10), item=orig_item)
+    alns.iterate(
+        init_sol, weights, HillClimbing(), MaxIterations(10), item=orig_item
+    )
 
 
 def test_bugfix_pass_kwargs_to_on_best():

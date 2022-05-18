@@ -25,11 +25,11 @@ showing how the ALNS library may be used. These include:
   using a number of different operators and enhancement techniques from the 
   literature.
 
-Finally, the weight schemes and acceptance criteria notebook gives an overview
-of various options available in the `alns` package (explained below). In the
-notebook we use these different options to solve a toy 0/1-knapsack problem. The
-notebook is a good starting point for when you want to use the different schemes
-and criteria yourself. It is available [here][5].
+Finally, the features notebook gives an overview of various options available 
+in the `alns` package (explained below). In the notebook we use these different
+options to solve a toy 0/1-knapsack problem. The notebook is a good starting
+point for when you want to use different schemes, acceptance or stopping criteria 
+yourself. It is available [here][5].
 
 ## How to use
 The `alns` package exposes two classes, `ALNS` and `State`. The first
@@ -43,7 +43,7 @@ criterion_.
 ### Weight scheme
 The weight scheme determines how to select destroy and repair operators in each
 iteration of the ALNS algorithm. Several have already been implemented for you,
-in `alns.weight_schemes`:
+in `alns.weights`:
 
 - `SimpleWeights`. This weight scheme applies a convex combination of the 
    existing weight vector, and a reward given for the current candidate 
@@ -60,7 +60,7 @@ your own.
 The acceptance criterion determines the acceptance of a new solution state at
 each iteration. An overview of common acceptance criteria is given in
 [Santini et al. (2018)][3]. Several have already been implemented for you, in
-`alns.criteria`:
+`alns.accept`:
 
 - `HillClimbing`. The simplest acceptance criterion, hill-climbing solely
   accepts solutions improving the objective value.
@@ -70,8 +70,21 @@ each iteration. An overview of common acceptance criteria is given in
   scaled probability is bigger than some random number, using an
   updating temperature.
 
-Each acceptance criterion inherits from `AcceptanceCriterion`, which may
-be used to write your own.
+Each acceptance criterion inherits from `AcceptanceCriterion`, which may be used
+to write your own.
+
+### Stoppping criterion
+The stopping criterion determines when ALNS should stop iterating. Several 
+commonly used stopping criteria have already been implemented for you, in
+`alns.stop`:
+
+- `MaxIterations`. This stopping criterion stops the heuristic search after a
+  given number of iterations.
+- `MaxRuntime`. This stopping criterion stops the heuristic search after a given
+  number of seconds.
+
+Each stopping criterion inherits from `StoppingCriterion`, which may be used to
+write your own.
 
 ## References
 - Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.
@@ -85,5 +98,5 @@ be used to write your own.
 [2]: https://github.com/N-Wouda/ALNS/blob/master/examples/travelling_salesman_problem.ipynb
 [3]: https://link.springer.com/article/10.1007%2Fs10732-018-9377-x
 [4]: https://github.com/N-Wouda/ALNS/blob/master/examples/cutting_stock_problem.ipynb
-[5]: https://github.com/N-Wouda/ALNS/blob/master/examples/weight_schemes_acceptance_criteria.ipynb
+[5]: https://github.com/N-Wouda/ALNS/blob/master/examples/alns_features.ipynb
 [6]: https://github.com/N-Wouda/ALNS/blob/master/examples/resource_constrained_project_scheduling_problem.ipynb

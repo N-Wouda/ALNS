@@ -1,10 +1,10 @@
 import time
+
 import pytest
-
 from numpy.random import RandomState
-from numpy.testing import assert_, assert_almost_equal, assert_raises
+from numpy.testing import assert_, assert_raises
 
-from alns.stopping_criteria import MaxRuntime
+from alns.stop import MaxRuntime
 from alns.tests.states import Zero
 
 

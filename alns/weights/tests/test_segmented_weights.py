@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_almost_equal, assert_raises
 from pytest import mark
 
-from alns.weight_schemes import SegmentedWeights
+from alns.weights import SegmentedWeights
 
 
 @mark.parametrize("seg_decay", [1.01, -0.01, -0.5, 1.5])

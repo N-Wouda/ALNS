@@ -4,7 +4,7 @@ from numpy.testing import (assert_, assert_almost_equal, assert_equal,
                            assert_raises)
 from pytest import mark
 
-from alns.criteria import SimulatedAnnealing
+from alns.accept import SimulatedAnnealing
 from alns.tests.states import One, Zero
 
 

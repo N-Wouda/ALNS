@@ -1,9 +1,8 @@
 import pytest
-
 from numpy.random import RandomState
 from numpy.testing import assert_, assert_raises
 
-from alns.stopping_criteria import MaxIterations
+from alns.stop import MaxIterations
 from alns.tests.states import Zero
 
 

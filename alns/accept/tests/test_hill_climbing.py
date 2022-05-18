@@ -1,7 +1,7 @@
 import numpy.random as rnd
 from numpy.testing import assert_
 
-from alns.criteria import HillClimbing
+from alns.accept import HillClimbing
 from alns.tests.states import Zero, One
 
 

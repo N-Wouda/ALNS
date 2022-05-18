@@ -6,9 +6,9 @@ import numpy.random as rnd
 from alns.Result import Result
 from alns.State import State
 from alns.Statistics import Statistics
-from alns.criteria import AcceptanceCriterion
-from alns.weight_schemes import WeightScheme
-from alns.stopping_criteria import StoppingCriterion
+from alns.accept import AcceptanceCriterion
+from alns.stop import StoppingCriterion
+from alns.weights import WeightScheme
 
 # Potential candidate solution consideration outcomes.
 _BEST = 0

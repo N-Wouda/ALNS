@@ -4,9 +4,9 @@ from numpy.testing import (assert_, assert_almost_equal, assert_equal,
 from pytest import mark
 
 from alns import ALNS, State
-from alns.criteria import HillClimbing, SimulatedAnnealing
-from alns.stopping_criteria import MaxIterations, MaxRuntime
-from alns.weight_schemes import SimpleWeights
+from alns.accept import HillClimbing, SimulatedAnnealing
+from alns.stop import MaxIterations, MaxRuntime
+from alns.weights import SimpleWeights
 from .states import One, Zero
 
 

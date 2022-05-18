@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import assert_raises, assert_almost_equal
 from pytest import mark
 
-from alns.weight_schemes import SimpleWeights
+from alns.weights import SimpleWeights
 
 
 @mark.parametrize("op_decay", [1.01, -0.01, -0.5, 1.5])

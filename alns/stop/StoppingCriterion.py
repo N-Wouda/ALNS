@@ -26,6 +26,6 @@ class StoppingCriterion(ABC):
 
         Returns
         -------
-        Whether to stop the iteration (True), or not (False).
+        Whether to stop iterating (True), or not (False).
         """
         return NotImplemented

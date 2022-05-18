@@ -2,7 +2,7 @@ from typing import List
 
 import numpy as np
 
-from alns.weight_schemes.WeightScheme import WeightScheme
+from alns.weights.WeightScheme import WeightScheme
 
 
 class SegmentedWeights(WeightScheme):

@@ -1,4 +1,4 @@
-from alns.criteria.update import update
+from alns.accept.update import update
 from numpy.testing import assert_raises, assert_equal
 
 

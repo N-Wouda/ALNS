@@ -1,7 +1,7 @@
 import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
 
-from alns.criteria import RecordToRecordTravel
+from alns.accept import RecordToRecordTravel
 from alns.tests.states import One, Zero
 
 

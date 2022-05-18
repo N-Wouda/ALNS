@@ -11,7 +11,7 @@ class MaxIterations(StoppingCriterion):
 
     def __init__(self, max_iterations: int):
         if max_iterations < 0:
-            raise ValueError("Max iterations must be non-negative.")
+            raise ValueError("max_iterations < 0 not understood.")
 
         self._max_iterations = max_iterations
         self._current_iteration = 0

@@ -15,7 +15,7 @@ If you wish to dive right in, the `examples/` directory contains example noteboo
 showing how the ALNS library may be used. These include:
 
 - The travelling salesman problem (TSP), [here][2]. We solve an
-  instance of 131 cities to within 2.1% of optimality, using simple
+  instance of 131 cities to within 2% of optimality, using simple
   destroy and repair heuristics with a post-processing step.
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with
   180 beams over 165 distinct sizes to within 1.35% of optimality in
@@ -37,8 +37,8 @@ may be used to run the ALNS algorithm, the second may be subclassed to
 store a solution state - all it requires is to define an `objective`
 member function, returning an objective value.
 
-The ALNS algorithm must be supplied with a _weight scheme_ and an _acceptance
-criterion_.
+The ALNS algorithm must be supplied with a _weight scheme_, an _acceptance
+criterion_, and a _stopping criterion_.
 
 ### Weight scheme
 The weight scheme determines how to select destroy and repair operators in each

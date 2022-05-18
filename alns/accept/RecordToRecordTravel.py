@@ -46,14 +46,10 @@ class RecordToRecordTravel(AcceptanceCriterion):
             raise ValueError("Thresholds must be positive.")
 
         if start_threshold < end_threshold:
-            raise ValueError(
-                "End threshold must be bigger than start threshold."
-            )
+            raise ValueError("start_threshold < end_threshold not understood.")
 
         if method == "exponential" and step > 1:
-            raise ValueError(
-                "Exponential updating cannot have explosive step parameter."
-            )
+            raise ValueError("Exponential updating cannot have step > 1.")
 
         self._start_threshold = start_threshold
         self._end_threshold = end_threshold

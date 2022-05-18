@@ -1,3 +1,4 @@
+import logging
 import time
 from typing import Callable, Dict, List, Optional, Tuple
 
@@ -19,6 +20,8 @@ _REJECT = 3
 # TODO this should become a Protocol to allow for kwargs. See also this issue:
 #  https://stackoverflow.com/q/61569324/4316405.
 _OperatorType = Callable[[State, rnd.RandomState], State]
+
+logger = logging.getLogger(__name__)
 
 
 class ALNS:
@@ -90,6 +93,7 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
+        logger.debug(f"Adding destroy operator {op.__name__}.")
         self._destroy_operators[op.__name__ if name is None else name] = op
 
     def add_repair_operator(self, op: _OperatorType, name: str = None):
@@ -106,6 +110,7 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         """
+        logger.debug(f"Adding repair operator {op.__name__}.")
         self._repair_operators[name if name else op.__name__] = op
 
     def iterate(
@@ -161,14 +166,15 @@ class ALNS:
         Operational Research*, 171: 750–775, 2006.
         """
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
-            raise ValueError(
-                "Missing at least one destroy or repair operator."
-            )
+            raise ValueError("Missing destroy or repair operators.")
 
         curr = best = initial_solution
+        init_obj = initial_solution.objective()
+
+        logger.debug(f"Initial solution has objective {init_obj:.2f}.")
 
         stats = Statistics()
-        stats.collect_objective(initial_solution.objective())
+        stats.collect_objective(init_obj)
         stats.collect_runtime(time.perf_counter())
 
         while not stop(self._rnd_state, best, curr):
@@ -176,6 +182,8 @@ class ALNS:
 
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
+
+            logger.debug(f"Selected operators {d_name} and {r_name}.")
 
             destroyed = d_operator(curr, self._rnd_state, **kwargs)
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
@@ -191,6 +199,8 @@ class ALNS:
             stats.collect_repair_operator(r_name, s_idx)
             stats.collect_runtime(time.perf_counter())
 
+        logger.info(f"Finished iterating in {stats.total_runtime:.2f}s.")
+
         return Result(best, stats)
 
     def on_best(self, func: _OperatorType):
@@ -205,6 +215,7 @@ class ALNS:
             and a numpy RandomState as its second (cf. the operator signature).
             It should return a (new) solution State.
         """
+        logger.debug(f"Adding on_best callback {func.__name__}.")
         self._on_best = func
 
     def _eval_cand(
@@ -233,6 +244,8 @@ class ALNS:
             curr = cand
 
         if cand.objective() < best.objective():  # candidate is new best
+            logger.info(f"New best with objective {cand.objective():.2f}.")
+
             if self._on_best:
                 cand = self._on_best(cand, self._rnd_state, **kwargs)
 

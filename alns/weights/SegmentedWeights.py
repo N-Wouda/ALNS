@@ -1,8 +1,11 @@
+import logging
 from typing import List
 
 import numpy as np
 
 from alns.weights.WeightScheme import WeightScheme
+
+logger = logging.getLogger(__name__)
 
 
 class SegmentedWeights(WeightScheme):
@@ -55,6 +58,8 @@ class SegmentedWeights(WeightScheme):
         self._iter += 1
 
         if self._iter % self._seg_length == 0:
+            logger.debug(f"End of segment (#iters = {self._iter}).")
+
             self._d_weights *= self._seg_decay
             self._d_weights += (1 - self._seg_decay) * self._d_seg_weights
 

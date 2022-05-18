@@ -1,7 +1,11 @@
+import logging
+
 import numpy as np
 
 from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 from alns.accept.update import update
+
+logger = logging.getLogger(__name__)
 
 
 class SimulatedAnnealing(AcceptanceCriterion):
@@ -48,13 +52,11 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
         if start_temperature < end_temperature:
             raise ValueError(
-                "Start temperature must be bigger than end temperature."
+                "start_temperature < end_temperature not understood."
             )
 
         if method == "exponential" and step > 1:
-            raise ValueError(
-                "Exponential updating cannot have explosive step parameter."
-            )
+            raise ValueError("Exponential updating cannot have step > 1.")
 
         self._start_temperature = start_temperature
         self._end_temperature = end_temperature
@@ -154,5 +156,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
         start_temp = -worse * init_obj / np.log(accept_prob)
         step = (1 / start_temp) ** (1 / num_iters)
+
+        logger.info(f"Autofit start_temp {start_temp:.2f}, step {step:.2f}.")
 
         return cls(start_temp, 1, step, method="exponential")

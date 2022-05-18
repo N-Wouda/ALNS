@@ -37,8 +37,8 @@ may be used to run the ALNS algorithm, the second may be subclassed to
 store a solution state - all it requires is to define an `objective`
 member function, returning an objective value.
 
-The ALNS algorithm must be supplied with a _weight scheme_ and an _acceptance
-criterion_.
+The ALNS algorithm must be supplied with a _weight scheme_, an _acceptance
+criterion_, and a _stopping criterion_.
 
 ### Weight scheme
 The weight scheme determines how to select destroy and repair operators in each

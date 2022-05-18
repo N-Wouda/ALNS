@@ -14,7 +14,7 @@ class MaxRuntime(StoppingCriterion):
 
     def __init__(self, max_runtime: float):
         if max_runtime < 0:
-            raise ValueError("Max runtime must be non-negative.")
+            raise ValueError("max_runtime < 0 not understood.")
 
         self._max_runtime = max_runtime
         self._start_runtime: Optional[float] = None

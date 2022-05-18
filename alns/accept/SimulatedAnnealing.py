@@ -157,6 +157,6 @@ class SimulatedAnnealing(AcceptanceCriterion):
         start_temp = -worse * init_obj / np.log(accept_prob)
         step = (1 / start_temp) ** (1 / num_iters)
 
-        logger.info(f"Autofit: {start_temp = :.2f} and {step = :.2f}.")
+        logger.info(f"Autofit start_temp {start_temp:.2f}, step {step:.2f}.")
 
         return cls(start_temp, 1, step, method="exponential")

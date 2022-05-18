@@ -26,11 +26,11 @@ jobs:
           pip install poetry
           poetry install
       - name: Run tests
-        run: |
-          poetry run pytest
+        run: poetry run pytest
+      - name: Black
+        uses: psf/black@stable
       - name: Run static analysis
-        run: |
-          poetry run mypy alns
+        run: poetry run mypy alns
       - uses: codecov/codecov-action@v2
   deploy:
     needs: build

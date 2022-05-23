@@ -1,7 +1,9 @@
+from collections import defaultdict
 import logging
 import time
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
+import numpy as np
 import numpy.random as rnd
 
 from alns.Result import Result
@@ -55,6 +57,8 @@ class ALNS:
 
         self._rnd_state = rnd_state
 
+        self._only_after: Dict[_OperatorType, set] = defaultdict(set)
+
     @property
     def destroy_operators(self) -> List[Tuple[str, _OperatorType]]:
         """
@@ -96,7 +100,13 @@ class ALNS:
         logger.debug(f"Adding destroy operator {op.__name__}.")
         self._destroy_operators[op.__name__ if name is None else name] = op
 
-    def add_repair_operator(self, op: _OperatorType, name: str = None):
+    def add_repair_operator(
+        self,
+        op: _OperatorType,
+        name: str = None,
+        *,
+        only_after: Optional[Iterable[_OperatorType]] = None,
+    ):
         """
         Adds a repair operator to the heuristic instance.
 
@@ -109,9 +119,61 @@ class ALNS:
         name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
+        only_after
+            Optional keyword-only argument to indicate after which destroy
+            operators the passed-in repair operator can be used.
         """
         logger.debug(f"Adding repair operator {op.__name__}.")
         self._repair_operators[name if name else op.__name__] = op
+
+        r_idx = len(self.repair_operators)
+
+        if only_after is not None:
+            self._only_after[op].update(only_after)
+
+    def _compute_op_coupling(self):
+        """
+        Internal helper to compute a matrix that describes the
+        coupling between destroy and repair operators. The matrix has size
+        |d_ops| x |r_ops| and entry (i, j) is 1 if destroy operator i can
+        be used in conjunction with repair operator j and 0 otherwise.
+
+        If the only_after keyword argument was not used in when
+        adding repair operators, then all entries of the matrix are 1.
+        """
+        op_coupling = np.ones(
+            (len(self.destroy_operators), len(self.repair_operators))
+        )
+
+        for r_idx, (_, r_op) in enumerate(self.repair_operators):
+            after_d_ops = self._only_after[r_op]
+
+            if after_d_ops:
+                op_coupling[:, r_idx] = 0
+
+                for d_idx, (_, d_op) in enumerate(self.destroy_operators):
+                    if d_op in after_d_ops:
+                        op_coupling[d_idx, r_idx] = 1
+
+        # Operator coupling can only be computed for added destroy operators
+        for after_d_ops in self._only_after.values():
+            for d_op in after_d_ops:
+                if d_op not in self._destroy_operators.values():
+                    raise KeyError(
+                        f"{d_op.__name__} was passed-in the only_after\
+                        argument when adding repair operators but has not been\
+                        added as destroy operator."
+                    )
+
+        # Destroy operators must be coupled with at least one repair operator
+        for d_idx, (d_name, d_op) in enumerate(self.destroy_operators):
+            if not np.any(op_coupling[d_idx, :]):
+                raise ValueError(
+                    f"{d_name} is not coupled with any of the added\
+                    repair operators."
+                )
+
+        return op_coupling
 
     def iterate(
         self,
@@ -170,6 +232,7 @@ class ALNS:
 
         curr = best = initial_solution
         init_obj = initial_solution.objective()
+        op_coupling = self._compute_op_coupling()
 
         logger.debug(f"Initial solution has objective {init_obj:.2f}.")
 
@@ -178,7 +241,9 @@ class ALNS:
         stats.collect_runtime(time.perf_counter())
 
         while not stop(self._rnd_state, best, curr):
-            d_idx, r_idx = weight_scheme.select_operators(self._rnd_state)
+            d_idx, r_idx = weight_scheme.select_operators(
+                self._rnd_state, op_coupling
+            )
 
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]

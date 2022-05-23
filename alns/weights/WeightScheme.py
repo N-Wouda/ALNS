@@ -28,8 +28,6 @@ class WeightScheme(ABC):
         self._scores = scores
         self._d_weights = np.ones(num_destroy, dtype=float)
         self._r_weights = np.ones(num_repair, dtype=float)
-        self._d_indices = np.arange(num_destroy)
-        self._r_indices = np.arange(num_repair)
 
     @property
     def destroy_weights(self) -> np.ndarray:
@@ -63,13 +61,13 @@ class WeightScheme(ABC):
         operator lists, respectively.
         """
 
-        def select(op_weights, op_indices):
+        def select(op_weights):
             probs = op_weights / np.sum(op_weights)
-            return rnd_state.choice(op_indices, p=probs)
+            return rnd_state.choice(range(len(op_weights)), p=probs)
 
-        d_idx = select(self._d_weights, self._d_indices)
-        selection = np.flatnonzero(op_coupling[d_idx])
-        r_idx = select(self._r_weights[selection], self._r_indices[selection])
+        d_idx = select(self._d_weights)
+        coupled_r_idcs = np.flatnonzero(op_coupling[d_idx])
+        r_idx = coupled_r_idcs[select(self._r_weights[coupled_r_idcs])]
 
         return d_idx, r_idx
 

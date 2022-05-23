@@ -120,9 +120,11 @@ class ALNS:
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
         only_after
-            Optional keyword-only argument to indicate after which destroy
-            operators the passed-in repair operator can be used. If None,
-            then it is assumed that all destroy operators can be used.
+            Optional keyword-only argument indicating which destroy operators
+            work with the passed-in repair operator. If passed, this argument
+            should be an iterable (e.g. a list) of destroy operators. If not
+            passed, the default is to assume that all destroy operators work
+            with the new repair operator.
         """
         logger.debug(f"Adding repair operator {op.__name__}.")
         self._repair_operators[name if name else op.__name__] = op
@@ -134,25 +136,25 @@ class ALNS:
         """
         Internal helper to compute a matrix that describes the
         coupling between destroy and repair operators. The matrix has size
-        |d_ops| x |r_ops| and entry (i, j) is 1 if destroy operator i can
+        |d_ops|-by-|r_ops| and entry (i, j) is 1 if destroy operator i can
         be used in conjunction with repair operator j and 0 otherwise.
 
-        If the only_after keyword argument was not used in when
-        adding repair operators, then all entries of the matrix are 1.
+        If the only_after keyword-only argument was not used when adding
+        the repair operators, then all entries of the matrix are 1.
         """
         op_coupling = np.ones(
             (len(self.destroy_operators), len(self.repair_operators))
         )
 
         for r_idx, (_, r_op) in enumerate(self.repair_operators):
-            only_after = self._only_after[r_op]
+            coupled_d_ops = self._only_after[r_op]
 
             for d_idx, (_, d_op) in enumerate(self.destroy_operators):
-                if only_after and d_op not in only_after:
+                if coupled_d_ops and d_op not in coupled_d_ops:
                     op_coupling[d_idx, r_idx] = 0
 
         # Destroy operators must be coupled with at least one repair operator
-        d_idcs = np.argwhere(np.sum(op_coupling, axis=1) == 0).flatten()
+        d_idcs = np.flatnonzero(np.count_nonzero(op_coupling, axis=1) == 0)
 
         if d_idcs.size != 0:
             d_name, _ = self.destroy_operators[d_idcs[0]]

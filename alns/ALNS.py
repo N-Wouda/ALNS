@@ -121,7 +121,8 @@ class ALNS:
             function name is used instead.
         only_after
             Optional keyword-only argument to indicate after which destroy
-            operators the passed-in repair operator can be used.
+            operators the passed-in repair operator can be used. If None,
+            then it is assumed that all destroy operators can be used.
         """
         logger.debug(f"Adding repair operator {op.__name__}.")
         self._repair_operators[name if name else op.__name__] = op
@@ -139,26 +140,28 @@ class ALNS:
         If the only_after keyword argument was not used in when
         adding repair operators, then all entries of the matrix are 1.
         """
-        op_coupling = np.ones(
+        op_coupling = np.zeros(
             (len(self.destroy_operators), len(self.repair_operators))
         )
 
         for r_idx, (_, r_op) in enumerate(self.repair_operators):
-            after_d_ops = self._only_after[r_op]
+            only_after = self._only_after[r_op]
 
-            if after_d_ops:
-                op_coupling[:, r_idx] = 0  # Uncouple all destroy ops
+            if len(only_after) == 0:
+                # Couple all destroy operators if only_after is unspecified
+                op_coupling[:, r_idx] = 1
 
+            else:
                 for d_idx, (_, d_op) in enumerate(self.destroy_operators):
-                    if d_op in after_d_ops:
+                    if d_op in only_after:
                         op_coupling[d_idx, r_idx] = 1
 
         # Operator coupling can only be computed for added destroy operators
-        for after_d_ops in self._only_after.values():
-            for d_op in after_d_ops:
+        for only_after in self._only_after.values():
+            for d_op in only_after:
                 if d_op not in self._destroy_operators.values():
                     raise ValueError(
-                        f"{d_op.__name__} was passed-in the only_after\
+                        f"{d_op.__name__} was passed in the only_after\
                         argument when adding repair operators but has not been\
                         added as destroy operator."
                     )

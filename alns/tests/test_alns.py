@@ -181,7 +181,7 @@ def test_compute_op_coupling():
 
     op_coupling = alns._compute_op_coupling()
 
-    assert (op_coupling == np.array([[True, True], [True, True]])).all()
+    assert (op_coupling == np.array([[1, 1], [1, 1]])).all()
 
 
 def test_compute_op_coupling_only_after():
@@ -202,7 +202,7 @@ def test_compute_op_coupling_only_after():
 
     op_coupling = alns._compute_op_coupling()
 
-    assert (op_coupling == np.array([[True, False], [False, True]])).all()
+    assert (op_coupling == np.array([[1, 0], [0, 1]])).all()
 
 
 def test_raise_uncoupled_destroy_op():
@@ -242,7 +242,7 @@ def test_raise_unknown_destroy_op():
     for r_op in r_operators:
         alns.add_repair_operator(r_op, only_after=[unknown_d_operator])
 
-    with assert_raises(KeyError):
+    with assert_raises(ValueError):
         alns._compute_op_coupling()
 
 

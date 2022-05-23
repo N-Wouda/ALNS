@@ -53,9 +53,9 @@ class WeightScheme(ABC):
             Random state object, to be used for number generation.
 
         op_coupling
-            A mask matrix that indicates coupling between destroy and repair operators.
-            Entry (i, j) is True if destroy operator i can be used in conjunction with
-            repair operator j and False otherwise.
+            Matrix that indicates coupling between destroy and repair
+            operators. Entry (i, j) is 1 if destroy operator i can be used in
+            conjunction with repair operator j and 0 otherwise.
 
         Returns
         -------

@@ -126,12 +126,10 @@ class ALNS:
         logger.debug(f"Adding repair operator {op.__name__}.")
         self._repair_operators[name if name else op.__name__] = op
 
-        r_idx = len(self.repair_operators)
-
         if only_after is not None:
             self._only_after[op].update(only_after)
 
-    def _compute_op_coupling(self):
+    def _compute_op_coupling(self) -> np.ndarray:
         """
         Internal helper to compute a matrix that describes the
         coupling between destroy and repair operators. The matrix has size
@@ -149,7 +147,7 @@ class ALNS:
             after_d_ops = self._only_after[r_op]
 
             if after_d_ops:
-                op_coupling[:, r_idx] = 0
+                op_coupling[:, r_idx] = 0  # Uncouple all destroy ops
 
                 for d_idx, (_, d_op) in enumerate(self.destroy_operators):
                     if d_op in after_d_ops:
@@ -159,7 +157,7 @@ class ALNS:
         for after_d_ops in self._only_after.values():
             for d_op in after_d_ops:
                 if d_op not in self._destroy_operators.values():
-                    raise KeyError(
+                    raise ValueError(
                         f"{d_op.__name__} was passed-in the only_after\
                         argument when adding repair operators but has not been\
                         added as destroy operator."

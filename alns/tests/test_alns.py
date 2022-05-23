@@ -1,3 +1,4 @@
+import numpy as np
 import numpy.random as rnd
 from numpy.testing import (
     assert_,
@@ -46,6 +47,34 @@ class ValueState(State):
 
     def objective(self):
         return self._value
+
+
+def get_repair_operators(n):
+    """
+    Get a list of n dummy repair operators.
+    """
+    repair_operators = []
+
+    for idx in range(n):
+        op = lambda: None
+        op.__name__ = f"Repair operator {idx}"
+        repair_operators.append(op)
+
+    return repair_operators
+
+
+def get_destroy_operators(n):
+    """
+    Get a list of n dummy destroy operators.
+    """
+    destroy_operators = []
+
+    for idx in range(n):
+        op = lambda: None
+        op.__name__ = f"Destroy operator {idx}"
+        destroy_operators.append(op)
+
+    return destroy_operators
 
 
 # CALLBACKS --------------------------------------------------------------------
@@ -132,6 +161,89 @@ def test_add_repair_operator_name():
 
     assert_equal(name, "repair_operator")
     assert_(operator is repair_operator)
+
+
+def test_compute_op_coupling():
+    """
+    Tests if the compute_op_coupling method correctly computes the matrix
+    that describes the dependencies between repair and destroy operators.
+    """
+    alns = ALNS()
+
+    d_operators = get_destroy_operators(2)
+    r_operators = get_repair_operators(2)
+
+    for d_op in d_operators:
+        alns.add_destroy_operator(d_op)
+
+    for r_op in r_operators:
+        alns.add_repair_operator(r_op)
+
+    op_coupling = alns._compute_op_coupling()
+
+    assert (op_coupling == np.array([[True, True], [True, True]])).all()
+
+
+def test_compute_op_coupling_only_after():
+    """
+    Tests if the compute_op_coupling method correctly computes the matrix
+    when the only_after paramter is specified for certain repair operators.
+    """
+    alns = ALNS()
+
+    d_operators = get_destroy_operators(2)
+    r_operators = get_repair_operators(2)
+
+    for d_op in d_operators:
+        alns.add_destroy_operator(d_op)
+
+    for idx, r_op in enumerate(r_operators):
+        alns.add_repair_operator(r_op, only_after=[d_operators[idx]])
+
+    op_coupling = alns._compute_op_coupling()
+
+    assert (op_coupling == np.array([[True, False], [False, True]])).all()
+
+
+def test_raise_uncoupled_destroy_op():
+    """
+    Tests if having a destroy operator that is not coupled to any of the
+    repair operators raises an an error when computing the operator coupling.
+    """
+    alns = ALNS()
+
+    d_operators = get_destroy_operators(2)
+    r_operators = get_repair_operators(2)
+
+    for d_op in d_operators:
+        alns.add_destroy_operator(d_op)
+
+    for r_op in r_operators:
+        alns.add_repair_operator(r_op, only_after=[d_operators[0]])
+
+    with assert_raises(ValueError):
+        alns._compute_op_coupling()
+
+
+def test_raise_unknown_destroy_op():
+    """
+    Tests if adding a repair operator with an unknown destroy operator raises
+    an error at when computing the operator coupling.
+    """
+    alns = ALNS()
+
+    d_operators = get_destroy_operators(2)
+    r_operators = get_repair_operators(2)
+    unknown_d_operator = lambda: None
+
+    for d_op in d_operators:
+        alns.add_destroy_operator(d_op)
+
+    for r_op in r_operators:
+        alns.add_repair_operator(r_op, only_after=[unknown_d_operator])
+
+    with assert_raises(KeyError):
+        alns._compute_op_coupling()
 
 
 # PARAMETERS -------------------------------------------------------------------

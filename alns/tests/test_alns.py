@@ -181,7 +181,7 @@ def test_compute_op_coupling():
 
     op_coupling = alns._compute_op_coupling()
 
-    assert (op_coupling == np.array([[1, 1], [1, 1]])).all()
+    assert_almost_equal(op_coupling, np.ones((2, 2)))
 
 
 def test_compute_op_coupling_only_after():
@@ -202,7 +202,7 @@ def test_compute_op_coupling_only_after():
 
     op_coupling = alns._compute_op_coupling()
 
-    assert (op_coupling == np.array([[1, 0], [0, 1]])).all()
+    assert_almost_equal(op_coupling, np.eye(2))
 
 
 def test_raise_uncoupled_destroy_op():
@@ -220,27 +220,6 @@ def test_raise_uncoupled_destroy_op():
 
     for r_op in r_operators:
         alns.add_repair_operator(r_op, only_after=[d_operators[0]])
-
-    with assert_raises(ValueError):
-        alns._compute_op_coupling()
-
-
-def test_raise_unknown_destroy_op():
-    """
-    Tests if adding a repair operator with an unknown destroy operator raises
-    an error at when computing the operator coupling.
-    """
-    alns = ALNS()
-
-    d_operators = get_destroy_operators(2)
-    r_operators = get_repair_operators(2)
-    unknown_d_operator = lambda: None
-
-    for d_op in d_operators:
-        alns.add_destroy_operator(d_op)
-
-    for r_op in r_operators:
-        alns.add_repair_operator(r_op, only_after=[unknown_d_operator])
 
     with assert_raises(ValueError):
         alns._compute_op_coupling()

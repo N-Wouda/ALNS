@@ -140,39 +140,23 @@ class ALNS:
         If the only_after keyword argument was not used in when
         adding repair operators, then all entries of the matrix are 1.
         """
-        op_coupling = np.zeros(
+        op_coupling = np.ones(
             (len(self.destroy_operators), len(self.repair_operators))
         )
 
         for r_idx, (_, r_op) in enumerate(self.repair_operators):
             only_after = self._only_after[r_op]
 
-            if len(only_after) == 0:
-                # Couple all destroy operators if only_after is unspecified
-                op_coupling[:, r_idx] = 1
-
-            else:
-                for d_idx, (_, d_op) in enumerate(self.destroy_operators):
-                    if d_op in only_after:
-                        op_coupling[d_idx, r_idx] = 1
-
-        # Operator coupling can only be computed for added destroy operators
-        for only_after in self._only_after.values():
-            for d_op in only_after:
-                if d_op not in self._destroy_operators.values():
-                    raise ValueError(
-                        f"{d_op.__name__} was passed in the only_after\
-                        argument when adding repair operators but has not been\
-                        added as destroy operator."
-                    )
+            for d_idx, (_, d_op) in enumerate(self.destroy_operators):
+                if only_after and d_op not in only_after:
+                    op_coupling[d_idx, r_idx] = 0
 
         # Destroy operators must be coupled with at least one repair operator
-        for d_idx, (d_name, d_op) in enumerate(self.destroy_operators):
-            if not np.any(op_coupling[d_idx, :]):
-                raise ValueError(
-                    f"{d_name} is not coupled with any of the added\
-                    repair operators."
-                )
+        d_idcs = np.argwhere(np.sum(op_coupling, axis=1) == 0).flatten()
+
+        if d_idcs.size != 0:
+            d_name, _ = self.destroy_operators[d_idcs[0]]
+            raise ValueError(f"{d_name} has no coupled repair operators.")
 
         return op_coupling
 

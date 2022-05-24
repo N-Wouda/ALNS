@@ -48,8 +48,7 @@ class WeightScheme(ABC):
         Parameters
         ----------
         rnd_state
-            Random state object, to be used for number generation.
-
+            Random state object, to be used for random number generation.
         op_coupling
             Matrix that indicates coupling between destroy and repair
             operators. Entry (i, j) is 1 if destroy operator i can be used in
@@ -57,8 +56,8 @@ class WeightScheme(ABC):
 
         Returns
         -------
-        A tuple of (d_idx, r_idx), which are indices into the destroy and repair
-        operator lists, respectively.
+        A tuple of (d_idx, r_idx), which are indices into the destroy and
+        repair operator lists, respectively.
         """
 
         def select(op_weights):

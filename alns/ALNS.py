@@ -48,16 +48,15 @@ class ALNS:
     """
 
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
-        self._destroy_operators: Dict[str, _OperatorType] = {}
-        self._repair_operators: Dict[str, _OperatorType] = {}
+        self._d_ops: Dict[str, _OperatorType] = {}
+        self._r_ops: Dict[str, _OperatorType] = {}
+        self._only_after: Dict[_OperatorType, set] = defaultdict(set)
 
         # Optional callback that may be used to improve a new best solution
         # further, via e.g. local search.
         self._on_best: Optional[_OperatorType] = None
 
         self._rnd_state = rnd_state
-
-        self._only_after: Dict[_OperatorType, set] = defaultdict(set)
 
     @property
     def destroy_operators(self) -> List[Tuple[str, _OperatorType]]:
@@ -69,7 +68,7 @@ class ALNS:
         A list of (name, operator) tuples. Their order is the same as the one in
         which they were passed to the ALNS instance.
         """
-        return list(self._destroy_operators.items())
+        return list(self._d_ops.items())
 
     @property
     def repair_operators(self) -> List[Tuple[str, _OperatorType]]:
@@ -81,7 +80,7 @@ class ALNS:
         A list of (name, operator) tuples. Their order is the same as the one in
         which they were passed to the ALNS instance.
         """
-        return list(self._repair_operators.items())
+        return list(self._r_ops.items())
 
     def add_destroy_operator(self, op: _OperatorType, name: str = None):
         """
@@ -98,7 +97,7 @@ class ALNS:
             function name is used instead.
         """
         logger.debug(f"Adding destroy operator {op.__name__}.")
-        self._destroy_operators[op.__name__ if name is None else name] = op
+        self._d_ops[op.__name__ if name is None else name] = op
 
     def add_repair_operator(
         self,
@@ -127,9 +126,9 @@ class ALNS:
             with the new repair operator.
         """
         logger.debug(f"Adding repair operator {op.__name__}.")
-        self._repair_operators[name if name else op.__name__] = op
+        self._r_ops[name if name else op.__name__] = op
 
-        if only_after is not None:
+        if only_after:
             self._only_after[op].update(only_after)
 
     def _compute_op_coupling(self) -> np.ndarray:
@@ -142,9 +141,7 @@ class ALNS:
         If the only_after keyword-only argument was not used when adding
         the repair operators, then all entries of the matrix are 1.
         """
-        op_coupling = np.ones(
-            (len(self.destroy_operators), len(self.repair_operators))
-        )
+        op_coupling = np.ones((len(self._d_ops), len(self._r_ops)))
 
         for r_idx, (_, r_op) in enumerate(self.repair_operators):
             coupled_d_ops = self._only_after[r_op]

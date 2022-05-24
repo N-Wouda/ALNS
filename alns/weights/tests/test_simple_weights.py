@@ -1,7 +1,8 @@
 from typing import List
 
 import numpy as np
-from numpy.testing import assert_raises, assert_almost_equal
+import numpy.random as rnd
+from numpy.testing import assert_, assert_raises, assert_almost_equal
 from pytest import mark
 
 from alns.weights import SimpleWeights
@@ -38,4 +39,25 @@ def test_update_weights(
     assert_almost_equal(weights.repair_weights[0], expected[1])
 
 
-# TODO test select weights
+@mark.parametrize(
+    "op_coupling",
+    [
+        np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]),
+        np.array([[1, 0, 1], [0, 1, 1], [1, 1, 0]]),
+        np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+        np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]]),
+        np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]]),
+        np.array([[1, 0, 0], [1, 0, 0], [1, 0, 0]]),  # Not allowed by ALNS
+    ],
+)
+def test_select_operators(op_coupling):
+    """
+    Test if the indices of the selected operators correspond to the
+    ones that are given by the operator coupling.
+    """
+    rnd_state = rnd.RandomState()
+    n_destroy, n_repair = op_coupling.shape
+    weights = SimpleWeights([0, 0, 0, 0], n_destroy, n_repair, 0)
+    d_idx, r_idx = weights.select_operators(rnd_state, op_coupling)
+
+    assert_((d_idx, r_idx) in np.argwhere(op_coupling == 1))

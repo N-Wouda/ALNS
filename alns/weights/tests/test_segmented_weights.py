@@ -34,10 +34,11 @@ def test_update_weights(
 ):
     rnd_state = np.random.RandomState(1)
     weights = SegmentedWeights(scores, 1, 1, seg_decay, 1)
+    op_coupling = np.ones((1, 1))
 
     # TODO other weights?
     weights.update_weights(0, 0, 1)
-    weights.select_operators(rnd_state)
+    weights.select_operators(rnd_state, op_coupling)
 
     assert_almost_equal(weights.destroy_weights[0], expected[0])
     assert_almost_equal(weights.repair_weights[0], expected[1])

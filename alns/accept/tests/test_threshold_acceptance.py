@@ -7,7 +7,7 @@ from alns.tests.states import One, Zero
 
 def test_accepts_better():
     threshold_acceptance = ThresholdAcceptance(1, 0, 0.1)
-    assert_(threshold_acceptance(rnd.RandomState(), Zero(), One(), Zero()))
+    assert_(threshold_acceptance(None, None, One(), Zero()))
 
 
 def test_rejects_worse():
@@ -15,7 +15,7 @@ def test_rejects_worse():
 
     # This results in a relative worsening of plus one, which is bigger than
     # the threshold (0.5).
-    assert_(not threshold_acceptance(rnd.RandomState(), One(), Zero(), One()))
+    assert_(not threshold_acceptance(None, None, Zero(), One()))
 
 
 def test_accepts_equal():
@@ -23,7 +23,7 @@ def test_accepts_equal():
 
     # Even at the strictest threshold, this should be accepted since the
     # relative improvement is zero (they are equal).
-    assert_(threshold_acceptance(rnd.RandomState(), One(), Zero(), Zero()))
+    assert_(threshold_acceptance(None, None, Zero(), Zero()))
 
 
 def test_linear_threshold_update():
@@ -33,10 +33,10 @@ def test_linear_threshold_update():
     # worsening is plus one, so this should be accepted (lower or equal to
     # threshold).
     for _ in range(5):
-        assert_(threshold_acceptance(rnd.RandomState(), One(), Zero(), One()))
+        assert_(threshold_acceptance(None, None, Zero(), One()))
 
     # Threshold is now zero, so this should no longer be accepted.
-    assert_(not threshold_acceptance(rnd.RandomState(), One(), Zero(), One()))
+    assert_(not threshold_acceptance(None, None, Zero(), One()))
 
 
 def test_exponential_threshold_update():
@@ -45,5 +45,5 @@ def test_exponential_threshold_update():
     # The relative worsening is plus one, so this should be accepted initially,
     # as the threshold is 5, resp. 0.5. In the second case, 1 > 0.5, so the
     # second should be rejected.
-    assert_(threshold_acceptance(rnd.RandomState(), One(), Zero(), One()))
-    assert_(not threshold_acceptance(rnd.RandomState(), One(), Zero(), One()))
+    assert_(threshold_acceptance(None, None, Zero(), One()))
+    assert_(not threshold_acceptance(None, None, Zero(), One()))

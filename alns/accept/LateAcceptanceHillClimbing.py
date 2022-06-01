@@ -11,7 +11,7 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
 
     Parameters
     ----------
-    n_past: int
+    n_last: int
         A non-negative integer that specifies the number of last current
         solutions that need to be stored.
     improved: bool
@@ -19,24 +19,24 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
         if they are better than the current solution. Default: False.
     """
 
-    def __init__(self, n_past: int = 1, improved: bool = False):
-        if not isinstance(n_past, int) or n_past < 1:
-            raise ValueError("n_past argument must be a non-negative integer.")
+    def __init__(self, n_last: int = 1, improved: bool = False):
+        if not isinstance(n_last, int) or n_last < 1:
+            raise ValueError("n_last argument must be a non-negative integer.")
 
-        self.n_past = n_past
-        self.past_objective: deque = deque([], maxlen=n_past)
+        self.n_last = n_last
+        self.last_objectives: deque = deque([], maxlen=n_last)
         self.improved = improved
 
     def __call__(self, rnd, best, current, candidate):
-        if not self.past_objectives:
-            self.past_objectives.append(current.objective())
+        if not self.last_objectives:
+            self.last_objectives.append(current.objective())
             return candidate.objective() <= current.objective()
 
-        accept = candidate.objective() <= self.past_objectives[0]
+        accept = candidate.objective() <= self.last_objectives[0]
 
         if self.improved:
             accept |= candidate.objective() <= current.objective()
 
-        self.past_objectives.append(current.objective())
+        self.last_objectives.append(current.objective())
 
         return accept

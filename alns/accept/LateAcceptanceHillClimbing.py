@@ -6,14 +6,17 @@ from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 
 class LateAcceptanceHillClimbing(AcceptanceCriterion):
     """
-    Late acceptance hill climbing only accepts solutions that are better than the
-    current solution from a specified number of iterations ago.
+    Late acceptance hill climbing (LAHC) only accepts solutions that are better
+    than the current solution from a specified number of iterations ago.
 
     Parameters
     ----------
-    # TODO improve doc string
-    - Late Acceptance Hill Climbing: history_size >= 1
-    - Improved Late Acceptance Hill Climbing: history_size >=1, compare_current=True
+    history_size: int
+        A non-negative integer that specifies how many objective values to store
+        from previous iterations
+    improved: bool
+        If True, use the Improved LAHC, which also accepts candidate solutions
+        if they are better than the current solution. Default: False.
     """
 
     def __init__(self, history_size: int = 1, improved: bool = False):

@@ -6,53 +6,53 @@ from alns.accept import LateAcceptanceHillClimbing
 from alns.tests.states import Zero, One, Two
 
 
-@mark.parametrize("history_size", [-0.01, -10, 1.5])
-def test_raises_invalid_history_size(history_size):
+@mark.parametrize("n_iterations", [-0.01, -10, 1.5])
+def test_raises_invalid_n_iterations(n_iterations):
     with assert_raises(ValueError):
-        LateAcceptanceHillClimbing(history_size)
+        LateAcceptanceHillClimbing(n_iterations)
 
 
-@mark.parametrize("history_size", [3, 10, 50])
-def test_late_acceptance(history_size):
+@mark.parametrize("n_iterations", [3, 10, 50])
+def test_late_acceptance(n_iterations):
     """
-    Tests if the late acceptance hill climbing method with specified
-    history size accepts a solution that is better than the current solution
-    history_size iterations ago.
+    Tests if the late acceptance hill climbing method accepts a solution
+    that is better than the current solution n_iterations ago.
     """
-    lahc = LateAcceptanceHillClimbing(history_size)
+    lahc = LateAcceptanceHillClimbing(n_iterations)
 
     def accept(current, candidate):
-        return lahc(rnd.RandomState(), Zero(), current, candidate)
+        return lahc(None, None, current, candidate)
 
     accept(Two(), One())
 
-    for _ in range(history_size - 1):
+    for _ in range(n_iterations - 1):
         accept(Zero(), One())
 
-    # 2 is the value to be compared against
+    # The current solution n_iterations ago has value 2, so the candidate
+    # solution with value 1 should be accepted.
     assert_equal(lahc.history[0], 2)
     assert_(accept(Zero(), One()))
-    assert_equal(lahc.history[0], 0)
 
 
-@mark.parametrize("history_size", [3, 10, 50])
-def test_improved_late_acceptance(history_size):
+@mark.parametrize("n_iterations", [3, 10, 50])
+def test_improved_late_acceptance(n_iterations):
     """
-    Tests if the improved late acceptance hill climbing method with specified
-    history size accepts a solution that 1) is better than the current solution
-    history_size iterations ago or 2) is better than the current solution.
+    Tests if the improved late acceptance hill climbing method accepts a
+    solution that 1) is better than the current solution n_iterations ago
+    or 2) is better than the current solution.
     """
-    ilahc = LateAcceptanceHillClimbing(history_size, improved=True)
+    ilahc = LateAcceptanceHillClimbing(n_iterations, improved=True)
 
     def accept(current, candidate):
-        return ilahc(rnd.RandomState(), Zero(), current, candidate)
+        return ilahc(None, None, current, candidate)
 
     accept(Zero(), One())
 
-    for _ in range(history_size - 1):
+    for _ in range(n_iterations - 1):
         accept(Zero(), One())
 
-    # Compare against the historical current solution value (0)
-    # or against the current solution (1)
+    # The current solution n_iterations ago has value 0 and the candidate
+    # solution has value 1. But since the current solution has value 1,
+    # the improved variant of LAHC will accept this solution.
     assert_equal(ilahc.history[0], 0)
     assert_(accept(One(), One()))

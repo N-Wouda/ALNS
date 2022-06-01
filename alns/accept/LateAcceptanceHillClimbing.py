@@ -11,34 +11,32 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
 
     Parameters
     ----------
-    history_size: int
-        A non-negative integer that specifies how many objective values to store
-        from previous iterations
+    n_past: int
+        A non-negative integer that specifies the number of last current
+        solutions that need to be stored.
     improved: bool
         If True, use the Improved LAHC, which also accepts candidate solutions
         if they are better than the current solution. Default: False.
     """
 
-    def __init__(self, history_size: int = 1, improved: bool = False):
-        if not isinstance(history_size, int) or history_size < 1:
-            raise ValueError(
-                "History size argument must be a non-negative integer."
-            )
+    def __init__(self, n_past: int = 1, improved: bool = False):
+        if not isinstance(n_past, int) or n_past < 1:
+            raise ValueError("n_past argument must be a non-negative integer.")
 
-        self.history_size = history_size
-        self.history: deque = deque([], maxlen=history_size)
+        self.n_past = n_past
+        self.past_objective: deque = deque([], maxlen=n_past)
         self.improved = improved
 
     def __call__(self, rnd, best, current, candidate):
-        if not self.history:
-            self.history.append(current.objective())
+        if not self.past_objectives:
+            self.past_objectives.append(current.objective())
             return candidate.objective() <= current.objective()
 
-        accept = candidate.objective() <= self.history[0]
+        accept = candidate.objective() <= self.past_objectives[0]
 
         if self.improved:
             accept |= candidate.objective() <= current.objective()
 
-        self.history.append(current.objective())
+        self.past_objectives.append(current.objective())
 
         return accept

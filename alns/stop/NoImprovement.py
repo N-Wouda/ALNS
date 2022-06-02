@@ -1,4 +1,5 @@
 from numpy.random import RandomState
+from typing import Optional
 
 from alns.State import State
 from alns.stop.StoppingCriterion import StoppingCriterion
@@ -20,8 +21,7 @@ class NoImprovement(StoppingCriterion):
             raise ValueError("n_iterations < 0 not understood.")
 
         self._n_iterations = n_iterations
-        self._counter = None
-        self._target = None
+        self._target: Optional[float] = None
 
     @property
     def n_iterations(self) -> int:

@@ -27,6 +27,9 @@ def test_raise_invalid_parameters():
         # If method=non-linear, then delta cannot be <= 0
         GreatDeluge(2, 0.5, 0.5, 0, method="non-linear")
 
+    with assert_raises(ValueError):
+        GreatDeluge(2, 0.5, 0.5, 0.5, method="exponential")  # Invalid method
+
 
 def test_does_not_raise():
     GreatDeluge(2, 0.5)

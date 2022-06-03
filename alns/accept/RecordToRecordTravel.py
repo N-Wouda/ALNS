@@ -4,8 +4,9 @@ from alns.accept.update import update
 
 class RecordToRecordTravel(AcceptanceCriterion):
     """
-    Record-to-record travel, using an updating threshold. The threshold is
-    updated as,
+    The Record-to-Record Travel (RRT) criterion accepts a canddiate solution
+    if the absolute gap between the candidate and best solution is smaller than
+    a threshold. The threshold is updated in each iteration as:
 
     ``threshold = max(end_threshold, threshold - step)`` (linear)
 
@@ -30,9 +31,9 @@ class RecordToRecordTravel(AcceptanceCriterion):
     [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
          criteria for the adaptive large neighbourhood search metaheuristic.
          *Journal of Heuristics* (2018) 24 (5): 783–815.
-    [2]: Dueck, G., Scheuer, T. Threshold accepting: A general purpose
-         optimization algorithm appearing superior to simulated annealing.
-         *Journal of Computational Physics* (1990) 90 (1): 161-175.
+    [2]: Dueck, G. New optimization heuristics: The great deluge algorithm and
+         the record-to-record travel. *Journal of Computational Physics* (1993)
+         104 (1): 86-92.
     """
 
     def __init__(
@@ -75,7 +76,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
         return self._method
 
     def __call__(self, rnd, best, current, candidate):
-        # This follows from the paper by Dueck and Scheueur (1990), p. 162.
+        # This follows from the paper by Dueck (1993), p. 87.
         result = (candidate.objective() - best.objective()) <= self._threshold
 
         self._threshold = max(

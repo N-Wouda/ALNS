@@ -4,10 +4,15 @@ from alns.accept.update import update
 
 class WorseAccept(AcceptanceCriterion):
     """
-    The worse accept criterion accepts a candidate solution if it improves over
-    the current one, or - regardless of the cost - with a given probability.
+    The Worse Accept criterion accepts a candidate solution 1) if it improves
+    over the current one or 2) with a given probability regardless of the cost.
+    The probability is updated in each iteration as:
 
-    The probability is updated over time.
+    ``prob = max(end_prob, prob - step)`` (linear)
+
+    ``prob = max(end_prob, step * prob)`` (exponential)
+
+    where the initial probability is set to ``start_prob``.
 
     Parameters
     ----------

@@ -10,17 +10,16 @@ class HillClimbing(AcceptanceCriterion):
     discarding those that result in a worse objective value.
 
     There are three variants of the HC criterion:
-    1) classic (HC), which only accepts a candidate solution if it is better
+    1) Classic (HC): only accepts a candidate solution if it is better
        than the current solution.
-    2) late-acceptance (LAHC), which only accepts a candidate solution if it is
+    2) Late Acceptance (LAHC): only accepts a candidate solution if it is
        better than the current solution from a number of iterations ago.
-    3) improved LA (ILAHC), which is the LA criterion but also accepts a
-       candidate solution if it is better than the current solution.
+    3) Improved LA (ILAHC): this variant combines HC and LAHC.
 
     Parameters
     ----------
     on_current: bool
-        A boolean to denote whether to accept candidate solutions if they are
+        A bool to denote whether to accept candidate solutions if they are
         better than the current solution. Default: True.
     n_last: int
         A non-negative integer that specifies the number of last current
@@ -30,14 +29,12 @@ class HillClimbing(AcceptanceCriterion):
 
     def __init__(self, on_current: bool = True, n_last: Optional[int] = None):
         self._on_current = on_current
+        self._n_last = n_last
 
-        if n_last is not None:
+        if self._n_last is not None:
             if not isinstance(n_last, int) or n_last < 0:
-                raise ValueError(
-                    "n_last argument must be a non-negative integer."
-                )
+                raise ValueError("n_last must be a non-negative integer.")
 
-            self._n_last: int = n_last
             self._last_objectives: deque = deque([], maxlen=n_last)
 
     # TODO Add properties; how to add optional properties?
@@ -50,7 +47,7 @@ class HillClimbing(AcceptanceCriterion):
         if self._on_current:
             result |= cand_obj <= curr_obj
 
-        if hasattr(self, "_n_last"):
+        if self._n_last is not None:
             if not self._last_objectives:
                 self._last_objectives.append(curr_obj)
                 return cand_obj <= curr_obj

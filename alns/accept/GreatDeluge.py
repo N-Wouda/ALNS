@@ -7,20 +7,21 @@ from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 class GreatDeluge(AcceptanceCriterion):
     """
     The Great Deluge (GD) criterion accepts solutions if the candidate solution
-    has value smaller than an absolute threshold (originally called the water
-    level). The implementation is based on the description in [1].
-
-    In the GD criterion, the initial threshold is computed as
+    has value lower than a threshold (originally called the water level). The
+    initial threshold is computed as
 
     ``threshold = alpha * initial.objective()``
 
-    where ``initial`` is the initial solution passed-in to ALNS, inferred
+    where `initial` is the initial solution passed-in to ALNS, inferred
     from the best solution at the first iteration.
 
-    There are two variants of the GD criterion: 1) linear and 2) non-linear.
-    The main difference between the variants is the threshold updating scheme,
-    see the `_update` method for details. Moreover, in the non-linear variant,
-    candidate solutions that improve the current solution are always accepted.
+    There are two variants of the GD criterion: 1) linear and 2) non-linear,
+    proposed in [2] and [3], respectively. The main difference between these
+    variants is the threshold updating scheme, see the `_update` method for
+    more details. Moreover, in the non-linear variant, candidate solutions that
+    improve the current solution are always accepted.
+
+    The implementation is based on the description in [1].
 
     Parameters
     ----------
@@ -65,9 +66,7 @@ class GreatDeluge(AcceptanceCriterion):
         if (
             gamma is None or delta is None or gamma <= 0 or delta <= 0
         ) and method == "non-linear":
-            raise ValueError(
-                "Gamma and delta must non-negative if the non-linear method is selected."
-            )
+            raise ValueError("Gamma and delta must be non-negative.")
 
         if method not in ["linear", "non-linear"]:
             raise ValueError(f"Method {method} not understrood.")
@@ -75,11 +74,11 @@ class GreatDeluge(AcceptanceCriterion):
         self._alpha = alpha
         self._beta = beta
         self._method = method
-        self._threshold: Optional[float] = None
+        self._threshold = None
 
         if self._method == "non-linear":
-            self._gamma: Optional[float] = gamma
-            self._delta: Optional[float] = delta
+            self._gamma = gamma
+            self._delta = delta
 
     def __call__(self, rnd, best, current, candidate):
         if self._threshold is None:
@@ -87,7 +86,7 @@ class GreatDeluge(AcceptanceCriterion):
 
             if self._method == "non-linear" and self._threshold == 0:
                 raise ValueError(
-                    "Initial solution cannot have zero objective value in the non-linear method."
+                    "Initial solution cannot have zero objective value."
                 )
 
         result = candidate.objective() < self._threshold
@@ -101,10 +100,13 @@ class GreatDeluge(AcceptanceCriterion):
 
     def _update(self, best, current, candidate):
         """
+        Return the new threshold value based on the selected GD variant.
+
         In the linear GD variant, the threshold is updated in each iteration as
 
         ``threshold = threshold - beta * (threshold - candidate.objective())``
 
+        TODO Improve this description.
         In the non-linear variant, the updating method is more involved.
         - First, the relative gap between the candidate solution and threshold
           is computed.
@@ -127,12 +129,10 @@ class GreatDeluge(AcceptanceCriterion):
             ) / self._threshold
 
             if rel_gap < self._beta:
-                # Linearly increase threshold
                 result = self._threshold + self._gamma * abs(
                     candidate.objective() - self._threshold
                 )
             else:
-                # Exponentially decrease the threshold
                 result = (
                     self._threshold * math.exp(-self._delta * best.objective())
                     + best.objective()

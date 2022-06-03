@@ -8,7 +8,10 @@ from alns.stop.StoppingCriterion import StoppingCriterion
 class NoImprovement(StoppingCriterion):
     """
     Criterion that stops if the best solution has not been improved
-    after a number of iterations.
+    for a number of iterations.
+
+    The first iteration is used to initialize the criterion. Hence,
+    the algorithm will iterate at least n_iterations + 1 times.
 
     Parameters
     ----------

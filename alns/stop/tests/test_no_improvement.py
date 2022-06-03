@@ -16,10 +16,10 @@ def test_raise_negative_parameters(n_iterations: int):
         NoImprovement(n_iterations)
 
 
-@pytest.mark.parametrize("n_iterations", [10, 100, 1000])
+@pytest.mark.parametrize("n_iterations", [0, 10, 100, 1000])
 def test_does_not_raise(n_iterations: int):
     """
-    Valid parameters should not raise.
+    Non-negative integers should not raise.
     """
     NoImprovement(n_iterations)
 
@@ -58,6 +58,8 @@ def test_after_n_iterations():
         stop(rnd, Zero(), Zero())
 
     for _ in range(100):
+        # The 102-th iteration and beyond should be stopped, because there was
+        # 1 iteration to initialize and 100 subsequent non-improving iterations.
         assert_(stop(rnd, Zero(), Zero()))
 
 

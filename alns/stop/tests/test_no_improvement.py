@@ -32,6 +32,19 @@ def test_max_iterations():
     assert_equal(stop.max_iterations, 3)
 
 
+def test_zero_max_iterations():
+    """
+    Test if setting max_iterations to zero stops when a non-improving
+    best solution has been found.
+    """
+    stop = NoImprovement(0)
+    rnd = RandomState()
+
+    assert_(not stop(rnd, One(), Zero()))
+    assert_(not stop(rnd, Zero(), Zero()))
+    assert_(stop(rnd, Zero(), Zero()))
+
+
 def test_first_iteration():
     """
     Test if the first iteration does not stop.

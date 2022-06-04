@@ -93,7 +93,7 @@ def test_nlgd_raise_zero_best():
     Test if an error is raised when the initial solution has value 0
     using NLGD.
 
-    Reason: the relative gap cannot be computed.
+    Reason: the relative gap cannot be computed with zero threshold.
     """
     great_deluge = GreatDeluge(2, 0.1, 0.01, 1, method="non-linear")
 
@@ -119,8 +119,8 @@ def test_nlgd_rejects_above_threshold():
 def test_nlgd_accepts_improving_current():
     great_deluge = GreatDeluge(2, 0.5, 1, 1, method="non-linear")
 
-    # Two does not improve over the threshold (2) but does improve over the
-    # current solution value (3), hence One should be accepted
+    # Candidate is does not improve the threshold (2 == 2) but does improve the
+    # current solution value (2 < 3), hence candidate should be accepted
     assert_(great_deluge(None, One(), Three(), Two()))
 
 
@@ -130,10 +130,11 @@ def test_nlgd_evaluate_consecutive_solutions():
     """
     great_deluge = GreatDeluge(1.5, 0.1, 0.02, 2, method="non-linear")
 
-    # The first candidate is rejected (1.5 < 2). The threshold is linearly
-    # increased to 1.51. The second candidate is accepted (1.51 > 0). The
-    # threshold is exponentially decreased to 1.20. The third candidate
-    # is accepted (1.20 > 1).
+    # The first is above the threshold (2 > 1.5) so the first should be
+    # rejected. The threshold is then linearly increased to 1.51. The second
+    # candidate is below the threshold (0 < 1.51), so the second should be
+    # accepted. The threshold is then exponentially decreased to 1.20. The third
+    # candidate is below the theshold (1 < 1.20) and is accepted.
     assert_(not great_deluge(None, One(), Zero(), Two()))
     assert_(great_deluge(None, One(), Zero(), Zero()))
     assert_(great_deluge(None, One(), Zero(), One()))

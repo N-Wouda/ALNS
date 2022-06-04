@@ -94,25 +94,28 @@ def test_end_prob():
         assert_equal(WorseAccept(1, end, 1).end_prob, end)
 
 
-def test_accepts_better():
+def test_zero_prob_accepts_better():
+    """
+    Tests if WA with a zero start probability accepts better solutions.
+    """
     rng = MockRNG([1])
     worse_accept = WorseAccept(0, 0, 0.1)
     assert_(worse_accept(rng, None, One(), Zero()))
 
 
-def test_never_accept_worse():
+def test_zero_prob_never_accept_worse():
     """
-    Test if a zero start probability leads to never accept worse solutions.
+    Tests if WA with a zero start probability does not accept worse solutions.
     """
     worse_accept = WorseAccept(0, 0, 0, "linear")
 
-    for _ in range(100):
-        assert_(not worse_accept(rnd.RandomState(), None, Zero(), One()))
+    assert_(not worse_accept(rnd.RandomState(), None, Zero(), One()))
 
 
-def test_always_accept():
+def test_one_prob_always_accept():
     """
-    Test if a fixed start probability of 1 leads to always accepting solutions.
+    Tests if WA with a fixed probability of 1 leads to always accepting
+    solutions.
     """
     worse_accept = WorseAccept(1, 0, 0, "linear")
 
@@ -120,21 +123,29 @@ def test_always_accept():
         assert_(worse_accept(rnd.RandomState(), None, Zero(), One()))
 
 
-def test_linear_prob_update():
+def test_linear_consecutive_solutions():
+    """
+    Test if WA with linear updating method correctly accepts and rejects
+    consecutive solutions.
+    """
     rng = MockRNG([0.9, 0.8, 0.7, 0.6, 0.5, 1])
     worse_accept = WorseAccept(1, 0, 0.1, "linear")
 
     # For the first five, the probability is, resp., 1, 0.9, 0.8, 0.7, 0.6
-    # The random draws is, resp., 0.9, 0.8, 0.7, 0.6, 0.5 so the worsening
+    # The random draw is, resp., 0.9, 0.8, 0.7, 0.6, 0.5 so the worsening
     # solution is still accepted.
     for _ in range(5):
         assert_(worse_accept(rng, None, Zero(), One()))
 
-    # The probability is now 0.5 and the draw is 1, so no accept.
+    # The probability is now 0.5 and the draw is 1, so reject.
     assert_(not worse_accept(rng, None, Zero(), One()))
 
 
-def test_exponential_prob_update():
+def test_exponential_consecutive_solutions():
+    """
+    Test if WA with exponential updating method correctly accepts and rejects
+    consecutive solutions.
+    """
     rng = MockRNG([0.5, 0.25, 0.125, 1])
     worse_accept = WorseAccept(1, 0, 0.5, "exponential")
 
@@ -144,5 +155,5 @@ def test_exponential_prob_update():
     for _ in range(3):
         assert_(worse_accept(rng, None, Zero(), One()))
 
-    # The probability is now 0.5 and the draw is 1, so no accept.
+    # The probability is now 0.5 and the draw is 1, so reject.
     assert_(not worse_accept(rng, None, Zero(), One()))

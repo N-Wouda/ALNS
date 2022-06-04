@@ -10,25 +10,22 @@ class NoImprovement(StoppingCriterion):
     Criterion that stops if the best solution has not been improved
     after a number of iterations.
 
-    The first iteration is used to initialize the criterion. Hence,
-    the algorithm will iterate at least n_iterations + 1 times.
-
     Parameters
     ----------
-    n_iterations
+    max_iterations
         The maximum number of non-improving iterations.
     """
 
-    def __init__(self, n_iterations: int):
-        if n_iterations < 0:
-            raise ValueError("n_iterations < 0 not understood.")
+    def __init__(self, max_iterations: int):
+        if max_iterations < 0:
+            raise ValueError("max_iterations < 0 not understood.")
 
-        self._n_iterations = n_iterations
+        self._max_iterations = max_iterations
         self._target: Optional[float] = None
 
     @property
-    def n_iterations(self) -> int:
-        return self._n_iterations
+    def max_iterations(self) -> int:
+        return self._max_iterations
 
     def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
         if self._target is None or best.objective() < self._target:
@@ -37,4 +34,4 @@ class NoImprovement(StoppingCriterion):
             return False
 
         self._counter += 1
-        return self._counter > self.n_iterations
+        return self._counter >= self.max_iterations

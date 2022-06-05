@@ -9,7 +9,7 @@ from numpy.testing import (
 from pytest import mark
 
 from alns.accept import GreatDeluge
-from alns.tests.states import One, Zero, Two, Three
+from alns.tests.states import One, Zero, Two, VarObj
 
 
 def test_raise_invalid_parameters():
@@ -121,7 +121,7 @@ def test_nlgd_accepts_improving_current():
 
     # Candidate is does not improve the threshold (2 == 2) but does improve the
     # current solution value (2 < 3), hence candidate should be accepted
-    assert_(great_deluge(None, One(), Three(), Two()))
+    assert_(great_deluge(None, One(), VarObj(3), Two()))
 
 
 def test_nlgd_evaluate_consecutive_solutions():

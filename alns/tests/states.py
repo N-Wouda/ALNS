@@ -1,34 +1,19 @@
+from numbers import Number
+
 from alns import State
 
 
-class Zero(State):
-    """
-    Testable state with objective zero.
-    """
+class VarObj(State):
+    """Test solution state object with variable objective."""
 
-    def objective(self):
-        return 0
+    def __init__(self, obj: Number):
+        self.obj = obj
 
-
-class One(State):
-    """
-    Testable state with objective one.
-    """
-
-    def objective(self):
-        return 1
+    def objective(self) -> Number:
+        return self.obj
 
 
-class Two(State):
-    """
-    Testable state with objective two.
-    """
-
-    def objective(self):
-        return 2
-
-
-class Sentinel(Zero):
-    """
-    Placeholder state.
-    """
+Sentinel = lambda: VarObj(0)
+Zero = lambda: VarObj(0)
+One = lambda: VarObj(1)
+Two = lambda: VarObj(2)

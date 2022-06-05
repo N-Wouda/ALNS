@@ -17,19 +17,12 @@ def test_raise_negative_parameters(max_iterations: int):
 
 
 @pytest.mark.parametrize("max_iterations", [0, 10, 100, 1000])
-def test_does_not_raise(max_iterations: int):
-    """
-    Non-negative integers should not raise.
-    """
-    NoImprovement(max_iterations)
-
-
-def test_max_iterations():
+def test_max_iterations(max_iterations):
     """
     Test if the max_iterations parameter is correctly set.
     """
-    stop = NoImprovement(3)
-    assert_equal(stop.max_iterations, 3)
+    stop = NoImprovement(max_iterations)
+    assert_equal(stop.max_iterations, max_iterations)
 
 
 def test_zero_max_iterations():
@@ -56,37 +49,39 @@ def test_one_max_iterations():
     assert_(stop(rnd, Zero(), Zero()))
 
 
-def test_n_max_iterations_non_improving():
+@pytest.mark.parametrize("n", [10, 100, 1000])
+def test_n_max_iterations_non_improving(n):
     """
-    Test if setting max_iterations to N correctly stops with non-improving
-    solutions. The first N iterations should not stop. Beyond that, the
+    Test if setting max_iterations to n correctly stops with non-improving
+    solutions. The first n iterations should not stop. Beyond that, the
     the criterion should stop.
     """
-    stop = NoImprovement(100)
+    stop = NoImprovement(n)
     rnd = RandomState()
 
-    for _ in range(100):
+    for _ in range(n):
         assert_(not stop(rnd, Zero(), Zero()))
 
-    for _ in range(100):
+    for _ in range(n):
         assert_(stop(rnd, Zero(), Zero()))
 
 
-def test_n_max_iterations_with_single_improvement():
+@pytest.mark.parametrize("n, k", [(10, 2), (100, 20), (1000, 200)])
+def test_n_max_iterations_with_single_improvement(n, k):
     """
-    Test if setting max_iterations to N correctly stops with a sequence
-    of solutions, where the third solution is improving and the other solutions
-    are non-improving. The first N+2 iterations should not stop. Beyond that,
+    Test if setting max_iterations to n correctly stops with a sequence
+    of solutions, where the k-th solution is improving and the other solutions
+    are non-improving. The first n+k-1 iterations should not stop. Beyond that,
     the criterion should stop.
     """
-    stop = NoImprovement(100)
+    stop = NoImprovement(n)
     rnd = RandomState()
 
-    for _ in range(2):
+    for _ in range(k):
         assert_(not stop(rnd, One(), Zero()))
 
-    for _ in range(100):
+    for _ in range(n):
         assert_(not stop(rnd, Zero(), Zero()))
 
-    for _ in range(100):
+    for _ in range(n):
         assert_(stop(rnd, Zero(), Zero()))

@@ -38,7 +38,7 @@ class ThresholdAcceptance(RecordToRecordTravel):
 
     def __call__(self, rnd, best, current, candidate):
         # This follows from the paper by Dueck and Scheueur (1990), p. 162.
-        diff = candidate.obj() - current.obj()
+        diff = candidate.objective() - current.objective()
         res = diff <= self._threshold
 
         self._threshold = max(

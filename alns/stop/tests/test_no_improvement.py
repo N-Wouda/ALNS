@@ -77,17 +77,3 @@ def test_counter_value_at_stop():
         pass
 
     assert_equal(stop._counter, 100)
-
-
-def test_reset_counter():
-    """
-    Test if the counter is reset when a new best solution is encountered.
-    """
-    stop = NoImprovement(100)
-    rnd = RandomState()
-
-    for _ in range(5):
-        assert_(not stop(rnd, One(), One()))
-
-    assert_(not stop(rnd, Zero(), One()))
-    assert_equal(stop._counter, 0)

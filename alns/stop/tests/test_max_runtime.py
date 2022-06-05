@@ -2,7 +2,7 @@ import time
 
 import pytest
 from numpy.random import RandomState
-from numpy.testing import assert_, assert_raises
+from numpy.testing import assert_, assert_equal, assert_raises
 
 from alns.stop import MaxRuntime
 from alns.tests.states import Zero
@@ -43,7 +43,7 @@ def test_max_runtime(max_runtime):
     Test if the max time parameter is correctly set.
     """
     stop = MaxRuntime(max_runtime)
-    assert_(stop.max_runtime, max_runtime)
+    assert_equal(stop.max_runtime, max_runtime)
 
 
 @pytest.mark.parametrize("max_runtime", [0.01, 0.05, 0.10])

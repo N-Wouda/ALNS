@@ -22,6 +22,7 @@ class NoImprovement(StoppingCriterion):
 
         self._max_iterations = max_iterations
         self._target: Optional[float] = None
+        self._counter = 0
 
     @property
     def max_iterations(self) -> int:
@@ -31,7 +32,7 @@ class NoImprovement(StoppingCriterion):
         if self._target is None or best.objective() < self._target:
             self._target = best.objective()
             self._counter = 0
-            return False
+        else:
+            self._counter += 1
 
-        self._counter += 1
         return self._counter >= self.max_iterations

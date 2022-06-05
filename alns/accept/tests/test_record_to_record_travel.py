@@ -1,4 +1,3 @@
-import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
 
 from alns.accept import RecordToRecordTravel
@@ -83,7 +82,7 @@ def test_end_threshold():
 
 def test_accepts_better():
     record_travel = RecordToRecordTravel(1, 0, 0.1)
-    assert_(record_travel(rnd.RandomState(), One(), Zero(), Zero()))
+    assert_(record_travel(None, One(), None, Zero()))
 
 
 def test_rejects_worse():
@@ -91,7 +90,7 @@ def test_rejects_worse():
 
     # This results in a relative worsening of plus one, which is bigger than
     # the threshold (0.5).
-    assert_(not record_travel(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(not record_travel(None, Zero(), None, One()))
 
 
 def test_accepts_equal():
@@ -99,7 +98,7 @@ def test_accepts_equal():
 
     # Even a the strictest threshold, this should be accepted since the
     # relative improvement is zero (they are equal).
-    assert_(record_travel(rnd.RandomState(), Zero(), Zero(), Zero()))
+    assert_(record_travel(None, Zero(), None, Zero()))
 
 
 def test_linear_threshold_update():
@@ -109,10 +108,10 @@ def test_linear_threshold_update():
     # worsening is plus one, so this should be accepted (lower or equal to
     # threshold).
     for _ in range(5):
-        assert_(record_travel(rnd.RandomState(), Zero(), Zero(), One()))
+        assert_(record_travel(None, Zero(), None, One()))
 
     # Threshold is now zero, so this should no longer be accepted.
-    assert_(not record_travel(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(not record_travel(None, Zero(), None, One()))
 
 
 def test_exponential_threshold_update():
@@ -121,5 +120,5 @@ def test_exponential_threshold_update():
     # The relative worsening is plus one, so this should be accepted initially,
     # as the threshold is 5, resp. 0.5. In the second case, 1 > 0.5, so the
     # second should be rejected.
-    assert_(record_travel(rnd.RandomState(), Zero(), Zero(), One()))
-    assert_(not record_travel(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(record_travel(None, Zero(), None, One()))
+    assert_(not record_travel(None, Zero(), None, One()))

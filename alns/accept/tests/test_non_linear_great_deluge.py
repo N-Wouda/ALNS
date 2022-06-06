@@ -11,53 +11,44 @@ from alns.accept import NonLinearGreatDeluge
 from alns.tests.states import One, Zero, Two, VarObj
 
 
-def test_raise_invalid_parameters():
+@mark.parametrize(
+    "alpha, beta, gamma, delta",
+    [
+        (1, 0.5, 1, 1),  # alpha cannot be <= 1
+        (2, 1, 1, 1),  # beta cannot be outside of (0, 1)
+        (2, 0.5, 0, 1),  # gamma cannot be <= 0
+        (2, 0.5, 1, 0),  # delta cannot be <= 0
+    ],
+)
+def test_raise_invalid_parameters(alpha, beta, gamma, delta):
     with assert_raises(ValueError):
-        NonLinearGreatDeluge(1, 0.5, 1, 1)  # alpha cannot be <= 1
-
-    with assert_raises(ValueError):
-        NonLinearGreatDeluge(2, 1, 1, 1)  # beta cannot be outside of (0, 1)
-
-    with assert_raises(ValueError):
-        NonLinearGreatDeluge(2, 0.5, 0, 1)  # gamma cannot be <= 0
-
-    with assert_raises(ValueError):
-        NonLinearGreatDeluge(2, 0.5, 1, 0)  # delta cannot be <= 0
+        NonLinearGreatDeluge(alpha, beta, gamma, delta)
 
 
-def test_does_not_raise():
-    NonLinearGreatDeluge(2, 0.5, 1, 1)
-    NonLinearGreatDeluge(2, 0.5, 0.5, 0.5)
+@mark.parametrize(
+    "alpha,beta,gamma,delta",
+    [(2, 0.5, 1, 1), (2, 0.5, 0.5, 0.5), (1.1, 0.01, 0.25, 0.25)],
+)
+def test_no_raise_valid_parameters(alpha, beta, gamma, delta):
+    NonLinearGreatDeluge(alpha, beta, gamma, delta)
 
 
-@mark.parametrize("alpha", np.arange(1.1, 10, 1))
-def test_alpha(alpha):
-    nlgd = NonLinearGreatDeluge(alpha, 0.1, 1, 1)
+@mark.parametrize(
+    "alpha,beta,gamma,delta",
+    [(2, 0.5, 1, 1), (2, 0.5, 0.5, 0.5), (1.1, 0.01, 0.25, 0.25)],
+)
+def test_properties(alpha, beta, gamma, delta):
+    nlgd = NonLinearGreatDeluge(alpha, beta, gamma, delta)
+
     assert_equal(nlgd.alpha, alpha)
-
-
-@mark.parametrize("beta", np.arange(0.1, 1, 0.1))
-def test_beta(beta):
-    nlgd = NonLinearGreatDeluge(2, beta, 1, 1)
     assert_equal(nlgd.beta, beta)
-
-
-@mark.parametrize("gamma", np.arange(0.1, 1, 1))
-def test_gamma(gamma):
-    nlgd = NonLinearGreatDeluge(2, 0.1, gamma, 1)
     assert_equal(nlgd.gamma, gamma)
-
-
-@mark.parametrize("delta", np.arange(0.1, 1, 0.1))
-def test_delta(delta):
-    nlgd = NonLinearGreatDeluge(2, 0.1, 1, delta)
     assert_equal(nlgd.delta, delta)
 
 
 def test_raise_zero_best():
     """
-    Test if an error is raised when the initial solution has value 0
-    using NLGD.
+    Test if an error is raised when the initial solution has value 0:.
 
     Reason: the relative gap cannot be computed with zero threshold.
     """
@@ -75,6 +66,14 @@ def test_accepts_below_threshold():
 
 
 def test_rejects_above_threshold():
+    nlgd = NonLinearGreatDeluge(1.99, 0.5, 1, 1)
+
+    # Initial threshold is set at 1.99 and the current solution is Zero,
+    # hence Two should be rejected
+    assert_(not nlgd(None, One(), Zero(), Two()))
+
+
+def test_rejects_equal_threshold():
     nlgd = NonLinearGreatDeluge(2, 0.5, 1, 1)
 
     # Initial threshold is set at 2 and the current solution is Zero,
@@ -85,7 +84,7 @@ def test_rejects_above_threshold():
 def test_accepts_improving_current():
     nlgd = NonLinearGreatDeluge(2, 0.5, 1, 1)
 
-    # Candidate is does not improve the threshold (2 == 2) but does improve the
+    # Candidate is not below the threshold (2 == 2) but does improve the
     # current solution value (2 < 3), hence candidate should be accepted
     assert_(nlgd(None, One(), VarObj(3), Two()))
 

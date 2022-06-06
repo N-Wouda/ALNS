@@ -20,77 +20,60 @@ class MockRNG:
 
 
 @mark.parametrize(
-    "start, end, step",
+    "start, end, step, method",
     [
-        (-1, 1, 0.1),  # start prob cannot be negative or smaller than end prob
-        (2, 1, 0.1),  # start prob cannot be larger than 1
-        (1, -1, 0.1),  # end prob cannot be negative
-        (1, 2, 0.1),  # end prob cannot be larger than 1 or start prob
-        (1, 0, -0.1),  # updating step cannot be negative
+        (-1, 1, 0.1, "linear"),  # start prob cannot be < 0
+        (2, 1, 0.1, "linear"),  # start prob cannot be > 1
+        (1, -1, 0.1, "linear"),  # end prob cannot be < 0
+        (1, 2, 0.1, "linear"),  # end prob cannot be > 1
+        (1, 0, -0.1, "linear"),  # updating step cannot be < 0
+        (0.5, 0.6, 0.1, "linear"),  # start prob cannot be < end prob
+        (1, 0.5, 2, "exponential"),  # step cannot be > 1 with exponential
     ],
 )
-def test_raises_invalid_parameters(start, end, step):
+def test_raises_invalid_parameters(start, end, step, method):
     """
     Worse accept does not work with non-probabilistic start and end probability
     so those should not be accepted. Negative step values should also not be
     accepted.
     """
     with assert_raises(ValueError):
-        WorseAccept(start, end, step)
+        WorseAccept(start, end, step, method)
 
 
-def test_raises_explosive_step():
+@mark.parametrize(
+    "start, end, step, method",
+    [
+        (1, 1, 1, "linear"),  # one start and end prob
+        (0, 0, 1, "linear"),  # zero start and end prob
+        (0.5, 0.5, 1, "linear"),  # equal start and end prob
+        (0.05, 0.01, 0.001, "linear"),  # regular start and end prob
+        (1, 0.5, 1, "exponential"),  # boundary step exponential
+    ],
+)
+def test_no_raise_valid_paramters(start, end, step, method):
+    WorseAccept(start, end, step)
+
+
+@mark.parametrize(
+    "start,end,step,method",
+    [
+        (1, 0, 1, "linear"),
+        (0.9, 0.0, 0.1, "linear"),
+        (0.5, 0.5, 0.1, "linear"),
+        (0, 0, 0, "exponential"),
+        (1, 0, 0.9999, "exponential"),
+    ],
+)
+def test_properties(start, end, step, method):
     """
-    For exponential updating, the step parameter must not be bigger than one,
-    as that would result in an explosive probability.
+    Tests if the properties are correctly set.
     """
-    with assert_raises(ValueError):
-        WorseAccept(1, 0.5, 2, "exponential")
-
-    WorseAccept(1, 0.5, 1, "exponential")  # boundary should be fine
-
-
-def test_prob_boundary():
-    """
-    The boundary case for the end probability parameter is at zero, which should
-    be accepted.
-    """
-    WorseAccept(1, 0, 1)
-
-
-def test_raises_start_smaller_than_end():
-    """
-    The initial probability at the start should be bigger (or equal) to the end
-    probability.
-    """
-    with assert_raises(ValueError):
-        WorseAccept(0, 1, 1)
-
-    WorseAccept(1, 1, 1)  # should not raise for equality
-
-
-@mark.parametrize("step", np.arange(2, 0, -0.1))
-def test_step(step):
-    """
-    Tests if the step parameter is correctly set.
-    """
-    assert_equal(WorseAccept(1, 1, step).step, step)
-
-
-@mark.parametrize("start", np.arange(1, 0, -0.1))
-def test_start_prob(start):
-    """
-    Tests if the start_prob parameter is correctly set.
-    """
-    assert_equal(WorseAccept(start, 0, 1).start_prob, start)
-
-
-@mark.parametrize("end", np.arange(1, 0, -0.1))
-def test_end_prob(end):
-    """
-    Tests if the end_prob parameter is correctly set.
-    """
-    assert_equal(WorseAccept(1, end, 1).end_prob, end)
+    worse_accept = WorseAccept(start, end, step, method)
+    assert_equal(worse_accept.start_prob, start)
+    assert_equal(worse_accept.end_prob, end)
+    assert_equal(worse_accept.step, step)
+    assert_equal(worse_accept.method, method)
 
 
 def test_zero_prob_accepts_better():

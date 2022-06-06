@@ -32,11 +32,6 @@ class MockRNG:
     ],
 )
 def test_raises_invalid_parameters(start, end, step, method):
-    """
-    Worse accept does not work with non-probabilistic start and end probability
-    so those should not be accepted. Negative step values should also not be
-    accepted.
-    """
     with assert_raises(ValueError):
         WorseAccept(start, end, step, method)
 

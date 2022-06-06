@@ -1,8 +1,7 @@
-import pytest
-
 import numpy as np
 import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
+from pytest import mark
 
 from alns.accept import WorseAccept
 from alns.tests.states import Zero, One, Two
@@ -20,26 +19,24 @@ class MockRNG:
         return self.values.pop(0)
 
 
-def test_raises_invalid_parameters():
+@mark.parametrize(
+    "start, end, step",
+    [
+        (-1, 1, 0.1),  # start prob cannot be negative or smaller than end prob
+        (2, 1, 0.1),  # start prob cannot be larger than 1
+        (1, -1, 0.1),  # end prob cannot be negative
+        (1, 2, 0.1),  # end prob cannot be larger than 1 or start prob
+        (1, 0, -0.1),  # updating step cannot be negative
+    ],
+)
+def test_raises_invalid_parameters(start, end, step):
     """
     Worse accept does not work with non-probabilistic start and end probability
     so those should not be accepted. Negative step values should also not be
     accepted.
     """
-    with assert_raises(ValueError):  # start prob cannot be negative
-        WorseAccept(-1, 1, 0.1)
-
-    with assert_raises(ValueError):  # start prob cannot be larger than 1
-        WorseAccept(2, 1, 0.1)
-
-    with assert_raises(ValueError):  # end prob cannot be negative
-        WorseAccept(1, -1, 0.1)
-
-    with assert_raises(ValueError):  # end prob cannot be larger than 1
-        WorseAccept(1, -1, 0.1)
-
-    with assert_raises(ValueError):  # updating step cannot be negative
-        WorseAccept(1, 1, -0.1)
+    with assert_raises(ValueError):
+        WorseAccept(start, end, step)
 
 
 def test_raises_explosive_step():
@@ -72,7 +69,7 @@ def test_raises_start_smaller_than_end():
     WorseAccept(1, 1, 1)  # should not raise for equality
 
 
-@pytest.mark.parametrize("step", np.arange(2, 0, -0.1))
+@mark.parametrize("step", np.arange(2, 0, -0.1))
 def test_step(step):
     """
     Tests if the step parameter is correctly set.
@@ -80,7 +77,7 @@ def test_step(step):
     assert_equal(WorseAccept(1, 1, step).step, step)
 
 
-@pytest.mark.parametrize("start", np.arange(1, 0, -0.1))
+@mark.parametrize("start", np.arange(1, 0, -0.1))
 def test_start_prob(start):
     """
     Tests if the start_prob parameter is correctly set.
@@ -88,7 +85,7 @@ def test_start_prob(start):
     assert_equal(WorseAccept(start, 0, 1).start_prob, start)
 
 
-@pytest.mark.parametrize("end", np.arange(1, 0, -0.1))
+@mark.parametrize("end", np.arange(1, 0, -0.1))
 def test_end_prob(end):
     """
     Tests if the end_prob parameter is correctly set.

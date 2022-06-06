@@ -51,8 +51,8 @@ def test_raises_invalid_parameters(start, end, step, method):
         (1, 0.5, 1, "exponential"),  # boundary step exponential
     ],
 )
-def test_no_raise_valid_paramters(start, end, step, method):
-    WorseAccept(start, end, step)
+def test_no_raise_valid_parameters(start, end, step, method):
+    WorseAccept(start, end, step, method)
 
 
 @mark.parametrize(

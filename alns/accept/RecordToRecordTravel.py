@@ -48,7 +48,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
         method: str = "linear",
     ):
         if start_threshold < 0 or end_threshold < 0 or step < 0:
-            raise ValueError("Thresholds and step must be positive.")
+            raise ValueError("Thresholds and step must be non-negative.")
 
         if start_threshold < end_threshold:
             raise ValueError("start_threshold < end_threshold not understood.")
@@ -104,9 +104,10 @@ class RecordToRecordTravel(AcceptanceCriterion):
         """
         Returns an RRT object such that the start threshold is set at
         ``start_gap`` percent of the initial objective ``init_obj``
-        and the end threshold is set at ``end_relgap`` percent of the
+        and the end threshold is set at ``end_gap`` percent of the
         initial objective. The step parameter is then chosen such that
-        the end threshold is reached in ``num_iters`` iterations.
+        the end threshold is reached in ``num_iters`` iterations using
+        the passed-in update method.
 
         Parameters
         ----------
@@ -122,9 +123,6 @@ class RecordToRecordTravel(AcceptanceCriterion):
             The number of iterations that the ALNS algorithm will run.
         method
             Updating method. Default 'linear'.
-
-        Raises
-        ------
 
         Returns
         -------

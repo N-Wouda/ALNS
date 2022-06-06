@@ -134,8 +134,8 @@ class RecordToRecordTravel(AcceptanceCriterion):
         if not (0 <= end_gap <= start_gap):
             raise ValueError("Must have 0 <= end_gap <= start_gap")
 
-        if num_iters < 0:
-            raise ValueError("Negative number of iterations not understood.")
+        if num_iters <= 0:
+            raise ValueError("Non-positive num_iters not understood.")
 
         if not method in ["linear", "exponential"]:
             raise ValueError("Method must be one of ['linear', 'exponential']")

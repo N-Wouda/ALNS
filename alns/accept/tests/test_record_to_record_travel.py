@@ -136,6 +136,29 @@ def test_exponential_threshold_update():
 
 
 @mark.parametrize(
+    "init_obj, start_gap, end_gap, n_iters, method",
+    [
+        (1, -1, 0, 1, "linear"),  # negative start
+        (1, 0, -1, 1, "linear"),  # negative end
+        (1, 0.5, 1, 1, "linear"),  # start < end
+        (1, 0, -1, 0, "linear"),  # non-positive n_iters
+        (1, 0, 0, 1, "nonlinear"),  # invalid method
+    ],
+)
+def test_autofit_raises_for_invalid_inputs(
+    init_obj: float,
+    start_gap: float,
+    end_gap: float,
+    n_iters: int,
+    method: str,
+):
+    with assert_raises(ValueError):
+        RecordToRecordTravel.autofit(
+            init_obj, start_gap, end_gap, n_iters, method
+        )
+
+
+@mark.parametrize(
     "init_obj, start_gap, end_gap, n_iters, method, rrt_start, rrt_end, rrt_step",
     [
         (1, 1, 0, 1, "linear", 1, 0, 1),

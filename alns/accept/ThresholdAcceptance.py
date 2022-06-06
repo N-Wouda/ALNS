@@ -36,10 +36,9 @@ class ThresholdAcceptance(RecordToRecordTravel):
          *Journal of Computational Physics* (1990) 90 (1): 161-175.
     """
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rnd, best, curr, cand):
         # This follows from the paper by Dueck and Scheueur (1990), p. 162.
-        diff = candidate.objective() - current.objective()
-        res = diff <= self._threshold
+        res = cand.objective() - curr.objective() <= self._threshold
 
         self._threshold = max(
             self.end_threshold, update(self._threshold, self.step, self.method)

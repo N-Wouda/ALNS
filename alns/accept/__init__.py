@@ -3,3 +3,4 @@ from .HillClimbing import HillClimbing
 from .RecordToRecordTravel import RecordToRecordTravel
 from .SimulatedAnnealing import SimulatedAnnealing
 from .ThresholdAcceptance import ThresholdAcceptance
+from .RandomWalk import RandomWalk

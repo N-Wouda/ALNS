@@ -1,6 +1,6 @@
 import pytest
 from numpy.random import RandomState
-from numpy.testing import assert_, assert_raises
+from numpy.testing import assert_, assert_equal, assert_raises
 
 from alns.stop import MaxIterations
 from alns.tests.states import Zero
@@ -29,7 +29,7 @@ def test_max_iterations(max_iterations):
     Test if the max iterations parameter is correctly set.
     """
     stop = MaxIterations(max_iterations)
-    assert stop.max_iterations == max_iterations
+    assert_equal(stop.max_iterations, max_iterations)
 
 
 def test_before_max_iterations():

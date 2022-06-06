@@ -36,7 +36,7 @@ def test_raises_invalid_parameters(start, end, step, method):
         (1000, 0.5, 0.1, "linear"),  # regular parameters
     ],
 )
-def test_raise_valid_parameters(start, end, step, method):
+def test_no_raise_valid_parameters(start, end, step, method):
     RecordToRecordTravel(start, end, step, method)
 
 

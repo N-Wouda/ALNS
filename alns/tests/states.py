@@ -1,15 +1,13 @@
-from numbers import Number
-
 from alns import State
 
 
 class VarObj(State):
     """Test solution state object with variable objective."""
 
-    def __init__(self, obj: Number):
+    def __init__(self, obj: float):
         self.obj = obj
 
-    def objective(self) -> Number:
+    def objective(self) -> float:
         return self.obj
 
 

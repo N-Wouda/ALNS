@@ -1,5 +1,9 @@
+import logging
+
 from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 from alns.accept.update import update
+
+logger = logging.getLogger(__name__)
 
 
 class RecordToRecordTravel(AcceptanceCriterion):
@@ -44,7 +48,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
         method: str = "linear",
     ):
         if start_threshold < 0 or end_threshold < 0 or step < 0:
-            raise ValueError("Thresholds must be positive.")
+            raise ValueError("Thresholds and step must be positive.")
 
         if start_threshold < end_threshold:
             raise ValueError("start_threshold < end_threshold not understood.")
@@ -87,3 +91,66 @@ class RecordToRecordTravel(AcceptanceCriterion):
         )
 
         return result
+
+    @classmethod
+    def autofit(
+        cls,
+        init_obj: float,
+        start_gap: float,
+        end_gap: float,
+        num_iters: int,
+        method: str = "linear",
+    ):
+        """
+        Returns an RRT object such that the start threshold is set at
+        ``start_gap`` percent of the initial objective ``init_obj``
+        and the end threshold is set at ``end_relgap`` percent of the
+        initial objective. The step parameter is then chosen such that
+        the end threshold is reached in ``num_iters`` iterations.
+
+        Parameters
+        ----------
+        init_obj
+            The initial solution objective
+        start_gap
+            Percentage gap of the initial objective used for deriving
+            the start threshold.
+        end_gap
+            Percentage gap of the initial objective used for deriving
+            the end threshold.
+        num_iters
+            The number of iterations that the ALNS algorithm will run.
+        method
+            Updating method. Default 'linear'.
+
+        Raises
+        ------
+
+        Returns
+        -------
+        An autofitted RecordToRecordTravel acceptance criterion.
+        """
+
+        if not (0 <= end_gap <= start_gap):
+            raise ValueError("Must have 0 <= end_gap <= start_gap")
+
+        if num_iters < 0:
+            raise ValueError("Negative number of iterations not understood.")
+
+        if not method in ["linear", "exponential"]:
+            raise ValueError("Method must be one of ['linear', 'exponential']")
+
+        start_threshold = start_gap * init_obj
+        end_threshold = end_gap * init_obj
+
+        if method == "linear":
+            step = (start_threshold - end_threshold) / num_iters
+        elif method == "exponential":
+            step = (end_threshold / start_threshold) ** (1 / num_iters)
+
+        logger.info(
+            f"Autofit start_threshold {start_threshold:.2f},\
+            end_threshold {end_threshold:.2f}, step {step:.2f}."
+        )
+
+        return cls(start_threshold, end_threshold, step, method=method)

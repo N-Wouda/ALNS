@@ -1,4 +1,10 @@
-from numpy.testing import assert_, assert_equal, assert_raises
+from numpy.testing import (
+    assert_,
+    assert_almost_equal,
+    assert_equal,
+    assert_raises,
+)
+from pytest import mark
 
 from alns.accept import RecordToRecordTravel
 from alns.tests.states import One, Zero
@@ -127,3 +133,34 @@ def test_exponential_threshold_update():
     # second should be rejected.
     assert_(record_travel(None, Zero(), None, One()))
     assert_(not record_travel(None, Zero(), None, One()))
+
+
+@mark.parametrize(
+    "init_obj, start_gap, end_gap, n_iters, method, rrt_start, rrt_end, rrt_step",
+    [
+        (1, 1, 0, 1, "linear", 1, 0, 1),
+        (10, 0.1, 0, 10, "linear", 1, 0, 0.1),
+        (100, 0.5, 0.5, 10, "linear", 50, 50, 0),
+        (1, 1, 0.1, 1, "exponential", 1, 0.1, 0.1),
+        (10, 0.1, 0.01, 10, "exponential", 1, 0.1, 0.79432),
+        (100, 0.05, 0.05, 10, "exponential", 5, 5, 1),
+    ],
+)
+def test_autofit_on_several_examples(
+    init_obj: float,
+    start_gap: float,
+    end_gap: float,
+    n_iters: int,
+    method: str,
+    rrt_start: float,
+    rrt_end: float,
+    rrt_step: float,
+):
+    rrt = RecordToRecordTravel.autofit(
+        init_obj, start_gap, end_gap, n_iters, method
+    )
+
+    assert_almost_equal(rrt.start_threshold, rrt_start)
+    assert_almost_equal(rrt.end_threshold, rrt_end)
+    assert_almost_equal(rrt.step, rrt_step, decimal=3)
+    assert_equal(rrt.method, method)

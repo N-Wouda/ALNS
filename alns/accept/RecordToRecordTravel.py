@@ -52,6 +52,9 @@ class RecordToRecordTravel(AcceptanceCriterion):
         if method == "exponential" and step > 1:
             raise ValueError("Exponential updating cannot have step > 1.")
 
+        if not method in ["linear", "exponential"]:
+            raise ValueError("Method must be one of ['linear', 'exponential']")
+
         self._start_threshold = start_threshold
         self._end_threshold = end_threshold
         self._step = step

@@ -30,6 +30,11 @@ def test_raises_explosive_step():
     RecordToRecordTravel(2, 1, 1, "exponential")  # boundary should be fine
 
 
+def test_raises_invalid_method():
+    with assert_raises(ValueError):
+        RecordToRecordTravel(1, 1, 1, "non-linear")
+
+
 def test_threshold_boundary():
     """
     The boundary case for the end threshold parameter is at zero, which should

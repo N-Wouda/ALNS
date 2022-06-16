@@ -6,8 +6,8 @@ from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 class GreatDeluge(AcceptanceCriterion):
     """
     The Great Deluge (GD) criterion accepts solutions if the candidate solution
-    has value lower than a threshold (originally called the water level [1]). The
-    initial threshold is computed as
+    has a value lower than a threshold (originally called the water level [1]).
+    The initial threshold is computed as
 
     ``threshold = alpha * initial.objective()``
 

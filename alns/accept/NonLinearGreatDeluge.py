@@ -92,10 +92,10 @@ class NonLinearGreatDeluge(GreatDeluge):
         rel_gap = (self._threshold - cand.objective()) / self._threshold
 
         if rel_gap < self._beta:
-            diff = self.gamma * abs(cand.objective() - self._threshold)
-            old = self._threshold
+            term1 = self.gamma * abs(cand.objective() - self._threshold)
+            term2 = self._threshold
         else:
-            diff = self._threshold * math.exp(-self.delta * best.objective())
-            old = best.objective()
+            term1 = self._threshold * math.exp(-self.delta * best.objective())
+            term2 = best.objective()
 
-        return diff + old
+        return term1 + term2

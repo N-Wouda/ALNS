@@ -29,7 +29,7 @@ class NonLinearGreatDeluge(GreatDeluge):
     beta
         Factor used to update the threshold
     gamma
-        Facto1 used to update the threshold
+        Factor used to update the threshold
     delta
         Factor used to update the threshold
 
@@ -73,7 +73,7 @@ class NonLinearGreatDeluge(GreatDeluge):
         res = cand.objective() < self._threshold
 
         if not res:
-            res |= cand.objective() < curr.objective()  # Accept improving
+            res = cand.objective() < curr.objective()  # Accept if improving
 
         self._threshold = self._update(best, curr, cand)
 
@@ -86,21 +86,16 @@ class NonLinearGreatDeluge(GreatDeluge):
         First, the relative gap between the candidate solution and threshold
         is computed. If this relative gap is less than ``beta``, then the
         threshold is linearly increased (involving the ``gamma`` parameter).
-        Otherwise, the threshold is exponentially decreased (involing the
+        Otherwise, the threshold is exponentially decreased (involving the
         ``delta`` parameter).
         """
-
         rel_gap = (self._threshold - cand.objective()) / self._threshold
 
         if rel_gap < self._beta:
-            res = (
-                self.gamma * abs(cand.objective() - self._threshold)
-                + self._threshold
-            )
+            diff = self.gamma * abs(cand.objective() - self._threshold)
+            old = self._threshold
         else:
-            res = (
-                self._threshold * math.exp(-self.delta * best.objective())
-                + best.objective()
-            )
+            diff = self._threshold * math.exp(-self.delta * best.objective())
+            old = best.objective()
 
-        return res
+        return diff + old

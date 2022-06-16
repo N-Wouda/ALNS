@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class RecordToRecordTravel(AcceptanceCriterion):
     """
-    The Record-to-Record Travel (RRT) criterion accepts a canddiate solution
+    The Record-to-Record Travel (RRT) criterion accepts a candidate solution
     if the absolute gap between the candidate and best solution is smaller than
     a threshold. The threshold is updated in each iteration as:
 
@@ -56,7 +56,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
         if method == "exponential" and step > 1:
             raise ValueError("Exponential updating cannot have step > 1.")
 
-        if not method in ["linear", "exponential"]:
+        if method not in ["linear", "exponential"]:
             raise ValueError("Method must be one of ['linear', 'exponential']")
 
         self._start_threshold = start_threshold
@@ -128,14 +128,13 @@ class RecordToRecordTravel(AcceptanceCriterion):
         -------
         An autofitted RecordToRecordTravel acceptance criterion.
         """
-
         if not (0 <= end_gap <= start_gap):
             raise ValueError("Must have 0 <= end_gap <= start_gap")
 
         if num_iters <= 0:
             raise ValueError("Non-positive num_iters not understood.")
 
-        if not method in ["linear", "exponential"]:
+        if method not in ["linear", "exponential"]:
             raise ValueError("Method must be one of ['linear', 'exponential']")
 
         start_threshold = start_gap * init_obj
@@ -147,8 +146,8 @@ class RecordToRecordTravel(AcceptanceCriterion):
             step = (end_threshold / start_threshold) ** (1 / num_iters)
 
         logger.info(
-            f"Autofit start_threshold {start_threshold:.2f},\
-            end_threshold {end_threshold:.2f}, step {step:.2f}."
+            f"Autofit start_threshold {start_threshold:.2f}"
+            f"end_threshold {end_threshold:.2f}, step {step:.2f}."
         )
 
         return cls(start_threshold, end_threshold, step, method=method)

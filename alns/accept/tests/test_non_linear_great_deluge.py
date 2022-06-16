@@ -1,10 +1,4 @@
-import numpy as np
-from numpy.testing import (
-    assert_,
-    assert_almost_equal,
-    assert_equal,
-    assert_raises,
-)
+from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import NonLinearGreatDeluge
@@ -48,9 +42,10 @@ def test_properties(alpha, beta, gamma, delta):
 
 def test_raise_zero_best():
     """
-    Test if an error is raised when the initial solution has value 0:.
-
-    Reason: the relative gap cannot be computed with zero threshold.
+    Test if an error is raised when the initial best solution has value 0.
+    The best solution is used to compute the initial threshold. An initial
+    threshold with value 0 cannot be updated because the relative gap in the
+    update method cannot be computed.
     """
     nlgd = NonLinearGreatDeluge(2, 0.1, 0.01, 1)
 
@@ -61,7 +56,7 @@ def test_raise_zero_best():
 def test_accepts_below_threshold():
     nlgd = NonLinearGreatDeluge(1.01, 0.5, 0.01, 1)
 
-    # Initial threshold is set at 1.01, hence One should be accepted
+    # Initial threshold is set at 1.01, hence One should be accepted.
     assert_(nlgd(None, One(), Zero(), One()))
 
 
@@ -69,7 +64,7 @@ def test_rejects_above_threshold():
     nlgd = NonLinearGreatDeluge(1.99, 0.5, 1, 1)
 
     # Initial threshold is set at 1.99 and the current solution is Zero,
-    # hence Two should be rejected
+    # hence Two should be rejected.
     assert_(not nlgd(None, One(), Zero(), Two()))
 
 
@@ -77,7 +72,7 @@ def test_rejects_equal_threshold():
     nlgd = NonLinearGreatDeluge(2, 0.5, 1, 1)
 
     # Initial threshold is set at 2 and the current solution is Zero,
-    # hence Two should be rejected
+    # hence Two should be rejected.
     assert_(not nlgd(None, One(), Zero(), Two()))
 
 
@@ -85,7 +80,7 @@ def test_accepts_improving_current():
     nlgd = NonLinearGreatDeluge(2, 0.5, 1, 1)
 
     # Candidate is not below the threshold (2 == 2) but does improve the
-    # current solution value (2 < 3), hence candidate should be accepted
+    # current solution (2 < 3), hence candidate should be accepted.
     assert_(nlgd(None, One(), VarObj(3), Two()))
 
 

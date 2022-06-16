@@ -1,9 +1,5 @@
 import numpy as np
-from numpy.testing import (
-    assert_,
-    assert_equal,
-    assert_raises,
-)
+from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import GreatDeluge
@@ -56,7 +52,7 @@ def test_rejects_above_threshold():
 def test_rejects_equal_threshold():
     great_deluge = GreatDeluge(2, 0.5)
 
-    # Initial threshold is set at 2, hence One should be rejected
+    # Initial threshold is set at 2, hence Two should be rejected
     assert_(not great_deluge(None, One(), None, Two()))
 
 
@@ -66,8 +62,8 @@ def test_evaluate_consecutive_solutions():
     """
     great_deluge = GreatDeluge(2, 0.01)
 
-    # The initial threshold is set at 2*0 = 0, so the first candidate is
-    # rejected. The threshold is updated to 0.01.
+    # The initial threshold is set at 2*0 = 0, so the first candidate with
+    # value one is rejected. The threshold is updated to 0.01.
     assert_(not great_deluge(None, Zero(), None, One()))
 
     # The second candidate is below the threshold (0 < 0.01), hence accepted.

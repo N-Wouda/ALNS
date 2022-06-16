@@ -52,16 +52,12 @@ class GreatDeluge(AcceptanceCriterion):
     def beta(self):
         return self._beta
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rnd, best, curr, cand):
         if self._threshold is None:
             self._threshold = self.alpha * best.objective()
 
-        res = candidate.objective() < self._threshold
+        res = cand.objective() < self._threshold
 
-        self._threshold = self._update(best, current, candidate)
+        self._threshold += self.beta * (cand.objective() - self._threshold)
 
         return res
-
-    def _update(self, best, current, candidate):
-        change = self.beta * (candidate.objective() - self._threshold)
-        return self._threshold + change

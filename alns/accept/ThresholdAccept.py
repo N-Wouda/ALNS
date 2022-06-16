@@ -2,9 +2,9 @@ from alns.accept.RecordToRecordTravel import RecordToRecordTravel
 from alns.accept.update import update
 
 
-class ThresholdAcceptance(RecordToRecordTravel):
+class ThresholdAccept(RecordToRecordTravel):
     """
-    The Threshold Acceptance (TA) criterion accepts a candidate solution if
+    The Threshold Accept criterion accepts a candidate solution if
     the absolute gap between the candidate and current solution is smaller
     than a threshold. The threshold is updated in each iteration as:
 

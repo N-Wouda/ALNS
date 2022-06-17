@@ -1,3 +1,4 @@
+import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
@@ -50,14 +51,14 @@ def test_raise_zero_best():
     nlgd = NonLinearGreatDeluge(2, 0.1, 0.01, 1)
 
     with assert_raises(ValueError):
-        nlgd(None, Zero(), One(), One())
+        nlgd(rnd.RandomState(), Zero(), One(), One())
 
 
 def test_accepts_below_threshold():
     nlgd = NonLinearGreatDeluge(1.01, 0.5, 0.01, 1)
 
     # Initial threshold is set at 1.01, hence One should be accepted.
-    assert_(nlgd(None, One(), Zero(), One()))
+    assert_(nlgd(rnd.RandomState(), One(), Zero(), One()))
 
 
 def test_rejects_above_threshold():
@@ -65,7 +66,7 @@ def test_rejects_above_threshold():
 
     # Initial threshold is set at 1.99 and the current solution is Zero,
     # hence Two should be rejected.
-    assert_(not nlgd(None, One(), Zero(), Two()))
+    assert_(not nlgd(rnd.RandomState(), One(), Zero(), Two()))
 
 
 def test_rejects_equal_threshold():
@@ -73,7 +74,7 @@ def test_rejects_equal_threshold():
 
     # Initial threshold is set at 2 and the current solution is Zero,
     # hence Two should be rejected.
-    assert_(not nlgd(None, One(), Zero(), Two()))
+    assert_(not nlgd(rnd.RandomState(), One(), Zero(), Two()))
 
 
 def test_accepts_improving_current():
@@ -81,7 +82,7 @@ def test_accepts_improving_current():
 
     # Candidate is not below the threshold (2 == 2) but does improve the
     # current solution (2 < 3), hence candidate should be accepted.
-    assert_(nlgd(None, One(), VarObj(3), Two()))
+    assert_(nlgd(rnd.RandomState(), One(), VarObj(3), Two()))
 
 
 def test_evaluate_consecutive_solutions():
@@ -95,6 +96,6 @@ def test_evaluate_consecutive_solutions():
     # candidate is below the threshold (0 < 1.51), so the second should be
     # accepted. The threshold is then exponentially decreased to 1.20. The third
     # candidate is below the theshold (1 < 1.20) and is accepted.
-    assert_(not nlgd(None, One(), Zero(), Two()))
-    assert_(nlgd(None, One(), Zero(), Zero()))
-    assert_(nlgd(None, One(), Zero(), One()))
+    assert_(not nlgd(rnd.RandomState(), One(), Zero(), Two()))
+    assert_(nlgd(rnd.RandomState(), One(), Zero(), Zero()))
+    assert_(nlgd(rnd.RandomState(), One(), Zero(), One()))

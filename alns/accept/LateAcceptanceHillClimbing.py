@@ -27,8 +27,8 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
 
     References
     ----------
-    [1]: LAHC
-
+    [1]: Burke, E. K., & Bykov, Y. The late acceptance hill-climbing heuristic.
+         *European Journal of Operational Research* (2017), 258(1), 70-78.
     """
 
     def __init__(

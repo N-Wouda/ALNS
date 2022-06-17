@@ -40,9 +40,8 @@ def test_lahc_accept(n_iterations):
     for _ in range(n_iterations):
         assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
-    # The current solution n_iterations iterations ago has value 2, so the
-    # candidate solution with value 1 should be accepted despite being worse
-    # than the current solution with value 0.
+    # The previous current solution n_iterations ago has value 2, so the
+    # candidate solution with value 1 should be accepted.
     assert_(lahc(rnd.RandomState(), Zero(), Zero(), One()))
 
 
@@ -58,8 +57,7 @@ def test_lahc_reject(n_iterations):
         assert_(lahc(rnd.RandomState(), Zero(), One(), Zero()))
 
     # The previous current solution n_iterations ago has value 1, so the
-    # candidate solution with value 1 should be rejected despite being better
-    # than the current solution with value 2.
+    # candidate solution with value 1 should be rejected.
     assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
@@ -75,9 +73,8 @@ def test_lahc_on_improve_accept(n_iterations):
     for _ in range(n_iterations):
         assert_(not lahc(rnd.RandomState(), Zero(), One(), Two()))
 
-    # The previous current solution n_iterations ago has value 1 and the
-    # candidate solution has value 1. But since the current solution has
-    # value 2, the improved variant of LAHC will accept this solution.
+    # The candidate (1) is better than the current (2), hence it is accepted
+    # despite being worse than the previous current (1).
     assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
@@ -85,8 +82,9 @@ def test_lahc_on_improve_accept(n_iterations):
 def test_lahc_only_better_reject(n_iterations):
     """
     Tests if LAHC criterion with only_better=True rejects a solution that
-    is better than the current solution despite being worse than the
-    previous current solution from n_iterations ago.
+    is better than the previous current solution from n_iterations ago, because
+    that previous current solution was not better than the current solution
+    from 2 * n_iterations ago.
     """
     lahc = LateAcceptanceHillClimbing(n_iterations, False, True)
 

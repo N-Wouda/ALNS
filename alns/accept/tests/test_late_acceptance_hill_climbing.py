@@ -38,12 +38,12 @@ def test_lahc_accept(n_iterations):
     lahc = LateAcceptanceHillClimbing(n_iterations, False, False)
 
     for _ in range(n_iterations):
-        assert_(lahc(None, None, Two(), One()))
+        assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
     # The current solution n_iterations iterations ago has value 2, so the
     # candidate solution with value 1 should be accepted despite being worse
     # than the current solution with value 0.
-    assert_(lahc(None, None, Zero(), One()))
+    assert_(lahc(rnd.RandomState(), Zero(), Zero(), One()))
 
 
 @mark.parametrize("n_iterations", [3, 10, 50])
@@ -55,12 +55,12 @@ def test_lahc_reject(n_iterations):
     lahc = LateAcceptanceHillClimbing(n_iterations, False, False)
 
     for _ in range(n_iterations):
-        assert_(lahc(None, None, One(), Zero()))
+        assert_(lahc(rnd.RandomState(), Zero(), One(), Zero()))
 
     # The previous current solution n_iterations ago has value 1, so the
     # candidate solution with value 1 should be rejected despite being better
     # than the current solution with value 2.
-    assert_(not lahc(None, None, Two(), One()))
+    assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
 @mark.parametrize("n_iterations", [3, 10, 50])
@@ -73,12 +73,12 @@ def test_lahc_on_improve_accept(n_iterations):
     lahc = LateAcceptanceHillClimbing(n_iterations, True, False)
 
     for _ in range(n_iterations):
-        assert_(not lahc(None, None, One(), Two()))
+        assert_(not lahc(rnd.RandomState(), Zero(), One(), Two()))
 
     # The previous current solution n_iterations ago has value 1 and the
     # candidate solution has value 1. But since the current solution has
     # value 2, the improved variant of LAHC will accept this solution.
-    assert_(lahc(None, None, Two(), One()))
+    assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
 @mark.parametrize("n_iterations", [3, 10, 50])
@@ -91,11 +91,11 @@ def test_lahc_only_better_reject(n_iterations):
     lahc = LateAcceptanceHillClimbing(n_iterations, False, True)
 
     for _ in range(n_iterations):
-        assert_(not lahc(None, None, One(), Two()))
+        assert_(not lahc(rnd.RandomState(), Zero(), One(), Two()))
 
     for _ in range(n_iterations):
         # The current solutions are not stored because they are worse
         # than the previous current solutions
-        assert_(not lahc(None, None, Two(), Two()))
+        assert_(not lahc(rnd.RandomState(), Zero(), Two(), Two()))
 
-    assert_(not lahc(None, None, Two(), One()))
+    assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))

@@ -1,5 +1,4 @@
 from collections import deque
-from typing import List, Optional
 
 from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 

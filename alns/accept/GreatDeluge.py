@@ -11,9 +11,9 @@ class GreatDeluge(AcceptanceCriterion):
 
     ``threshold = alpha * initial.objective()``
 
-    where ``initial`` is the initial solution passed-in to ALNS, inferred
-    from the best solution at the first iteration. The threshold is updated in
-    each iteration as
+    where ``initial`` is the initial solution passed-in to ALNS.
+
+    The threshold is updated in each iteration as
 
     ``threshold = threshold - beta * (threshold - candidate.objective()``
 
@@ -58,6 +58,6 @@ class GreatDeluge(AcceptanceCriterion):
 
         res = cand.objective() < self._threshold
 
-        self._threshold += self.beta * (cand.objective() - self._threshold)
+        self._threshold -= self.beta * (self._threshold - cand.objective())
 
         return res

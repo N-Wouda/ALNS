@@ -20,10 +20,10 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
         Default: 0 (no objectives stored).
     on_improve: bool
         Bool indicating whether or not to accept candidate solutions if they are
-        better than the current solution. Default: True.
+        better than the current solution. Default: False.
     only_better: bool
         Bool indicating whether or not to only store current solutions that are
-        better than the previous current. Default: True
+        better than the previous current. Default: False
 
     References
     ----------
@@ -34,8 +34,8 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
     def __init__(
         self,
         n_iterations: int = 0,
-        on_improve: bool = True,
-        only_better: bool = True,
+        on_improve: bool = False,
+        only_better: bool = False,
     ):
         self._n_iterations = n_iterations
         self._on_improve = on_improve

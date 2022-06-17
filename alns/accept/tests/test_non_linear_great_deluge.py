@@ -43,8 +43,8 @@ def test_properties(alpha, beta, gamma, delta):
 
 def test_raise_zero_best():
     """
-    Test if an error is raised when the initial best solution has value 0.
-    The best solution is used to compute the initial threshold. An initial
+    Test if an error is raised when the initial solution has value 0.
+    The initial solution is used to compute the initial threshold. An initial
     threshold with value 0 cannot be updated because the relative gap in the
     update method cannot be computed.
     """

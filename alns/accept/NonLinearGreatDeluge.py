@@ -1,5 +1,4 @@
 import math
-from typing import Optional
 
 from alns.accept.GreatDeluge import GreatDeluge
 
@@ -12,8 +11,7 @@ class NonLinearGreatDeluge(GreatDeluge):
 
     ``threshold = alpha * initial.objective()``
 
-    where ``initial`` is the initial solution passed-in to ALNS, inferred
-    from the best solution at the first iteration.
+    where ``initial`` is the initial solution passed-in to ALNS.
 
     The non-linear GD variant was proposed by [2]. It differs from GD by using
     a non-linear updating scheme, see the ``_update`` method for more details.
@@ -64,10 +62,10 @@ class NonLinearGreatDeluge(GreatDeluge):
         return self._delta
 
     def __call__(self, rnd, best, curr, cand):
-        if best.objective() == 0:
-            raise ValueError("Initial solution cannot have zero value.")
-
         if self._threshold is None:
+            if best.objective() == 0:
+                raise ValueError("Initial solution cannot have zero value.")
+
             self._threshold = self._alpha * best.objective()
 
         res = cand.objective() < self._threshold

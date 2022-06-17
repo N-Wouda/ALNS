@@ -97,3 +97,26 @@ def test_lahc_only_better_reject(n_iterations):
         assert_(not lahc(rnd.RandomState(), Zero(), Two(), Two()))
 
     assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
+
+
+def test_update():
+    """
+    Test the _update method.
+    """
+    lahc = LateAcceptanceHillClimbing(10, False, False)
+
+    assert_equal(lahc._update(rnd.RandomState(), Zero(), One(), Two()), 1)
+    assert_equal(lahc._update(rnd.RandomState(), Zero(), Two(), One()), 2)
+
+
+def test_update_only_better():
+    """
+    Test the _update method with only_better=True.
+    """
+    lahc = LateAcceptanceHillClimbing(1, False, True)
+
+    # Ensure that the previous current is stored
+    assert_(not lahc(rnd.RandomState(), Zero(), One(), Two()))
+
+    # Previous current (1) is not updated because current is worse (2)
+    assert_equal(lahc._update(rnd.RandomState(), Zero(), Two(), Two()), 1)

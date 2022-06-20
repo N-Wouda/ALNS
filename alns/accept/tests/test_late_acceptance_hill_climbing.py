@@ -30,7 +30,7 @@ def test_properties(history_length, greedy, collect_better):
 
 
 @mark.parametrize("history_length", [3, 10, 50])
-def test_lahc_accept(history_length):
+def test_accept(history_length):
     """
     Tests if LAHC accepts a solution that is better than the current solution
     from history_length iterations ago.
@@ -46,7 +46,7 @@ def test_lahc_accept(history_length):
 
 
 @mark.parametrize("history_length", [3, 10, 50])
-def test_lahc_reject(history_length):
+def test_reject(history_length):
     """
     Tests if LAHC rejects a solution that is worse than the current solution
     history_length iterations ago.
@@ -62,7 +62,7 @@ def test_lahc_reject(history_length):
 
 
 @mark.parametrize("history_length", [3, 10, 50])
-def test_lahc_greedy_accept(history_length):
+def test_greedy_accept(history_length):
     """
     Tests if LAHC criterion with greedy=True accepts a solution that
     is better than the current solution despite being worse than the
@@ -78,8 +78,25 @@ def test_lahc_greedy_accept(history_length):
     assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
+def test_collect_better():
+    """
+    Tests if only current solutions are stored that are better than
+    the compared previous solution when only_better=True.
+    """
+    lahc = LateAcceptanceHillClimbing(1, False, True)
+
+    assert_(lahc(rnd.RandomState(), Zero(), One(), Zero()))
+
+    # Previous current stays at 1 because 2 it not better
+    assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
+    assert_(lahc(rnd.RandomState(), Zero(), Two(), Zero()))
+
+    # Previous current updates to 0
+    assert_(not lahc(rnd.RandomState(), Zero(), Zero(), Zero()))
+
+
 @mark.parametrize("history_length", [3, 10, 50])
-def test_lahc_collect_better_reject(history_length):
+def test_collect_better_reject(history_length):
     """
     Tests if LAHC criterion with collect_better=True rejects a solution that
     is better than the previous current solution from history_length iterations

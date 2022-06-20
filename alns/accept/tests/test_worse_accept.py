@@ -77,8 +77,8 @@ def test_zero_prob_accepts_better():
     """
     rng = MockRNG([1])
     worse_accept = WorseAccept(0, 0, 0.1)
-    assert_(worse_accept(rng, None, One(), Zero()))
-    assert_(worse_accept(rng, None, Two(), Zero()))
+    assert_(worse_accept(rng, Zero(), One(), Zero()))
+    assert_(worse_accept(rng, Zero(), Two(), Zero()))
 
 
 def test_zero_prob_never_accept_worse():
@@ -87,8 +87,8 @@ def test_zero_prob_never_accept_worse():
     """
     worse_accept = WorseAccept(0, 0, 0, "linear")
 
-    assert_(not worse_accept(rnd.RandomState(), None, One(), One()))
-    assert_(not worse_accept(rnd.RandomState(), None, Zero(), One()))
+    assert_(not worse_accept(rnd.RandomState(), Zero(), One(), One()))
+    assert_(not worse_accept(rnd.RandomState(), Zero(), Zero(), One()))
 
 
 def test_one_prob_always_accept():
@@ -99,7 +99,7 @@ def test_one_prob_always_accept():
     worse_accept = WorseAccept(1, 0, 0, "linear")
 
     for _ in range(100):
-        assert_(worse_accept(rnd.RandomState(), None, Zero(), One()))
+        assert_(worse_accept(rnd.RandomState(), Zero(), Zero(), One()))
 
 
 def test_linear_consecutive_solutions():
@@ -114,10 +114,10 @@ def test_linear_consecutive_solutions():
     # The random draw is, resp., 0.9, 0.8, 0.7, 0.6, 0.5 so the worsening
     # solution is still accepted.
     for _ in range(5):
-        assert_(worse_accept(rng, None, Zero(), One()))
+        assert_(worse_accept(rng, Zero(), Zero(), One()))
 
     # The probability is now 0.5 and the draw is 1, so reject.
-    assert_(not worse_accept(rng, None, Zero(), One()))
+    assert_(not worse_accept(rng, Zero(), Zero(), One()))
 
 
 def test_exponential_consecutive_solutions():
@@ -132,7 +132,7 @@ def test_exponential_consecutive_solutions():
     # The random draw is, resp., 0.5, 0.25, 0.125, so the worsening
     # solution is still accepted.
     for _ in range(3):
-        assert_(worse_accept(rng, None, Zero(), One()))
+        assert_(worse_accept(rng, Zero(), Zero(), One()))
 
     # The probability is now 0.5 and the draw is 1, so reject.
-    assert_(not worse_accept(rng, None, Zero(), One()))
+    assert_(not worse_accept(rng, Zero(), Zero(), One()))

@@ -6,14 +6,14 @@ from alns.accept import LateAcceptanceHillClimbing
 from alns.tests.states import Zero, One, Two
 
 
-@mark.parametrize("n_iterations", [-0.01, -10, 1.5])
-def test_raises_invalid_n_iterations(n_iterations):
+@mark.parametrize("history_length", [-0.01, -10, 1.5])
+def test_raises_invalid_history_length(history_length):
     with assert_raises(ValueError):
-        LateAcceptanceHillClimbing(n_iterations=n_iterations)
+        LateAcceptanceHillClimbing(history_length=history_length)
 
 
 @mark.parametrize(
-    "n_iterations, on_improve, only_better",
+    "history_length, greedy, collect_better",
     [
         (1, True, True),
         (10, False, True),
@@ -21,56 +21,56 @@ def test_raises_invalid_n_iterations(n_iterations):
         (1000, False, False),
     ],
 )
-def test_properties(n_iterations, on_improve, only_better):
-    lahc = LateAcceptanceHillClimbing(n_iterations, on_improve, only_better)
+def test_properties(history_length, greedy, collect_better):
+    lahc = LateAcceptanceHillClimbing(history_length, greedy, collect_better)
 
-    assert_equal(lahc.n_iterations, n_iterations)
-    assert_equal(lahc.only_better, only_better)
-    assert_equal(lahc.on_improve, on_improve)
+    assert_equal(lahc.history_length, history_length)
+    assert_equal(lahc.collect_better, collect_better)
+    assert_equal(lahc.greedy, greedy)
 
 
-@mark.parametrize("n_iterations", [3, 10, 50])
-def test_lahc_accept(n_iterations):
+@mark.parametrize("history_length", [3, 10, 50])
+def test_lahc_accept(history_length):
     """
     Tests if LAHC accepts a solution that is better than the current solution
-    n_iterations iterations ago.
+    from history_length iterations ago.
     """
-    lahc = LateAcceptanceHillClimbing(n_iterations, False, False)
+    lahc = LateAcceptanceHillClimbing(history_length, False, False)
 
-    for _ in range(n_iterations):
+    for _ in range(history_length):
         assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
-    # The previous current solution n_iterations ago has value 2, so the
+    # The previous current solution history_length ago has value 2, so the
     # candidate solution with value 1 should be accepted.
     assert_(lahc(rnd.RandomState(), Zero(), Zero(), One()))
 
 
-@mark.parametrize("n_iterations", [3, 10, 50])
-def test_lahc_reject(n_iterations):
+@mark.parametrize("history_length", [3, 10, 50])
+def test_lahc_reject(history_length):
     """
     Tests if LAHC rejects a solution that is worse than the current solution
-    n_iterations iterations ago.
+    history_length iterations ago.
     """
-    lahc = LateAcceptanceHillClimbing(n_iterations, False, False)
+    lahc = LateAcceptanceHillClimbing(history_length, False, False)
 
-    for _ in range(n_iterations):
+    for _ in range(history_length):
         assert_(lahc(rnd.RandomState(), Zero(), One(), Zero()))
 
-    # The previous current solution n_iterations ago has value 1, so the
+    # The compared previous current solution has value 1, so the
     # candidate solution with value 1 should be rejected.
     assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
-@mark.parametrize("n_iterations", [3, 10, 50])
-def test_lahc_on_improve_accept(n_iterations):
+@mark.parametrize("history_length", [3, 10, 50])
+def test_lahc_greedy_accept(history_length):
     """
-    Tests if LAHC criterion with on_improve=True accepts a solution that
+    Tests if LAHC criterion with greedy=True accepts a solution that
     is better than the current solution despite being worse than the
-    previous current solution from n_iterations ago.
+    previous current solution from history_length iterations ago.
     """
-    lahc = LateAcceptanceHillClimbing(n_iterations, True, False)
+    lahc = LateAcceptanceHillClimbing(history_length, True, False)
 
-    for _ in range(n_iterations):
+    for _ in range(history_length):
         assert_(not lahc(rnd.RandomState(), Zero(), One(), Two()))
 
     # The candidate (1) is better than the current (2), hence it is accepted
@@ -78,45 +78,22 @@ def test_lahc_on_improve_accept(n_iterations):
     assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
-@mark.parametrize("n_iterations", [3, 10, 50])
-def test_lahc_only_better_reject(n_iterations):
+@mark.parametrize("history_length", [3, 10, 50])
+def test_lahc_collect_better_reject(history_length):
     """
-    Tests if LAHC criterion with only_better=True rejects a solution that
-    is better than the previous current solution from n_iterations ago, because
-    that previous current solution was not better than the current solution
-    from 2 * n_iterations ago.
+    Tests if LAHC criterion with collect_better=True rejects a solution that
+    is better than the previous current solution from history_length iterations
+    ago, because that previous current solution was not better than the current
+    solution from (2 * history_length) iterations ago.
     """
-    lahc = LateAcceptanceHillClimbing(n_iterations, False, True)
+    lahc = LateAcceptanceHillClimbing(history_length, False, True)
 
-    for _ in range(n_iterations):
+    for _ in range(history_length):
         assert_(not lahc(rnd.RandomState(), Zero(), One(), Two()))
 
-    for _ in range(n_iterations):
+    for _ in range(history_length):
         # The current solutions are not stored because they are worse
         # than the previous current solutions
         assert_(not lahc(rnd.RandomState(), Zero(), Two(), Two()))
 
     assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
-
-
-def test_update():
-    """
-    Test the _update method.
-    """
-    lahc = LateAcceptanceHillClimbing(10, False, False)
-
-    assert_equal(lahc._update(rnd.RandomState(), Zero(), One(), Two()), 1)
-    assert_equal(lahc._update(rnd.RandomState(), Zero(), Two(), One()), 2)
-
-
-def test_update_only_better():
-    """
-    Test the _update method with only_better=True.
-    """
-    lahc = LateAcceptanceHillClimbing(1, False, True)
-
-    # Ensure that the previous current is stored
-    assert_(not lahc(rnd.RandomState(), Zero(), One(), Two()))
-
-    # Previous current (1) is not updated because current is worse (2)
-    assert_equal(lahc._update(rnd.RandomState(), Zero(), Two(), Two()), 1)

@@ -3,7 +3,7 @@ from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import LateAcceptanceHillClimbing
-from alns.tests.states import Zero, One, Two, VarObj
+from alns.tests.states import Zero, One, Two
 
 
 @mark.parametrize("lookback_period", [-0.01, -10, 1.5])
@@ -77,7 +77,7 @@ def test_reject(lookback_period):
 @mark.parametrize("lookback_period", [3, 10, 50])
 def test_greedy_accept(lookback_period):
     """
-    Tests if LAHC criterion with greedy=True accepts a solution that
+    Tests if LAHC criterion when `greedy` is set accepts a solution that
     is better than the current solution despite being worse than the
     previous current solution from `lookback_period` iterations ago.
     """
@@ -95,7 +95,7 @@ def test_greedy_accept(lookback_period):
 def test_better_history():
     """
     Tests if only current solutions are stored that are better than
-    the compared previous solution when better_history is set.
+    the compared previous solution when `better_history` is set.
     """
     lahc = LateAcceptanceHillClimbing(1, False, True)
 
@@ -112,10 +112,10 @@ def test_better_history():
 @mark.parametrize("lookback_period", [3, 10, 50])
 def test_better_history_reject(lookback_period):
     """
-    Tests if LAHC criterion with `better_history=True` rejects a solution that
+    Tests if LAHC criterion when `better_history` is set rejects a solution that
     is better than the previous current solution from `lookback_period`
     iterations ago, because that previous current solution was not better than
-    the current solution from (2 * lookback_period) iterations ago.
+    the current solution from (2 * `lookback_period`) iterations ago.
     """
     lahc = LateAcceptanceHillClimbing(lookback_period, False, True)
 

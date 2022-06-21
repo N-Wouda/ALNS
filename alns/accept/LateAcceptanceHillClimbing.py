@@ -7,21 +7,25 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
     """
     The Late Acceptance Hill Climbing (LAHC) criterion accepts a candidate
     solution when it is better than the current solution from a number of
-    iterations before.
+    iterations ago.
 
     This implementation is based on the description of LAHC in [1].
 
     Parameters
     ----------
-    history_length: int
-        Non-negative integer specifying the maximum number of previous solutions
-        to be stored. Default: 0 (i.e., no objectives stored).
+    lookback_period: int
+        Nonnegative integer specifying which solution to compare against
+        for late acceptance. In particular, LAHC compares against the
+        then-current solution from `lookback_period` iterations ago.
+        If set to 0, then LAHC reverts to regular hill climbing.
     greedy: bool
-        Bool indicating whether or not to accept candidate solutions if they are
-        better than the current solution. Default: False.
-    collect_better: bool
-        Bool indicating whether or not to only collect current solutions that
-        are better than the previous current. Default: False
+        If set, LAHC always accepts a candidate that is better than the
+        current solution.
+    better_history: bool
+        If set, LAHC uses a history management strategy where current solutions
+        are stored only if they improve the then-current solution from
+        `lookback_period` iterations ago; otherwise the then-current solution
+        is stored again.
 
     References
     ----------
@@ -31,43 +35,44 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
 
     def __init__(
         self,
-        history_length: int = 0,
+        lookback_period: int,
         greedy: bool = False,
-        collect_better: bool = False,
+        better_history: bool = False,
     ):
-        self._history_length = history_length
+        self._lookback_period = lookback_period
         self._greedy = greedy
-        self._collect_better = collect_better
+        self._better_history = better_history
 
-        if not isinstance(history_length, int) or history_length < 0:
-            raise ValueError("history_length must be a non-negative integer.")
+        if not isinstance(lookback_period, int) or lookback_period < 0:
+            raise ValueError("lookback_period must be a non-negative integer.")
 
-        self._objectives: deque = deque([], maxlen=history_length)
+        self._history: deque = deque([], maxlen=lookback_period)
 
     @property
-    def history_length(self):
-        return self._history_length
+    def lookback_period(self):
+        return self._lookback_period
 
     @property
     def greedy(self):
         return self._greedy
 
     @property
-    def collect_better(self):
-        return self._collect_better
+    def better_history(self):
+        return self._better_history
 
     def __call__(self, rnd, best, curr, cand):
-        cand_obj = cand.objective()
-        curr_obj = curr.objective()
+        if not self._history:
+            self._history.append(curr.objective())
+            return cand.objective() < curr.objective()
 
-        if self._objectives and self._collect_better:
-            self._objectives.append(min(curr_obj, self._objectives[0]))
-        else:
-            self._objectives.append(curr_obj)
-
-        res = cand_obj < self._objectives[0]
+        res = cand.objective() < self._history[0]
 
         if not res and self._greedy:
-            res = cand_obj < curr_obj  # Accept if improving
+            res = cand.objective() < curr.objective()
+
+        if self._better_history:
+            self._history.append(min(curr.objective(), self._history[0]))
+        else:
+            self._history.append(curr.objective())
 
         return res

@@ -43,7 +43,7 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
         self._greedy = greedy
         self._better_history = better_history
 
-        if not isinstance(lookback_period, int) or lookback_period < 0:
+        if lookback_period < 0:
             raise ValueError("lookback_period must be a non-negative integer.")
 
         self._history: deque = deque([], maxlen=lookback_period)

@@ -56,7 +56,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
         end_threshold: float,
         step: float,
         method: str = "linear",
-        cmp_best: bool = True
+        cmp_best: bool = True,
     ):
         if start_threshold < 0 or end_threshold < 0 or step < 0:
             raise ValueError("Thresholds and step must be non-negative.")

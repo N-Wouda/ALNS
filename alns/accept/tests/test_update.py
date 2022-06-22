@@ -16,8 +16,8 @@ def test_raises_unknown_method():
     [
         ("linear", "LINEAR"),
         ("linear", "Linear"),
-        ("exponential", "EXPONENTIAL")
-    ]
+        ("exponential", "EXPONENTIAL"),
+    ],
 )
 def test_accepts_any_case_method(lc: str, uc: str):
     """
@@ -29,13 +29,13 @@ def test_accepts_any_case_method(lc: str, uc: str):
 @pytest.mark.parametrize(
     "curr,step,method,expected",
     [
-        (1, .5, "linear", .5),
+        (1, 0.5, "linear", 0.5),
         (2, 1, "linear", 1),
         (2, 0, "linear", 2),
-        (1, .5, "exponential", .5),
+        (1, 0.5, "exponential", 0.5),
         (2, 1, "exponential", 2),
-        (2, 0, "exponential", 0)
-    ]
+        (2, 0, "exponential", 0),
+    ],
 )
 def test_update(curr: float, step: float, method: str, expected: float):
     """

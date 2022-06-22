@@ -66,7 +66,7 @@ def test_accept(lookback_period):
 def test_reject(lookback_period):
     """
     Tests if LAHC rejects a solution that is worse than the current solution
-    `lookback_period` iterations ago.
+    from `lookback_period` iterations ago.
     """
     lahc = LateAcceptanceHillClimbing(lookback_period, False, False)
 
@@ -81,9 +81,9 @@ def test_reject(lookback_period):
 @mark.parametrize("lookback_period", [0, 3, 10, 50])
 def test_greedy_accept(lookback_period):
     """
-    Tests if LAHC criterion when `greedy` is set accepts a solution that
-    is better than the current solution despite being worse than the
-    previous current solution from `lookback_period` iterations ago.
+    Tests that if `greedy` is set, then a solution that is better than
+    the current solution is accepted, despite being worse than the current
+    solution from `lookback_period` iterations ago.
     """
     lahc = LateAcceptanceHillClimbing(lookback_period, True, False)
 
@@ -116,10 +116,9 @@ def test_better_history_small_example():
 @mark.parametrize("lookback_period", [3, 10, 50])
 def test_better_history_reject(lookback_period):
     """
-    Tests if LAHC criterion when `better_history` is set rejects a solution that
-    is better than the previous current solution from `lookback_period`
-    iterations ago. This is because the then-current solution was not better
-    than the current solution from (2 * `lookback_period`) iterations ago.
+    Tests that if `better_history` is set, then a solution can be rejected
+    despite being better than the actual current solution from `lookback_period`
+    iterations ago.
     """
     lahc = LateAcceptanceHillClimbing(lookback_period, False, True)
 

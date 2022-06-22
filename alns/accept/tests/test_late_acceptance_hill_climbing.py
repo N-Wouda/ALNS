@@ -29,12 +29,16 @@ def test_properties(lookback_period, greedy, better_history):
     assert_equal(lahc.greedy, greedy)
 
 
-def test_regular_hill_climbing():
+@mark.parametrize(
+    "greedy, better_history",
+    [(False, False), (True, False), (False, True), (True, True)],
+)
+def test_zero_lookback_period(greedy, better_history):
     """
     Test if LAHC behaves like regular hill climbing when `lookback_period` is
     set to zero.
     """
-    lahc = LateAcceptanceHillClimbing(0, False, False)
+    lahc = LateAcceptanceHillClimbing(0, greedy, better_history)
 
     assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
     assert_(not lahc(rnd.RandomState(), Zero(), One(), One()))
@@ -42,7 +46,7 @@ def test_regular_hill_climbing():
     assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
-@mark.parametrize("lookback_period", [3, 10, 50])
+@mark.parametrize("lookback_period", [0, 3, 10, 50])
 def test_accept(lookback_period):
     """
     Tests if LAHC accepts a solution that is better than the current solution
@@ -58,7 +62,7 @@ def test_accept(lookback_period):
         assert_(lahc(rnd.RandomState(), Zero(), One(), One()))
 
 
-@mark.parametrize("lookback_period", [3, 10, 50])
+@mark.parametrize("lookback_period", [0, 3, 10, 50])
 def test_reject(lookback_period):
     """
     Tests if LAHC rejects a solution that is worse than the current solution
@@ -71,10 +75,10 @@ def test_reject(lookback_period):
 
     # The then-current solution from `lookback_period` iterations ago has
     # value 1, so the candidate solution with value 1 should be rejected.
-    assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
+    assert_(not lahc(rnd.RandomState(), Zero(), Zero(), One()))
 
 
-@mark.parametrize("lookback_period", [3, 10, 50])
+@mark.parametrize("lookback_period", [0, 3, 10, 50])
 def test_greedy_accept(lookback_period):
     """
     Tests if LAHC criterion when `greedy` is set accepts a solution that
@@ -92,7 +96,7 @@ def test_greedy_accept(lookback_period):
         assert_(lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 
-def test_better_history():
+def test_better_history_small_example():
     """
     Tests if only current solutions are stored that are better than
     the compared previous solution when `better_history` is set.
@@ -114,8 +118,8 @@ def test_better_history_reject(lookback_period):
     """
     Tests if LAHC criterion when `better_history` is set rejects a solution that
     is better than the previous current solution from `lookback_period`
-    iterations ago, because that previous current solution was not better than
-    the current solution from (2 * `lookback_period`) iterations ago.
+    iterations ago. This is because the then-current solution was not better
+    than the current solution from (2 * `lookback_period`) iterations ago.
     """
     lahc = LateAcceptanceHillClimbing(lookback_period, False, True)
 
@@ -128,7 +132,7 @@ def test_better_history_reject(lookback_period):
         assert_(not lahc(rnd.RandomState(), Zero(), Two(), Two()))
 
     for _ in range(lookback_period):
-        # The candidates (1) do not improve the historial solutions (1)
+        # The candidates (1) do not improve the historical solutions (1)
         assert_(not lahc(rnd.RandomState(), Zero(), Two(), One()))
 
 

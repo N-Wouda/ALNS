@@ -8,7 +8,7 @@ from alns.tests.states import Zero, One, Two
 
 @mark.parametrize("lookback_period", [-0.01, -10, 1.5])
 def test_raises_invalid_lookback_period(lookback_period):
-    with assert_raises(ValueError):
+    with assert_raises((ValueError, TypeError)):
         LateAcceptanceHillClimbing(lookback_period=lookback_period)
 
 

@@ -73,13 +73,13 @@ class NonLinearGreatDeluge(GreatDeluge):
         if not res:
             res = cand.objective() < curr.objective()  # Accept if improving
 
-        self._threshold = self._update(best, curr, cand)
+        self._threshold = self._compute_threshold(best, curr, cand)
 
         return res
 
-    def _update(self, best, curr, cand):
+    def _compute_threshold(self, best, curr, cand):
         """
-        Return the updated threshold value.
+        Returns the new threshold value.
 
         First, the relative gap between the candidate solution and threshold
         is computed. If this relative gap is less than ``beta``, then the

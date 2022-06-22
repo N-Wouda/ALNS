@@ -1,6 +1,7 @@
 from .AcceptanceCriterion import AcceptanceCriterion
 from .GreatDeluge import GreatDeluge
 from .HillClimbing import HillClimbing
+from .LateAcceptanceHillClimbing import LateAcceptanceHillClimbing
 from .NonLinearGreatDeluge import NonLinearGreatDeluge
 from .RandomWalk import RandomWalk
 from .RecordToRecordTravel import RecordToRecordTravel

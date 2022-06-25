@@ -29,6 +29,8 @@ jobs:
         run: poetry run pytest
       - name: Black
         uses: psf/black@stable
+      - name: flake8
+        uses: py-actions/flake8@v2
       - name: Run static analysis
         run: poetry run mypy alns
       - uses: codecov/codecov-action@v2

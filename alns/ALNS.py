@@ -65,8 +65,8 @@ class ALNS:
 
         Returns
         -------
-        A list of (name, operator) tuples. Their order is the same as the one in
-        which they were passed to the ALNS instance.
+        A list of (name, operator) tuples. Their order is the same as the one
+        in which they were passed to the ALNS instance.
         """
         return list(self._d_ops.items())
 
@@ -77,8 +77,8 @@ class ALNS:
 
         Returns
         -------
-        A list of (name, operator) tuples. Their order is the same as the one in
-        which they were passed to the ALNS instance.
+        A list of (name, operator) tuples. Their order is the same as the one
+        in which they were passed to the ALNS instance.
         """
         return list(self._r_ops.items())
 
@@ -90,8 +90,8 @@ class ALNS:
         ----------
         op
             An operator that, when applied to the current state, returns a new
-            state reflecting its implemented destroy action. The second argument
-            is the random state constructed from the passed-in seed.
+            state reflecting its implemented destroy action. The second
+            argument is the random state constructed from the passed-in seed.
         name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
@@ -260,7 +260,7 @@ class ALNS:
         Parameters
         ----------
         func
-            A function that should take a solution State as its first parameter,
+            A function that should take a solution State as its first argument,
             and a numpy RandomState as its second (cf. the operator signature).
             It should return a (new) solution State.
         """

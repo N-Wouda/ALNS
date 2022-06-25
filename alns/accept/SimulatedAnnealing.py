@@ -142,8 +142,8 @@ class SimulatedAnnealing(AcceptanceCriterion):
              Neighborhood Search Heuristic for the Pickup and Delivery Problem
              with Time Windows." _Transportation Science_ 40 (4): 455 - 472.
         [2]: Roozbeh et al. 2018. "An Adaptive Large Neighbourhood Search for
-             asset protection during escaped wildfires." _Computers & Operations
-             Research_ 97: 125 - 134.
+             asset protection during escaped wildfires." _Computers &
+             Operations Research_ 97: 125 - 134.
         """
         if not (0 <= worse <= 1):
             raise ValueError("worse outside [0, 1] not understood.")

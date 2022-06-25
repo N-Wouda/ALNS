@@ -32,9 +32,9 @@ class RecordToRecordTravel(AcceptanceCriterion):
     cmp_best
         This parameter determines whether we use default RRT (True), or
         threshold accepting (False). By default, `cmp_best` is True, in which
-        case we check whether the difference between the candidate and the best
-        solution is below the threshold [2]. If `cmp_best` is False, we take the
-        difference between the candidate and the current solution instead. This
+        case RRT checks whether the difference between the candidate and best
+        solution is below the threshold [2]. If `cmp_best` is False, RRT takes
+        the difference between the candidate and current solution instead. This
         yields the behaviour of threshold accepting (TA), see [3] for details.
 
     References

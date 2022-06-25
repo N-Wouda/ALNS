@@ -94,8 +94,8 @@ def test_evaluate_consecutive_solutions():
     # The first is above the threshold (2 > 1.5) so the first should be
     # rejected. The threshold is then linearly increased to 1.51. The second
     # candidate is below the threshold (0 < 1.51), so the second should be
-    # accepted. The threshold is then exponentially decreased to 1.20. The third
-    # candidate is below the theshold (1 < 1.20) and is accepted.
+    # accepted. The threshold is then exponentially decreased to 1.20. The
+    # third candidate is below the theshold (1 < 1.20) and is accepted.
     assert_(not nlgd(rnd.RandomState(), One(), Zero(), Two()))
     assert_(nlgd(rnd.RandomState(), One(), Zero(), Zero()))
     assert_(nlgd(rnd.RandomState(), One(), Zero(), One()))

@@ -6,15 +6,15 @@ from alns.accept.GreatDeluge import GreatDeluge
 class NonLinearGreatDeluge(GreatDeluge):
     """
     The Non-Linear Great Deluge (NLGD) criterion accepts solutions if the
-    candidate solution has a value lower than a threshold (originally called the
-    water level [1]). The initial threshold is computed as
+    candidate solution has a value lower than a threshold (originally called
+    the water level [1]). The initial threshold is computed as
 
     ``threshold = alpha * initial.objective()``
 
     where ``initial`` is the initial solution passed-in to ALNS.
 
     The non-linear GD variant was proposed by [2]. It differs from GD by using
-    a non-linear updating scheme, see the ``_compute_threshold`` method for more
+    a non-linear updating scheme; see the ``_compute_threshold`` method for
     details. Moreover, candidate solutions that improve the current solution
     are always accepted.
 

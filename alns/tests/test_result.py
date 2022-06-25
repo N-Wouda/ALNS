@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.random as rnd
 import pytest
-from numpy.testing import assert_, assert_raises
+from numpy.testing import assert_
 
 from alns.Result import Result
 from alns.Statistics import Statistics
@@ -15,7 +15,7 @@ except ImportError:
         return check_figures_equal
 
 
-# HELPERS ----------------------------------------------------------------------
+# HELPERS ---------------------------------------------------------------------
 
 
 def get_result(state):
@@ -112,7 +112,7 @@ def get_operator_plot(
     figure.legend(legend, ncol=len(legend), loc="lower center")
 
 
-# TESTS ------------------------------------------------------------------------
+# TESTS -----------------------------------------------------------------------
 
 
 def test_result_state():

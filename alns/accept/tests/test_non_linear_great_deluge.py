@@ -3,7 +3,7 @@ from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import NonLinearGreatDeluge
-from alns.tests.states import One, Zero, Two, VarObj
+from alns.tests.states import One, Two, VarObj, Zero
 
 
 @mark.parametrize(

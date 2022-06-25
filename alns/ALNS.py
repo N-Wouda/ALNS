@@ -1,6 +1,6 @@
-from collections import defaultdict
 import logging
 import time
+from collections import defaultdict
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
 
 import numpy as np

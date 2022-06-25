@@ -15,7 +15,7 @@ class GreatDeluge(AcceptanceCriterion):
 
     The threshold is updated in each iteration as
 
-    ``threshold = threshold - beta * (threshold - candidate.objective()``
+    ``threshold = threshold - beta * (threshold - candidate.objective())``
 
     The implementation is based on the description of GD in [2].
 
@@ -52,12 +52,13 @@ class GreatDeluge(AcceptanceCriterion):
     def beta(self):
         return self._beta
 
-    def __call__(self, rnd, best, curr, cand):
+    def __call__(self, rnd, best, current, candidate):
         if self._threshold is None:
             self._threshold = self.alpha * best.objective()
 
-        res = cand.objective() < self._threshold
+        diff = self._threshold - candidate.objective()
+        res = diff > 0
 
-        self._threshold -= self.beta * (self._threshold - cand.objective())
+        self._threshold -= self.beta * diff
 
         return res

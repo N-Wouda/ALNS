@@ -67,10 +67,11 @@ class WorseAccept(AcceptanceCriterion):
     def method(self) -> str:
         return self._method
 
-    def __call__(self, rnd, best, curr, cand):
-        res = cand.objective() < curr.objective()  # Always accept better
+    def __call__(self, rnd, best, current, candidate):
+        # Always accept better
+        res = candidate.objective() < current.objective()
 
-        if not res:  # Maybe accept worse
+        if not res:  # maybe accept worse
             res = rnd.random() < self._prob
 
         self._prob = max(

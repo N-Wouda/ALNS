@@ -4,7 +4,6 @@ from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 
 
 class LateAcceptanceHillClimbing(AcceptanceCriterion):
-
     """
     The Late Acceptance Hill Climbing (LAHC) criterion accepts a candidate
     solution when it is better than the current solution from a number of
@@ -15,7 +14,7 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
     Parameters
     ----------
     lookback_period: int
-        Nonnegative integer specifying which solution to compare against
+        Non-negative integer specifying which solution to compare against
         for late acceptance. In particular, LAHC compares against the
         then-current solution from `lookback_period` iterations ago.
         If set to 0, then LAHC reverts to regular hill climbing.
@@ -25,7 +24,7 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
     better_history: bool
         If set, LAHC uses a history management strategy where current solutions
         are stored only if they improve the then-current solution from
-        `lookback_period` iterations ago. Otherwise the then-current solution
+        `lookback_period` iterations ago. Otherwise, the then-current solution
         is stored again.
 
     References
@@ -45,7 +44,7 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
         self._better_history = better_history
 
         if lookback_period < 0:
-            raise ValueError("lookback_period must be a nonnegative integer.")
+            raise ValueError("lookback_period must be a non-negative integer.")
 
         self._history: deque = deque([], maxlen=lookback_period)
 
@@ -61,19 +60,19 @@ class LateAcceptanceHillClimbing(AcceptanceCriterion):
     def better_history(self):
         return self._better_history
 
-    def __call__(self, rnd, best, curr, cand):
+    def __call__(self, rnd, best, current, candidate):
         if not self._history:
-            self._history.append(curr.objective())
-            return cand.objective() < curr.objective()
+            self._history.append(current.objective())
+            return candidate.objective() < current.objective()
 
-        res = cand.objective() < self._history[0]
+        res = candidate.objective() < self._history[0]
 
         if not res and self._greedy:
-            res = cand.objective() < curr.objective()
+            res = candidate.objective() < current.objective()
 
         if self._better_history:
-            self._history.append(min(curr.objective(), self._history[0]))
+            self._history.append(min(current.objective(), self._history[0]))
         else:
-            self._history.append(curr.objective())
+            self._history.append(current.objective())
 
         return res

@@ -5,31 +5,31 @@ from alns.accept.GreatDeluge import GreatDeluge
 
 class NonLinearGreatDeluge(GreatDeluge):
     """
-    The Non Linear Great Deluge (NLGD) criterion accepts solutions if the
-    candidate solution has a value lower than a threshold (originally called the
-    water level [1]). The initial threshold is computed as
+    The Non-Linear Great Deluge (NLGD) criterion accepts solutions if the
+    candidate solution has a value lower than a threshold (originally called
+    the water level [1]). The initial threshold is computed as
 
     ``threshold = alpha * initial.objective()``
 
     where ``initial`` is the initial solution passed-in to ALNS.
 
     The non-linear GD variant was proposed by [2]. It differs from GD by using
-    a non-linear updating scheme, see the ``_update`` method for more details.
-    Moreover, candidate solutions that improve the current solution are always
-    accepted.
+    a non-linear updating scheme; see the ``_compute_threshold`` method for
+    details. Moreover, candidate solutions that improve the current solution
+    are always accepted.
 
     The implementation is based on the description in [2].
 
     Parameters
     ----------
     alpha
-        Factor used to compute the initial threshold
+        Factor used to compute the initial threshold. See [2] for details.
     beta
-        Factor used to update the threshold
+        Factor used to update the threshold. See [2] for details.
     gamma
-        Factor used to update the threshold
+        Factor used to update the threshold. See [2] for details.
     delta
-        Factor used to update the threshold
+        Factor used to update the threshold. See [2] for details.
 
     References
     ----------
@@ -61,25 +61,26 @@ class NonLinearGreatDeluge(GreatDeluge):
     def delta(self):
         return self._delta
 
-    def __call__(self, rnd, best, curr, cand):
+    def __call__(self, rnd, best, current, candidate):
         if self._threshold is None:
             if best.objective() == 0:
                 raise ValueError("Initial solution cannot have zero value.")
 
             self._threshold = self._alpha * best.objective()
 
-        res = cand.objective() < self._threshold
+        res = candidate.objective() < self._threshold
 
         if not res:
-            res = cand.objective() < curr.objective()  # Accept if improving
+            # Accept if improving
+            res = candidate.objective() < current.objective()
 
-        self._threshold = self._update(best, curr, cand)
+        self._threshold = self._compute_threshold(best, current, candidate)
 
         return res
 
-    def _update(self, best, curr, cand):
+    def _compute_threshold(self, best, curr, cand):
         """
-        Return the updated threshold value.
+        Returns the new threshold value.
 
         First, the relative gap between the candidate solution and threshold
         is computed. If this relative gap is less than ``beta``, then the

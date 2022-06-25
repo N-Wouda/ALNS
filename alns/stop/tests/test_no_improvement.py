@@ -2,9 +2,8 @@ import pytest
 from numpy.random import RandomState
 from numpy.testing import assert_, assert_equal, assert_raises
 
-from alns.tests.states import One, Zero, Two
-
 from alns.stop import NoImprovement
+from alns.tests.states import One, Zero
 
 
 @pytest.mark.parametrize("max_iterations", [-10, -100, -1000])

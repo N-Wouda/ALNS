@@ -189,8 +189,8 @@ def test_autofit_on_several_examples(
     init_obj: float, worse: float, accept_prob: float, iters: int
 ):
     # We have:
-    # prob = exp{-(f^c - f^i) / T},
-    # where T is start temp, f^i is init sol objective, and f^c is the candidate
+    #   prob = exp{-(f^c - f^i) / T},
+    # where T is start temp, f^i the init sol objective, and f^c the candidate
     # solution objective. We also have that f^c is at worst (1 + worse) f^i.
     # Substituting and solving for T, we then find:
     # T = -worse * f^i / ln(p).

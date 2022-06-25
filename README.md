@@ -60,7 +60,7 @@ your own.
 The acceptance criterion determines the acceptance of a new solution state at
 each iteration. An overview of common acceptance criteria is given in
 [Santini et al. (2018)][3]. Several have already been implemented for you, in
-`alns.accept`:
+`alns.accept`. These include:
 
 - `HillClimbing`. The simplest acceptance criterion, hill-climbing solely
   accepts solutions improving the objective value.
@@ -69,6 +69,7 @@ each iteration. An overview of common acceptance criteria is given in
 - `SimulatedAnnealing`. This criterion accepts solutions when the
   scaled probability is bigger than some random number, using an
   updating temperature.
+- And many more!
 
 Each acceptance criterion inherits from `AcceptanceCriterion`, which may be used
 to write your own.

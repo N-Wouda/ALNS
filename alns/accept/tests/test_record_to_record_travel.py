@@ -1,7 +1,7 @@
 import numpy.random as rnd
 from numpy.testing import (
     assert_,
-    assert_almost_equal,
+    assert_allclose,
     assert_equal,
     assert_raises,
 )
@@ -129,7 +129,7 @@ def test_autofit_raises_for_invalid_inputs(
 
 
 @mark.parametrize(
-    "init_obj, start_gap, end_gap, n_iters, method, rrt_start, rrt_end, rrt_step",
+    "init_obj,start_gap,end_gap,n_iters,method,exp_start,exp_end,exp_step",
     [
         (1, 1, 0, 1, "linear", 1, 0, 1),
         (10, 0.1, 0, 10, "linear", 1, 0, 0.1),
@@ -145,15 +145,15 @@ def test_autofit_on_several_examples(
     end_gap: float,
     n_iters: int,
     method: str,
-    rrt_start: float,
-    rrt_end: float,
-    rrt_step: float,
+    exp_start: float,
+    exp_end: float,
+    exp_step: float,
 ):
     rrt = RecordToRecordTravel.autofit(
         init_obj, start_gap, end_gap, n_iters, method
     )
 
-    assert_almost_equal(rrt.start_threshold, rrt_start)
-    assert_almost_equal(rrt.end_threshold, rrt_end)
-    assert_almost_equal(rrt.step, rrt_step, decimal=3)
+    assert_allclose(rrt.start_threshold, exp_start)
+    assert_allclose(rrt.end_threshold, exp_end)
+    assert_allclose(rrt.step, exp_step, rtol=1e-3)
     assert_equal(rrt.method, method)

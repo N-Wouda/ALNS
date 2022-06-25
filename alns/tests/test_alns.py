@@ -15,7 +15,7 @@ from alns.weights import SimpleWeights
 from .states import One, Zero
 
 
-# HELPERS ----------------------------------------------------------------------
+# HELPERS ---------------------------------------------------------------------
 
 
 def get_alns_instance(
@@ -56,7 +56,7 @@ def get_repair_operators(n):
     repair_operators = []
 
     for idx in range(n):
-        op = lambda: None
+        op = lambda: None  # noqa: E731
         op.__name__ = f"Repair operator {idx}"
         repair_operators.append(op)
 
@@ -70,14 +70,14 @@ def get_destroy_operators(n):
     destroy_operators = []
 
     for idx in range(n):
-        op = lambda: None
+        op = lambda: None  # noqa: E731
         op.__name__ = f"Destroy operator {idx}"
         destroy_operators.append(op)
 
     return destroy_operators
 
 
-# CALLBACKS --------------------------------------------------------------------
+# CALLBACKS -------------------------------------------------------------------
 
 
 def test_on_best_is_called():
@@ -98,7 +98,7 @@ def test_on_best_is_called():
     assert_equal(result.best_state.objective(), 10)
 
 
-# OPERATORS --------------------------------------------------------------------
+# OPERATORS -------------------------------------------------------------------
 
 
 def test_add_destroy_operator():
@@ -225,7 +225,7 @@ def test_raise_uncoupled_destroy_op():
         alns._compute_op_coupling()
 
 
-# PARAMETERS -------------------------------------------------------------------
+# PARAMETERS ------------------------------------------------------------------
 
 
 def test_raises_missing_destroy_operator():
@@ -312,8 +312,8 @@ def test_iterate_kwargs_are_correctly_passed_to_operators():
 
 def test_bugfix_pass_kwargs_to_on_best():
     """
-    Exercises a bug where the on_best callback did not receive the kwargs passed
-    to iterate().
+    Exercises a bug where the on_best callback did not receive the kwargs
+    passed to iterate().
     """
 
     def test_operator(state, rnd, item):
@@ -332,7 +332,7 @@ def test_bugfix_pass_kwargs_to_on_best():
     )
 
 
-# EXAMPLES ---------------------------------------------------------------------
+# EXAMPLES --------------------------------------------------------------------
 
 
 def test_trivial_example():
@@ -395,7 +395,7 @@ def test_nonnegative_max_iterations(max_iterations):
 @mark.parametrize("max_runtime", [0.01, 0.05, 0.1])
 def test_nonnegative_max_runtime(max_runtime):
     """
-    Test that the result runtime statistics correspond to the stopping criterion.
+    Test that the result runtime statistics match the stopping criterion.
     """
     alns = get_alns_instance(
         [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]

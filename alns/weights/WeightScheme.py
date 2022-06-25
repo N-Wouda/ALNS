@@ -94,7 +94,7 @@ class WeightScheme(ABC):
             raise ValueError("Negative scores are not understood.")
 
         if len(scores) < 4:
-            # More than four is not problematic, but we only use the first four.
+            # More than four is OK because we only use the first four.
             raise ValueError(f"Expected four scores, found {len(scores)}")
 
         if num_destroy <= 0 or num_repair <= 0:

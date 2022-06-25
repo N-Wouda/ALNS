@@ -4,7 +4,7 @@ from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import GreatDeluge
-from alns.tests.states import One, Zero, Two
+from alns.tests.states import One, Two, Zero
 
 
 @mark.parametrize(

@@ -2,7 +2,7 @@ import numpy.random as rnd
 from numpy.testing import assert_
 
 from alns.accept import RandomWalk
-from alns.tests.states import Zero, One
+from alns.tests.states import One, Zero
 
 
 def test_accepts_better():

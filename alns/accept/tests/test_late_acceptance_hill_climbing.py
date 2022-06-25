@@ -3,7 +3,7 @@ from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import LateAcceptanceHillClimbing
-from alns.tests.states import Zero, One, Two
+from alns.tests.states import One, Two, Zero
 
 
 @mark.parametrize("lookback_period", [-0.01, -10, 1.5])
@@ -116,8 +116,8 @@ def test_better_history_small_example():
 @mark.parametrize("lookback_period", [3, 10, 50])
 def test_better_history_reject(lookback_period):
     """
-    Tests that if `better_history` is set, then a solution can be rejected
-    despite being better than the actual current solution from `lookback_period`
+    Tests that if `better_history` is set, a solution can be rejected despite
+    being better than the actual current solution from `lookback_period`
     iterations ago.
     """
     lahc = LateAcceptanceHillClimbing(lookback_period, False, True)

@@ -1,22 +1,11 @@
-import numpy as np
+from unittest.mock import Mock
+
 import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import WorseAccept
-from alns.tests.states import Zero, One, Two
-
-
-class MockRNG:
-    """
-    Mock Random Number Generator.
-    """
-
-    def __init__(self, values):
-        self.values = values
-
-    def random(self):
-        return self.values.pop(0)
+from alns.tests.states import One, Two, Zero
 
 
 @mark.parametrize(
@@ -65,6 +54,7 @@ def test_properties(start, end, step, method):
     Tests if the properties are correctly set.
     """
     worse_accept = WorseAccept(start, end, step, method)
+
     assert_equal(worse_accept.start_prob, start)
     assert_equal(worse_accept.end_prob, end)
     assert_equal(worse_accept.step, step)
@@ -75,8 +65,10 @@ def test_zero_prob_accepts_better():
     """
     Tests if WA with a zero start probability accepts better solutions.
     """
-    rng = MockRNG([1])
+    rnd_vals = [1]
+    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
     worse_accept = WorseAccept(0, 0, 0.1)
+
     assert_(worse_accept(rng, Zero(), One(), Zero()))
     assert_(worse_accept(rng, Zero(), Two(), Zero()))
 
@@ -107,7 +99,8 @@ def test_linear_consecutive_solutions():
     Test if WA with linear updating method correctly accepts and rejects
     consecutive solutions.
     """
-    rng = MockRNG([0.9, 0.8, 0.7, 0.6, 0.5, 1])
+    rnd_vals = [0.9, 0.8, 0.7, 0.6, 0.5, 1]
+    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
     worse_accept = WorseAccept(1, 0, 0.1, "linear")
 
     # For the first five, the probability is, resp., 1, 0.9, 0.8, 0.7, 0.6
@@ -125,7 +118,8 @@ def test_exponential_consecutive_solutions():
     Test if WA with exponential updating method correctly accepts and rejects
     consecutive solutions.
     """
-    rng = MockRNG([0.5, 0.25, 0.125, 1])
+    rnd_vals = [0.5, 0.25, 0.125, 1]
+    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
     worse_accept = WorseAccept(1, 0, 0.5, "exponential")
 
     # For the first three, the probability is, resp., 1, 0.5, 0.25

@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 class RecordToRecordTravel(AcceptanceCriterion):
     """
     The Record-to-Record Travel (RRT) criterion accepts a candidate solution
-    if the absolute gap between the candidate and best solution is smaller than
-    a threshold. The threshold is updated in each iteration as:
+    if the absolute gap between the candidate and the best or current solution
+    is smaller than a threshold. The threshold is updated in each iteration as:
 
     ``threshold = max(end_threshold, threshold - step)`` (linear)
 
@@ -29,6 +29,13 @@ class RecordToRecordTravel(AcceptanceCriterion):
     method
         The updating method, one of {'linear', 'exponential'}. Default
         'linear'.
+    cmp_best
+        This parameter determines whether we use default RRT (True), or
+        threshold accepting (False). By default, `cmp_best` is True, in which
+        case RRT checks whether the difference between the candidate and best
+        solution is below the threshold [2]. If `cmp_best` is False, RRT takes
+        the difference between the candidate and current solution instead. This
+        yields the behaviour of threshold accepting (TA), see [3] for details.
 
     References
     ----------
@@ -38,6 +45,9 @@ class RecordToRecordTravel(AcceptanceCriterion):
     [2]: Dueck, G. New optimization heuristics: The great deluge algorithm and
          the record-to-record travel. *Journal of Computational Physics* (1993)
          104 (1): 86-92.
+    [3]: Dueck, G., Scheuer, T. Threshold accepting: A general purpose
+         optimization algorithm appearing superior to simulated annealing.
+         *Journal of Computational Physics* (1990) 90 (1): 161-175.
     """
 
     def __init__(
@@ -46,6 +56,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
         end_threshold: float,
         step: float,
         method: str = "linear",
+        cmp_best: bool = True,
     ):
         if start_threshold < 0 or end_threshold < 0 or step < 0:
             raise ValueError("Thresholds and step must be non-negative.")
@@ -63,6 +74,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
         self._end_threshold = end_threshold
         self._step = step
         self._method = method
+        self._cmp_best = cmp_best
 
         self._threshold = start_threshold
 
@@ -83,14 +95,15 @@ class RecordToRecordTravel(AcceptanceCriterion):
         return self._method
 
     def __call__(self, rnd, best, current, candidate):
-        # This follows from the paper by Dueck (1993), p. 87.
-        result = (candidate.objective() - best.objective()) <= self._threshold
+        # From [2] p. 87 (RRT; best), and [3] p. 162 (TA; current).
+        baseline = best if self._cmp_best else current
+        res = candidate.objective() - baseline.objective() <= self._threshold
 
         self._threshold = max(
             self.end_threshold, update(self._threshold, self.step, self.method)
         )
 
-        return result
+        return res
 
     @classmethod
     def autofit(

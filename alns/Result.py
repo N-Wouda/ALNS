@@ -97,12 +97,12 @@ class Result:
         legend
             Optional legend entries. When passed, this should be a list of at
             most four strings. The first string describes the number of times
-            a best solution was found, the second a better, the third a solution
-            was accepted but did not improve upon the current or global best,
-            and the fourth the number of times a solution was rejected. If less
-            than four strings are passed, only the first len(legend) count types
-            are plotted. When not passed, a sensible default is set and all
-            counts are shown.
+            a best solution was found, the second a better, the third a
+            solution was accepted but did not improve upon the current or
+            global best, and the fourth the number of times a solution was
+            rejected. If less than four strings are passed, only the first
+            len(legend) count types are plotted. When not passed, a sensible
+            default is set and all counts are shown.
         kwargs
             Optional arguments passed to each call of ``ax.barh``.
         """

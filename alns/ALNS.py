@@ -163,7 +163,7 @@ class ALNS:
         self,
         initial_solution: State,
         weight_scheme: WeightScheme,
-        crit: AcceptanceCriterion,
+        accept: AcceptanceCriterion,
         stop: StoppingCriterion,
         **kwargs,
     ) -> Result:
@@ -180,13 +180,12 @@ class ALNS:
         weight_scheme
             The weight scheme to use for updating the (adaptive) weights. See
             also the ``alns.weight_schemes`` module for an overview.
-        crit
+        accept
             The acceptance criterion to use for candidate states. See also
-            the ``alns.criteria`` module for an overview.
+            the ``alns.accept`` module for an overview.
         stop
             The stopping criterion to use for stopping the iterations.
-            See also the ``alns.stopping_criteria`` module for an overview.
-
+            See also the ``alns.stop`` module for an overview.
         **kwargs
             Optional keyword arguments. These are passed to the operators,
             including callbacks.
@@ -238,7 +237,7 @@ class ALNS:
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
             best, curr, s_idx = self._eval_cand(
-                crit, best, curr, cand, **kwargs
+                accept, best, curr, cand, **kwargs
             )
 
             weight_scheme.update_weights(d_idx, r_idx, s_idx)
@@ -269,7 +268,7 @@ class ALNS:
 
     def _eval_cand(
         self,
-        crit: AcceptanceCriterion,
+        accept: AcceptanceCriterion,
         best: State,
         curr: State,
         cand: State,
@@ -288,7 +287,7 @@ class ALNS:
         """
         w_idx = _REJECT
 
-        if crit(self._rnd_state, best, curr, cand):  # accept candidate
+        if accept(self._rnd_state, best, curr, cand):  # accept candidate
             w_idx = _BETTER if cand.objective() < curr.objective() else _ACCEPT
             curr = cand
 

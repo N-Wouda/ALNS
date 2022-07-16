@@ -83,6 +83,7 @@ commonly used stopping criteria have already been implemented for you, in
   given number of iterations.
 - `MaxRuntime`. This stopping criterion stops the heuristic search after a given
   number of seconds.
+- `NoImprovement`. This stopping criterion stops the heuristic search after a given number of iterations without an improvement of the best solution.
 
 Each stopping criterion inherits from `StoppingCriterion`, which may be used to
 write your own.

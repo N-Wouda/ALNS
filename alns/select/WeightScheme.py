@@ -1,10 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from typing import List, Tuple
 
 import numpy as np
 from numpy.random import RandomState
 
-from .SelectionScheme import SelectionScheme
+from alns.select.SelectionScheme import SelectionScheme
 
 
 class WeightScheme(SelectionScheme):

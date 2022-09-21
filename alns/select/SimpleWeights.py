@@ -1,9 +1,6 @@
-from typing import List, Tuple
+from typing import List
 
-import numpy as np
-from numpy.random import RandomState
-
-from .WeightScheme import WeightScheme
+from alns.select.WeightScheme import WeightScheme
 
 
 class SimpleWeights(WeightScheme):

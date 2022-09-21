@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from numpy.random import RandomState
-from .SelectionScheme import SelectionScheme
+from alns.select.SelectionScheme import SelectionScheme
 
 
 class RandomSelect(SelectionScheme):

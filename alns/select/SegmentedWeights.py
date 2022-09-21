@@ -3,7 +3,7 @@ from typing import List
 
 import numpy as np
 
-from alns.weights.WeightScheme import WeightScheme
+from alns.select.WeightScheme import WeightScheme
 
 logger = logging.getLogger(__name__)
 

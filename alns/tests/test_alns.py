@@ -1,4 +1,3 @@
-import numpy as np
 import numpy.random as rnd
 from numpy.testing import (
     assert_,
@@ -11,7 +10,7 @@ from pytest import mark
 from alns import ALNS, State
 from alns.accept import HillClimbing, SimulatedAnnealing
 from alns.stop import MaxIterations, MaxRuntime
-from alns.weights import SimpleWeights
+from alns.select import SimpleWeights
 from .states import One, Zero
 
 

@@ -8,18 +8,7 @@ from numpy.random import RandomState
 class SelectionScheme(ABC):
     """
     Base class from which to implement an operator selection scheme.
-
-    Parameters
-    ----------
-    num_destroy
-        Number of destroy operators.
-    num_repair
-        Number of repair operators.
     """
-
-    def __init__(self, num_destroy: int, num_repair: int, *args):
-        self._d_weights = np.ones(num_destroy, dtype=float)
-        self._r_weights = np.ones(num_repair, dtype=float)
 
     @abstractmethod
     def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:

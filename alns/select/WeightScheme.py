@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import numpy as np
 from numpy.random import RandomState
@@ -23,14 +23,31 @@ class WeightScheme(SelectionScheme):
         Number of destroy operators.
     num_repair
         Number of repair operators.
+    op_coupling # TODO does this need to be a keyword argument?
+        Optional keyword argument. Matrix that indicates coupling between
+        destroy and repair operators. Entry (i, j) is 1 if destroy operator i
+        can be used in conjunction with repair operator j and 0 otherwise.
     """
 
-    def __init__(self, scores: List[float], num_destroy: int, num_repair: int):
-        self._validate_arguments(scores, num_destroy, num_repair)
+    def __init__(
+        self,
+        scores: List[float],
+        num_destroy: int,
+        num_repair: int,
+        *,
+        op_coupling: Optional[np.ndarray] = None,
+    ):
+        self._validate_arguments(scores, num_destroy, num_repair, op_coupling)
 
         self._scores = scores
         self._d_weights = np.ones(num_destroy, dtype=float)
         self._r_weights = np.ones(num_repair, dtype=float)
+
+        self._op_coupling = (
+            op_coupling
+            if op_coupling is not None
+            else np.ones((num_destroy, num_repair))
+        )
 
     @property
     def destroy_weights(self) -> np.ndarray:
@@ -39,6 +56,10 @@ class WeightScheme(SelectionScheme):
     @property
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
+
+    @property
+    def operator_coupling(self) -> np.ndarray:
+        return self._op_coupling
 
     def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
         """
@@ -62,7 +83,8 @@ class WeightScheme(SelectionScheme):
             return rnd_state.choice(range(len(op_weights)), p=probs)
 
         d_idx = select(self._d_weights)
-        r_idx = select(self._r_weights)
+        coupled_r_idcs = np.flatnonzero(self.operator_coupling[d_idx])
+        r_idx = coupled_r_idcs[select(self._r_weights[coupled_r_idcs])]
 
         return d_idx, r_idx
 
@@ -85,7 +107,7 @@ class WeightScheme(SelectionScheme):
         return NotImplemented
 
     @staticmethod
-    def _validate_arguments(scores, num_destroy, num_repair):
+    def _validate_arguments(scores, num_destroy, num_repair, op_coupling=None):
         if any(score < 0 for score in scores):
             raise ValueError("Negative scores are not understood.")
 
@@ -95,3 +117,20 @@ class WeightScheme(SelectionScheme):
 
         if num_destroy <= 0 or num_repair <= 0:
             raise ValueError("Missing destroy or repair operators.")
+
+        if op_coupling is None:
+            return
+
+        if op_coupling.shape != (num_destroy, num_repair):
+            # TODO Shorten this
+            raise ValueError(
+                "Operator coupling dimensions do not correspond with num_destroy or num_repair."
+            )
+
+        d_idcs = np.flatnonzero(np.count_nonzero(op_coupling, axis=1) == 0)
+
+        if d_idcs.size != 0:
+            # TODO Shorten this
+            raise ValueError(
+                f"Destroy operators must be coupled with at least one repair operator."
+            )

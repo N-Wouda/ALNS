@@ -1,4 +1,6 @@
-from typing import List
+from typing import List, Optional
+
+import numpy as np
 
 from alns.select.WeightScheme import WeightScheme
 
@@ -27,8 +29,12 @@ class SimpleWeights(WeightScheme):
         num_destroy: int,
         num_repair: int,
         op_decay: float,
+        *,
+        op_coupling: Optional[np.ndarray] = None
     ):
-        super().__init__(scores, num_destroy, num_repair)
+        super().__init__(
+            scores, num_destroy, num_repair, op_coupling=op_coupling
+        )
 
         if not (0 <= op_decay <= 1):
             raise ValueError("op_decay outside [0, 1] not understood.")

@@ -54,7 +54,7 @@ class SegmentedWeights(WeightScheme):
 
         self._reset_segment_weights()
 
-    def select_operators(self, rnd_state, op_coupling):
+    def select_operators(self, rnd_state):
         self._iter += 1
 
         if self._iter % self._seg_length == 0:
@@ -68,7 +68,7 @@ class SegmentedWeights(WeightScheme):
 
             self._reset_segment_weights()
 
-        return super().select_operators(rnd_state, op_coupling)
+        return super().select_operators(rnd_state)
 
     def update_weights(self, d_idx, r_idx, s_idx):
         self._d_seg_weights[d_idx] += self._scores[s_idx]

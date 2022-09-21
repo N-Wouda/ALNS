@@ -37,9 +37,7 @@ class WeightScheme(ABC):
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
 
-    def select_operators(
-        self, rnd_state: RandomState, op_coupling: np.ndarray
-    ) -> Tuple[int, int]:
+    def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.
         The default implementation uses a roulette wheel mechanism, where each
@@ -49,10 +47,6 @@ class WeightScheme(ABC):
         ----------
         rnd_state
             Random state object, to be used for random number generation.
-        op_coupling
-            Matrix that indicates coupling between destroy and repair
-            operators. Entry (i, j) is 1 if destroy operator i can be used in
-            conjunction with repair operator j and 0 otherwise.
 
         Returns
         -------
@@ -65,8 +59,7 @@ class WeightScheme(ABC):
             return rnd_state.choice(range(len(op_weights)), p=probs)
 
         d_idx = select(self._d_weights)
-        coupled_r_idcs = np.flatnonzero(op_coupling[d_idx])
-        r_idx = coupled_r_idcs[select(self._r_weights[coupled_r_idcs])]
+        r_idx = select(self._r_weights)
 
         return d_idx, r_idx
 

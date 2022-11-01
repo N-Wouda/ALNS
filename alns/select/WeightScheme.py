@@ -23,7 +23,7 @@ class WeightScheme(SelectionScheme):
         Number of destroy operators.
     num_repair
         Number of repair operators.
-    op_coupling # TODO does this need to be a keyword argument?
+    op_coupling
         Optional keyword argument. Matrix that indicates coupling between
         destroy and repair operators. Entry (i, j) is 1 if destroy operator i
         can be used in conjunction with repair operator j and 0 otherwise.

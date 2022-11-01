@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 
@@ -39,8 +39,12 @@ class SegmentedWeights(WeightScheme):
         num_repair: int,
         seg_decay: float,
         seg_length: int = 100,
+        *,
+        op_coupling: Optional[np.ndarray] = None,
     ):
-        super().__init__(scores, num_destroy, num_repair)
+        super().__init__(
+            scores, num_destroy, num_repair, op_coupling=op_coupling
+        )
 
         if not (0 <= seg_decay <= 1):
             raise ValueError("seg_decay outside [0, 1] not understood.")

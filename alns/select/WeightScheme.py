@@ -37,17 +37,18 @@ class WeightScheme(SelectionScheme):
         *,
         op_coupling: Optional[np.ndarray] = None,
     ):
-        self._validate_arguments(scores, num_destroy, num_repair, op_coupling)
+        super().__init__(num_destroy, num_repair, op_coupling=op_coupling)
+
+        if any(score < 0 for score in scores):
+            raise ValueError("Negative scores are not understood.")
+
+        if len(scores) < 4:
+            # More than four is OK because we only use the first four.
+            raise ValueError(f"Expected four scores, found {len(scores)}")
 
         self._scores = scores
         self._d_weights = np.ones(num_destroy, dtype=float)
         self._r_weights = np.ones(num_repair, dtype=float)
-
-        self._op_coupling = (
-            op_coupling
-            if op_coupling is not None
-            else np.ones((num_destroy, num_repair))
-        )
 
     @property
     def destroy_weights(self) -> np.ndarray:
@@ -56,10 +57,6 @@ class WeightScheme(SelectionScheme):
     @property
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
-
-    @property
-    def operator_coupling(self) -> np.ndarray:
-        return self._op_coupling
 
     def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
         """
@@ -83,7 +80,7 @@ class WeightScheme(SelectionScheme):
             return rnd_state.choice(range(len(op_weights)), p=probs)
 
         d_idx = select(self._d_weights)
-        coupled_r_idcs = np.flatnonzero(self.operator_coupling[d_idx])
+        coupled_r_idcs = np.flatnonzero(self.op_coupling[d_idx])
         r_idx = coupled_r_idcs[select(self._r_weights[coupled_r_idcs])]
 
         return d_idx, r_idx
@@ -105,25 +102,3 @@ class WeightScheme(SelectionScheme):
             Score index.
         """
         return NotImplemented
-
-    @staticmethod
-    def _validate_arguments(scores, num_destroy, num_repair, op_coupling=None):
-        if any(score < 0 for score in scores):
-            raise ValueError("Negative scores are not understood.")
-
-        if len(scores) < 4:
-            # More than four is OK because we only use the first four.
-            raise ValueError(f"Expected four scores, found {len(scores)}")
-
-        if num_destroy <= 0 or num_repair <= 0:
-            raise ValueError("Missing destroy or repair operators.")
-
-        if op_coupling is None:
-            return
-
-        # Destroy operators must be coupled with at least one repair operator
-        d_idcs = np.flatnonzero(np.count_nonzero(op_coupling, axis=1) == 0)
-
-        if d_idcs.size != 0:
-            d_op = f"Destroy op. {d_idcs[0]}"
-            raise ValueError(f"{d_op} has no coupled repair operators.")

@@ -4,6 +4,8 @@ import numpy as np
 
 from alns.select.WeightScheme import WeightScheme
 
+logger = logging.getLogger(__name__)
+
 
 class SimpleWeights(WeightScheme):
     """

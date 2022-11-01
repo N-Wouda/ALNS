@@ -130,5 +130,5 @@ class WeightScheme(SelectionScheme):
 
         if d_idcs.size != 0:
             raise ValueError(
-                f"Destroy ops. must be coupled with >= 1 repair operator."
+                "Destroy ops. must be coupled with >= 1 repair operator."
             )

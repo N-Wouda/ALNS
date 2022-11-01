@@ -24,7 +24,7 @@ bibliography: paper.bib
 
 # Introduction
 
-The adaptive large neighbourhood search (ALNS) metaheuristic algorithm, introduced by TODO, has quickly become one of the most used metaheuristics in the field of combinatorial optimisation TODO.
+The adaptive large neighbourhood search (ALNS) metaheuristic algorithm, introduced by @Ropke_Pisinger:2006, has quickly become one of the most used metaheuristics in the field of combinatorial optimisation TODO.
 At its core, ALNS implements an iterative ruin-and-recreate cycle that is applied until some stopping criterion is met.
 The algorithm starts with some initial solution.
 In each iteration, the current solution is destroyed using some operator and repaired using another to obtain a candidate solution.
@@ -40,6 +40,7 @@ Additionally, it can be used for research into improving heuristic algorithms th
 # Features
 
 The `alns` library is a Python package that offers:
+
 - TODO
 - TODO
 - TODO

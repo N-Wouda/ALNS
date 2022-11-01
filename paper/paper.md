@@ -22,9 +22,27 @@ date: 1 November 2022
 bibliography: paper.bib
 ---
 
-# Summary
+# Introduction
 
-TODO
+The adaptive large neighbourhood search (ALNS) metaheuristic algorithm, introduced by TODO, has quickly become one of the most used metaheuristics in the field of combinatorial optimisation TODO.
+At its core, ALNS implements an iterative ruin-and-recreate cycle that is applied until some stopping criterion is met.
+The algorithm starts with some initial solution.
+In each iteration, the current solution is destroyed using some operator and repaired using another to obtain a candidate solution.
+This candidate solution is then evaluated by an acceptance criterion, and possibly replaces the current solution.
+Based on the outcome of that evaluation, the likelihood that some operators are selected is modified - this is the adaptive part of the metaheuristic.
+
+The `alns` package provides a library containing a complete implementation of ALNS as described in @Pisinger_Ropke:2010.
+It additionally includes multiple stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes. 
+Furthermore, it supports many other single-trajectory neighbourhood search algorithms as special cases, including iterated local search (ILS), variable neighbourhood search (VND), and greedy randomized adaptive search (GRASP).
+The package can thus be used for research into heuristic algorithms for various problems in industry, including TODO, TODO, and TODO.
+Additionally, it can be used for research into improving heuristic algorithms themselves, for example by replacing TODO with a machine learning methods TODO.
+
+# Features
+
+The `alns` library is a Python package that offers:
+- TODO
+- TODO
+- TODO
 
 # Statement of need
 

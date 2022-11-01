@@ -16,7 +16,7 @@ authors:
 affiliations:
  - name: "Department of Operations, University of Groningen, Groningen, The Netherlands \\newline"
    index: 1
- - name: "Department of Mathematics, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands"
+ - name: "Department of Mathematics, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands \\newline"
    index: 2
 date: 1 November 2022
 bibliography: paper.bib

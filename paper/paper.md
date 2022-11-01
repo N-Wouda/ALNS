@@ -40,7 +40,11 @@ Additionally, it can be used for research into improving the ALNS metaheuristic 
 
 # Statement of need
 
-TODO
+TODO:
+
+- Increase re-use, limit duplicate work
+- Allow more experimentation with different ALNS aspects (since we already implemented them)
+- Explain existing libraries are limited, poorly documented, and/or non-existent
 
 # Features
 
@@ -51,6 +55,8 @@ The `alns` library is a Python package that offers:
 - TODO
 
 # Installation and usage
+
+The `alns` library is available on the Python package index, and can be installed using `pip`.
 
 TODO
 

@@ -11,12 +11,12 @@ authors:
     corresponding: true
     affiliation: 1
   - name: Leon Lan
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0001-7479-0218
     affiliation: 2
 affiliations:
- - name: Department of Operations, Faculty of Economics and Business, University of Groningen, Groningen, The Netherlands
+ - name: "Department of Operations, University of Groningen, Groningen, The Netherlands \\newline"
    index: 1
- - name: Institution Name, Country
+ - name: "Department of Mathematics, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands"
    index: 2
 date: 1 November 2022
 bibliography: paper.bib

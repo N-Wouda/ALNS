@@ -7,13 +7,13 @@ from alns.select.SelectionScheme import SelectionScheme
 class RandomSelect(SelectionScheme):
     """
     A random selection scheme. At each iteration, a random destroy and repair
-    operator is selected.
+    operator are selected.
     """
 
     def __init__(self, num_destroy: int, num_repair: int):
         if num_destroy <= 0 or num_repair <= 0:
             raise ValueError(
-                "Number of destroy or repair operators is non-positive."
+                "Number of destroy or repair operators is nonpositive."
             )
 
         self._num_destroy = num_destroy
@@ -29,7 +29,7 @@ class RandomSelect(SelectionScheme):
 
     def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
         """
-        Select a random destroy and repair operator.
+        Randomly select a destroy and repair operator.
         """
         d_idx = rnd_state.randint(self.num_destroy)
         r_idx = rnd_state.randint(self.num_repair)

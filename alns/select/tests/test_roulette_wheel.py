@@ -6,18 +6,18 @@ import numpy.random as rnd
 from numpy.testing import assert_, assert_raises, assert_almost_equal
 from pytest import mark
 
-from alns.select import SimpleWeights
+from alns.select import RouletteWheel
 
 
 @mark.parametrize("op_decay", [1.01, -0.01, -0.5, 1.5])
 def test_raises_invalid_op_decay(op_decay: float):
     with assert_raises(ValueError):
-        SimpleWeights([0, 0, 0, 0], 1, 1, op_decay)
+        RouletteWheel([0, 0, 0, 0], 1, 1, op_decay)
 
 
 @mark.parametrize("op_decay", np.linspace(0, 1, num=5))
 def test_does_not_raise_valid_op_decay(op_decay: float):
-    SimpleWeights([0, 0, 0, 0], 1, 1, op_decay)
+    RouletteWheel([0, 0, 0, 0], 1, 1, op_decay)
 
 
 @mark.parametrize(
@@ -29,7 +29,7 @@ def test_does_not_raise_valid_op_decay(op_decay: float):
     ],
 )  # convex combination
 def test_update(scores: List[float], op_decay: float, expected: List[float]):
-    weights = SimpleWeights(scores, 1, 1, op_decay)
+    weights = RouletteWheel(scores, 1, 1, op_decay)
 
     # TODO other weights?
     weights.update(0, 0, 1)
@@ -56,7 +56,7 @@ def test_select_operators(op_coupling):
     """
     rnd_state = rnd.RandomState()
     n_destroy, n_repair = op_coupling.shape
-    weights = SimpleWeights(
+    weights = RouletteWheel(
         [0, 0, 0, 0], n_destroy, n_repair, 0, op_coupling=op_coupling
     )
     d_idx, r_idx = weights.select_operators(rnd_state)

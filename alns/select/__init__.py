@@ -1,4 +1,4 @@
+from .SegmentedRouletteWheel import SegmentedRouletteWheel
 from .SelectionScheme import SelectionScheme
-from .SimpleWeights import SimpleWeights
-from .SegmentedWeights import SegmentedWeights
+from .RouletteWheel import RouletteWheel
 from .WeightScheme import WeightScheme

@@ -10,7 +10,7 @@ from pytest import mark
 from alns import ALNS, State
 from alns.accept import HillClimbing, SimulatedAnnealing
 from alns.stop import MaxIterations, MaxRuntime
-from alns.select import SimpleWeights
+from alns.select import RouletteWheel
 from .states import One, Zero
 
 
@@ -92,7 +92,7 @@ def test_on_best_is_called():
     # should then also be returned by the entire algorithm.
     alns.on_best(lambda *args: ValueState(10))
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     result = alns.iterate(One(), weights, HillClimbing(), MaxIterations(1))
     assert_equal(result.best_state.objective(), 10)
 
@@ -173,7 +173,7 @@ def test_raises_missing_destroy_operator():
 
     # Pretend we have a destroy operator for the weight scheme, so that
     # does not raise an error.
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.95)
 
     with assert_raises(ValueError):
         alns.iterate(One(), weights, HillClimbing(), MaxIterations(1))
@@ -187,7 +187,7 @@ def test_raises_missing_repair_operator():
 
     # Pretend we have a destroy operator for the weight scheme, so that
     # does not raise an error.
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.95)
 
     with assert_raises(ValueError):
         alns.iterate(One(), weights, HillClimbing(), MaxIterations(1))
@@ -203,7 +203,7 @@ def test_zero_max_iterations():
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
         initial_solution, weights, HillClimbing(), MaxIterations(0)
@@ -222,7 +222,7 @@ def test_zero_max_runtime():
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
         initial_solution, weights, HillClimbing(), MaxRuntime(0)
@@ -239,7 +239,7 @@ def test_iterate_kwargs_are_correctly_passed_to_operators():
     alns = get_alns_instance([lambda state, rnd, item: state], [test_operator])
 
     init_sol = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     orig_item = object()
 
     alns.iterate(
@@ -261,7 +261,7 @@ def test_bugfix_pass_kwargs_to_on_best():
     alns.on_best(lambda state, rnd, item: state)
 
     init_sol = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     orig_item = object()
 
     alns.iterate(
@@ -281,7 +281,7 @@ def test_trivial_example():
         [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
     )
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     result = alns.iterate(One(), weights, HillClimbing(), MaxIterations(100))
 
     assert_equal(result.best_state.objective(), 0)
@@ -299,7 +299,7 @@ def test_fixed_seed_outcomes(seed: int, desired: float):
         seed,
     )
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     sa = SimulatedAnnealing(1, 0.25, 1 / 100)
 
     result = alns.iterate(One(), weights, sa, MaxIterations(100))
@@ -316,7 +316,7 @@ def test_nonnegative_max_iterations(max_iterations):
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
         initial_solution,
@@ -339,7 +339,7 @@ def test_nonnegative_max_runtime(max_runtime):
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    weights = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
         initial_solution, weights, HillClimbing(), MaxRuntime(max_runtime)

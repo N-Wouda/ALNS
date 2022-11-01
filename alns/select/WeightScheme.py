@@ -1,8 +1,7 @@
 from abc import abstractmethod
-from typing import List, Tuple, Optional
+from typing import List, Optional
 
 import numpy as np
-from numpy.random import RandomState
 
 from alns.select.SelectionScheme import SelectionScheme
 
@@ -57,33 +56,6 @@ class WeightScheme(SelectionScheme):
     @property
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
-
-    def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
-        """
-        Selects a destroy and repair operator pair to apply in this iteration.
-        The default implementation uses a roulette wheel mechanism, where each
-        operator is selected based on the normalised weights.
-
-        Parameters
-        ----------
-        rnd_state
-            Random state object, to be used for random number generation.
-
-        Returns
-        -------
-        A tuple of (d_idx, r_idx), which are indices into the destroy and
-        repair operator lists, respectively.
-        """
-
-        def select(op_weights):
-            probs = op_weights / np.sum(op_weights)
-            return rnd_state.choice(range(len(op_weights)), p=probs)
-
-        d_idx = select(self._d_weights)
-        coupled_r_idcs = np.flatnonzero(self.op_coupling[d_idx])
-        r_idx = coupled_r_idcs[select(self._r_weights[coupled_r_idcs])]
-
-        return d_idx, r_idx
 
     @abstractmethod
     def update(self, d_idx: int, r_idx: int, s_idx: int):

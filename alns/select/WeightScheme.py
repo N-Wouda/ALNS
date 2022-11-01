@@ -121,14 +121,9 @@ class WeightScheme(SelectionScheme):
         if op_coupling is None:
             return
 
-        if op_coupling.shape != (num_destroy, num_repair):
-            raise ValueError(
-                "Op. coupling dimensions do not match num_destroy or num_repair."
-            )
-
+        # Destroy operators must be coupled with at least one repair operator
         d_idcs = np.flatnonzero(np.count_nonzero(op_coupling, axis=1) == 0)
 
         if d_idcs.size != 0:
-            raise ValueError(
-                "Destroy ops. must be coupled with >= 1 repair operator."
-            )
+            d_op = f"Destroy op. {d_idcs[0]}"
+            raise ValueError(f"{d_op} has no coupled repair operators.")

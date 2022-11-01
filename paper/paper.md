@@ -27,10 +27,9 @@ bibliography: paper.bib
 The adaptive large neighbourhood search (ALNS) metaheuristic algorithm, introduced by @Ropke_Pisinger:2006, has quickly become a favourite in the field of combinatorial optimisation.
 At its core, ALNS is an iterative ruin-and-recreate algorithm that runs until some stopping criterion is met.
 The algorithm starts with some initial solution.
-In each iteration, the current solution is transformed into a new candidate solution by the application of a destroy and repair operator.
-These operators are typically problem-specific.
+In each iteration, the current solution is transformed into a new candidate solution using problem-specific destroy and repair operators, which are selected via an operator selection scheme.
 The candidate solution is then evaluated by an acceptance criterion, and possibly replaces the current solution.
-Based on the outcome of that evaluation, the likelihood that some operators are selected is modified - this is the adaptive part of the metaheuristic.
+Based on the outcome of that evaluation, the operator selection scheme updates likelihood that the applied operators are selected again.
 
 Our `alns` package provides a library containing a complete implementation of ALNS as described in @Pisinger_Ropke:2010.
 It additionally includes multiple stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes. 

@@ -68,9 +68,9 @@ class SegmentedRouletteWheel(RouletteWheel):
 
         return super().__call__(rnd_state)
 
-    def update(self, d_idx, r_idx, s_idx):
-        self._d_seg_weights[d_idx] += self._scores[s_idx]
-        self._r_seg_weights[r_idx] += self._scores[s_idx]
+    def update(self, d_idx, r_idx, outcome):
+        self._d_seg_weights[d_idx] += self._scores[outcome]
+        self._r_seg_weights[r_idx] += self._scores[outcome]
 
     def _reset_segment_weights(self):
         self._d_seg_weights = np.zeros_like(self._d_weights)

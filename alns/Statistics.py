@@ -95,7 +95,7 @@ class Statistics:
         """
         self._runtimes.append(time)
 
-    def collect_destroy_operator(self, operator_name: str, s_idx: int):
+    def collect_destroy_operator(self, operator_name: str, outcome: int):
         """
         Collects a score (index) for a used destroy operator. This maintains
         count of the number of times this operator was used, and what result
@@ -106,12 +106,12 @@ class Statistics:
         operator_name
             Operator name. This was set when the operator was passed to the
             ALNS instance.
-        s_idx
-            Score indices used for the various iteration outcomes.
+        outcome
+            The iteration outcome.
         """
-        self._destroy_operator_counts[operator_name][s_idx] += 1
+        self._destroy_operator_counts[operator_name][outcome] += 1
 
-    def collect_repair_operator(self, operator_name: str, s_idx: int):
+    def collect_repair_operator(self, operator_name: str, outcome: int):
         """
         Collects a score (index) for a used repair operator. This maintains
         count of the number of times this operator was used, and what result
@@ -122,7 +122,7 @@ class Statistics:
         operator_name
             Operator name. This was set when the operator was passed to the
             ALNS instance.
-        s_idx
-            Score indices used for the various iteration outcomes.
+        outcome
+            The iteration outcomes.
         """
-        self._repair_operator_counts[operator_name][s_idx] += 1
+        self._repair_operator_counts[operator_name][outcome] += 1

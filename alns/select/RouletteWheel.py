@@ -100,7 +100,7 @@ class RouletteWheel(SelectionScheme):
 
         return d_idx, r_idx
 
-    def update(self, d_idx, r_idx, outcome):
+    def update(self, cand, d_idx, r_idx, outcome):
         self._d_weights[d_idx] *= self._decay
         self._d_weights[d_idx] += (1 - self._decay) * self._scores[outcome]
 

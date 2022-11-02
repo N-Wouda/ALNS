@@ -193,7 +193,7 @@ class ALNS:
                 accept, best, curr, cand, **kwargs
             )
 
-            op_select.update(d_idx, r_idx, outcome)
+            op_select.update(cand, d_idx, r_idx, outcome)
 
             stats.collect_objective(curr.objective())
             stats.collect_destroy_operator(d_name, outcome)

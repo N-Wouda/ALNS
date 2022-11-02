@@ -4,6 +4,8 @@ from typing import Tuple, Optional
 import numpy as np
 from numpy.random import RandomState
 
+from alns.State import State
+
 
 class SelectionScheme(ABC):
     """
@@ -69,13 +71,15 @@ class SelectionScheme(ABC):
         return NotImplemented
 
     @abstractmethod
-    def update(self, d_idx: int, r_idx: int, outcome: int):
+    def update(self, candidate: State, d_idx: int, r_idx: int, outcome: int):
         """
         Updates the weights associated with the applied destroy (d_idx) and
         repair (r_idx) operators.
 
         Parameters
         ----------
+        candidate
+            The candidate solution state.
         d_idx
             Destroy operator index.
         r_idx

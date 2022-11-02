@@ -12,6 +12,7 @@ from numpy.testing import (
 from pytest import mark
 
 from alns.select import RouletteWheel
+from alns.tests.states import Zero
 
 
 @mark.parametrize(
@@ -55,7 +56,7 @@ def test_update(scores: List[float], op_decay: float, expected: List[float]):
     weights = RouletteWheel(scores, 1, 1, op_decay)
 
     # TODO other weights?
-    weights.update(0, 0, 1)
+    weights.update(Zero, 0, 0, 1)
 
     assert_almost_equal(weights.destroy_weights[0], expected[0])
     assert_almost_equal(weights.repair_weights[0], expected[1])

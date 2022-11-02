@@ -5,6 +5,7 @@ from numpy.testing import assert_almost_equal, assert_equal, assert_raises
 from pytest import mark
 
 from alns.select import SegmentedRouletteWheel
+from alns.tests.states import Zero
 
 
 @mark.parametrize(
@@ -59,7 +60,7 @@ def test_update(scores: List[float], decay: float, expected: List[float]):
     weights = SegmentedRouletteWheel(scores, 1, 1, decay, 1)
 
     # TODO other weights?
-    weights.update(0, 0, 1)
+    weights.update(Zero, 0, 0, 1)
     weights(rnd_state)
 
     assert_almost_equal(weights.destroy_weights[0], expected[0])

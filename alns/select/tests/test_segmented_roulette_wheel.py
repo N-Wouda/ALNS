@@ -1,10 +1,35 @@
 from typing import List
 
 import numpy as np
-from numpy.testing import assert_almost_equal, assert_raises
+from numpy.testing import assert_almost_equal, assert_equal, assert_raises
 from pytest import mark
 
 from alns.select import SegmentedRouletteWheel
+
+
+@mark.parametrize(
+    "scores, num_destroy, num_repair, decay, seg_length,op_coupling",
+    [
+        ([0, 0, 0, 0], 1, 1, 0, 1, np.ones((1, 1))),
+        ([0, 1, 2, 3], 2, 2, 0.2, 2, np.ones((2, 2))),
+        ([5, 3, 2, 1], 10, 10, 1, 10, np.ones((10, 10))),
+    ],
+)
+def test_properties(
+    scores, num_destroy, num_repair, decay, seg_length, op_coupling
+):
+    weights = SegmentedRouletteWheel(
+        scores,
+        num_destroy,
+        num_repair,
+        decay,
+        seg_length,
+        op_coupling=op_coupling,
+    )
+
+    assert_equal(weights.num_destroy, num_destroy)
+    assert_equal(weights.num_repair, num_repair)
+    assert_equal(weights.op_coupling, op_coupling)
 
 
 @mark.parametrize("decay", [1.01, -0.01, -0.5, 1.5])

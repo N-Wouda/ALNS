@@ -3,10 +3,33 @@ from typing import List
 import numpy as np
 import numpy.random as rnd
 
-from numpy.testing import assert_, assert_raises, assert_almost_equal
+from numpy.testing import (
+    assert_,
+    assert_almost_equal,
+    assert_equal,
+    assert_raises,
+)
 from pytest import mark
 
 from alns.select import RouletteWheel
+
+
+@mark.parametrize(
+    "scores, num_destroy, num_repair, decay, op_coupling",
+    [
+        ([0, 0, 0, 0], 1, 1, 0, np.ones((1, 1))),
+        ([0, 1, 2, 3], 2, 2, 0.2, np.ones((2, 2))),
+        ([5, 3, 2, 1], 10, 10, 1, np.ones((10, 10))),
+    ],
+)
+def test_properties(scores, num_destroy, num_repair, decay, op_coupling):
+    weights = RouletteWheel(
+        scores, num_destroy, num_repair, decay, op_coupling=op_coupling
+    )
+
+    assert_equal(weights.num_destroy, num_destroy)
+    assert_equal(weights.num_repair, num_repair)
+    assert_equal(weights.op_coupling, op_coupling)
 
 
 @mark.parametrize("op_decay", [1.01, -0.01, -0.5, 1.5])

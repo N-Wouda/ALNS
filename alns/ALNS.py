@@ -167,7 +167,7 @@ class ALNS:
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing destroy or repair operators.")
 
-        curr = best = initial_solution
+        best = curr = initial_solution
         init_obj = initial_solution.objective()
 
         logger.debug(f"Initial solution has objective {init_obj:.2f}.")

@@ -52,7 +52,7 @@ class SegmentedRouletteWheel(RouletteWheel):
 
         self._reset_segment_weights()
 
-    def select_operators(self, rnd_state):
+    def __call__(self, rnd_state):
         self._iter += 1
 
         if self._iter % self._seg_length == 0:
@@ -66,7 +66,7 @@ class SegmentedRouletteWheel(RouletteWheel):
 
             self._reset_segment_weights()
 
-        return super().select_operators(rnd_state)
+        return super().__call__(rnd_state)
 
     def update(self, d_idx, r_idx, s_idx):
         self._d_seg_weights[d_idx] += self._scores[s_idx]

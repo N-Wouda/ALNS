@@ -51,9 +51,10 @@ class SelectionScheme(ABC):
         return self._op_coupling
 
     @abstractmethod
-    def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
+    def __call__(self, rnd: RandomState) -> Tuple[int, int]:
         """
-        Selects a destroy and repair operator pair to apply in this iteration.
+        Determine which destroy and repair operator pair to apply in this
+        iteration.
 
         Parameters
         ----------

@@ -35,7 +35,7 @@ def test_update(scores: List[float], decay: float, expected: List[float]):
 
     # TODO other weights?
     weights.update(0, 0, 1)
-    weights.select_operators(rnd_state)
+    weights(rnd_state)
 
     assert_almost_equal(weights.destroy_weights[0], expected[0])
     assert_almost_equal(weights.repair_weights[0], expected[1])

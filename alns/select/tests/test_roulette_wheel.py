@@ -59,6 +59,6 @@ def test_select_operators(op_coupling):
     weights = RouletteWheel(
         [0, 0, 0, 0], n_destroy, n_repair, 0, op_coupling=op_coupling
     )
-    d_idx, r_idx = weights.select_operators(rnd_state)
+    d_idx, r_idx = weights(rnd_state)
 
     assert_((d_idx, r_idx) in np.argwhere(op_coupling == 1))

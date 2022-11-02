@@ -46,7 +46,7 @@ class RouletteWheel(WeightScheme):
 
         self._decay = decay
 
-    def select_operators(self, rnd_state: RandomState) -> Tuple[int, int]:
+    def __call__(self, rnd_state: RandomState) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.
         The default implementation uses a roulette wheel mechanism, where each

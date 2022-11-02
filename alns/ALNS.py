@@ -177,7 +177,7 @@ class ALNS:
         stats.collect_runtime(time.perf_counter())
 
         while not stop(self._rnd_state, best, curr):
-            d_idx, r_idx = op_select.select_operators(self._rnd_state)
+            d_idx, r_idx = op_select(self._rnd_state)
 
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]

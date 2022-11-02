@@ -60,8 +60,8 @@ def test_update(scores: List[float], decay: float, expected: List[float]):
     weights = SegmentedRouletteWheel(scores, 1, 1, decay, 1)
 
     # TODO other weights?
-    weights.update(Zero, 0, 0, 1)
-    weights(rnd_state)
+    weights.update(Zero(), 0, 0, 1)
+    weights(rnd_state, Zero(), Zero())
 
     assert_almost_equal(weights.destroy_weights[0], expected[0])
     assert_almost_equal(weights.repair_weights[0], expected[1])

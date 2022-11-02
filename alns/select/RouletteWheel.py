@@ -5,6 +5,7 @@ import numpy as np
 from numpy.random import RandomState
 
 from alns.select.SelectionScheme import SelectionScheme
+from alns.State import State
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +74,9 @@ class RouletteWheel(SelectionScheme):
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
 
-    def __call__(self, rnd_state: RandomState) -> Tuple[int, int]:
+    def __call__(
+        self, rnd_state: RandomState, best: State, curr: State
+    ) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.
         The default implementation uses a roulette wheel mechanism, where each
@@ -83,6 +86,10 @@ class RouletteWheel(SelectionScheme):
         ----------
         rnd_state
             Random state object, to be used for random number generation.
+        best
+            The best solution state observed so far.
+        current
+            The current solution state.
 
         Returns
         -------

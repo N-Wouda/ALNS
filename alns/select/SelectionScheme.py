@@ -53,7 +53,9 @@ class SelectionScheme(ABC):
         return self._op_coupling
 
     @abstractmethod
-    def __call__(self, rnd: RandomState) -> Tuple[int, int]:
+    def __call__(
+        self, rnd: RandomState, best: State, curr: State
+    ) -> Tuple[int, int]:
         """
         Determine which destroy and repair operator pair to apply in this
         iteration.
@@ -62,6 +64,10 @@ class SelectionScheme(ABC):
         ----------
         rnd_state
             Random state object, to be used for random number generation.
+        best
+            The best solution state observed so far.
+        current
+            The current solution state.
 
         Returns
         -------

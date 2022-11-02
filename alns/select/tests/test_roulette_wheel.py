@@ -56,7 +56,7 @@ def test_update(scores: List[float], op_decay: float, expected: List[float]):
     weights = RouletteWheel(scores, 1, 1, op_decay)
 
     # TODO other weights?
-    weights.update(Zero, 0, 0, 1)
+    weights.update(Zero(), 0, 0, 1)
 
     assert_almost_equal(weights.destroy_weights[0], expected[0])
     assert_almost_equal(weights.repair_weights[0], expected[1])
@@ -83,6 +83,6 @@ def test_select_operators(op_coupling):
     weights = RouletteWheel(
         [0, 0, 0, 0], n_destroy, n_repair, 0, op_coupling=op_coupling
     )
-    d_idx, r_idx = weights(rnd_state)
+    d_idx, r_idx = weights(rnd_state, Zero(), Zero())
 
     assert_((d_idx, r_idx) in np.argwhere(op_coupling == 1))

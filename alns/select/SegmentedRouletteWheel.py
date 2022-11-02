@@ -4,6 +4,7 @@ from typing import List, Optional
 import numpy as np
 
 from alns.select.RouletteWheel import RouletteWheel
+from alns.State import State
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,7 @@ class SegmentedRouletteWheel(RouletteWheel):
 
         self._reset_segment_weights()
 
-    def __call__(self, rnd_state):
+    def __call__(self, rnd_state, best: State, curr: State):
         self._iter += 1
 
         if self._iter % self._seg_length == 0:
@@ -66,7 +67,7 @@ class SegmentedRouletteWheel(RouletteWheel):
 
             self._reset_segment_weights()
 
-        return super().__call__(rnd_state)
+        return super().__call__(rnd_state, best, curr)
 
     def update(self, cand, d_idx, r_idx, outcome):
         self._d_seg_weights[d_idx] += self._scores[outcome]

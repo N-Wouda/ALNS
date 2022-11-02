@@ -4,12 +4,12 @@ from typing import List, Optional, Tuple
 import numpy as np
 from numpy.random import RandomState
 
-from alns.select.WeightScheme import WeightScheme
+from alns.select.SelectionScheme import SelectionScheme
 
 logger = logging.getLogger(__name__)
 
 
-class RouletteWheel(WeightScheme):
+class RouletteWheel(SelectionScheme):
     """
     A selection scheme based on the roulette wheel mechanism, where each
     operator is selected based on normalised weights. The operator weights
@@ -21,8 +21,19 @@ class RouletteWheel(WeightScheme):
 
     Parameters
     ----------
-    (other arguments are explained in ``WeightScheme``)
-
+    scores
+        A list of four non-negative elements, representing the weight
+        updates when the candidate solution results in a new global best
+        (idx 0), is better than the current solution (idx 1), the solution
+        is accepted (idx 2), or rejected (idx 3).
+    num_destroy
+        Number of destroy operators.
+    num_repair
+        Number of repair operators.
+    op_coupling
+        Optional keyword argument. Matrix that indicates coupling between
+        destroy and repair operators. Entry (i, j) is 1 if destroy operator i
+        can be used in conjunction with repair operator j and 0 otherwise.
     decay
         Decay parameter in [0, 1]. This parameter is used to weigh the
         running performance of each operator.
@@ -35,16 +46,32 @@ class RouletteWheel(WeightScheme):
         num_repair: int,
         decay: float,
         *,
-        op_coupling: Optional[np.ndarray] = None
+        op_coupling: Optional[np.ndarray] = None,
     ):
-        super().__init__(
-            scores, num_destroy, num_repair, op_coupling=op_coupling
-        )
+        super().__init__(num_destroy, num_repair, op_coupling=op_coupling)
+
+        if any(score < 0 for score in scores):
+            raise ValueError("Negative scores are not understood.")
+
+        if len(scores) < 4:
+            # More than four is OK because we only use the first four.
+            raise ValueError(f"Expected four scores, found {len(scores)}")
 
         if not (0 <= decay <= 1):
             raise ValueError("decay outside [0, 1] not understood.")
 
+        self._scores = scores
+        self._d_weights = np.ones(num_destroy, dtype=float)
+        self._r_weights = np.ones(num_repair, dtype=float)
         self._decay = decay
+
+    @property
+    def destroy_weights(self) -> np.ndarray:
+        return self._d_weights
+
+    @property
+    def repair_weights(self) -> np.ndarray:
+        return self._r_weights
 
     def __call__(self, rnd_state: RandomState) -> Tuple[int, int]:
         """

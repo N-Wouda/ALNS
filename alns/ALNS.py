@@ -1,3 +1,4 @@
+import enum
 import logging
 import time
 from typing import Callable, Dict, List, Optional, Tuple
@@ -11,17 +12,18 @@ from alns.accept import AcceptanceCriterion
 from alns.select import SelectionScheme
 from alns.stop import StoppingCriterion
 
-# Potential candidate solution consideration outcomes.
-_BEST = 0
-_BETTER = 1
-_ACCEPT = 2
-_REJECT = 3
-
 # TODO this should become a Protocol to allow for kwargs. See also this issue:
 #  https://stackoverflow.com/q/61569324/4316405.
 _OperatorType = Callable[[State, rnd.RandomState], State]
 
 logger = logging.getLogger(__name__)
+
+
+class Outcome(enum.IntEnum):
+    BEST = 0
+    BETTER = 1
+    ACCEPTED = 2
+    REJECTED = 3
 
 
 class ALNS:
@@ -187,15 +189,15 @@ class ALNS:
             destroyed = d_operator(curr, self._rnd_state, **kwargs)
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
-            best, curr, s_idx = self._eval_cand(
+            best, curr, outcome = self._eval_cand(
                 accept, best, curr, cand, **kwargs
             )
 
-            op_select.update(d_idx, r_idx, s_idx)
+            op_select.update(d_idx, r_idx, outcome)
 
             stats.collect_objective(curr.objective())
-            stats.collect_destroy_operator(d_name, s_idx)
-            stats.collect_repair_operator(r_name, s_idx)
+            stats.collect_destroy_operator(d_name, outcome)
+            stats.collect_repair_operator(r_name, outcome)
             stats.collect_runtime(time.perf_counter())
 
         logger.info(f"Finished iterating in {stats.total_runtime:.2f}s.")
@@ -236,10 +238,14 @@ class ALNS:
         -------
         A tuple of the best and current solution, along with the weight index.
         """
-        w_idx = _REJECT
+        outcome = Outcome.REJECTED
 
         if accept(self._rnd_state, best, curr, cand):  # accept candidate
-            w_idx = _BETTER if cand.objective() < curr.objective() else _ACCEPT
+            outcome = (
+                Outcome.BETTER
+                if cand.objective() < curr.objective()
+                else Outcome.ACCEPTED
+            )
             curr = cand
 
         if cand.objective() < best.objective():  # candidate is new best
@@ -248,6 +254,6 @@ class ALNS:
             if self._on_best:
                 cand = self._on_best(cand, self._rnd_state, **kwargs)
 
-            return cand, cand, _BEST
+            return cand, cand, Outcome.BEST
 
-        return best, curr, w_idx
+        return best, curr, outcome

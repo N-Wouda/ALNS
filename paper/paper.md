@@ -24,24 +24,19 @@ bibliography: paper.bib
 
 # Summary
 
-The adaptive large neighbourhood search (ALNS) metaheuristic algorithm, introduced by @Ropke_Pisinger:2006, has quickly become a favourite in the field of combinatorial optimisation [@Windras_Mara_et_al:2022].
-At its core, ALNS is an iterative ruin-and-recreate algorithm that runs until some stopping criterion is met.
-The algorithm starts with some initial solution.
-In each iteration, the current solution is transformed into a new candidate solution using problem-specific destroy and repair operators, which are selected via an operator selection scheme.
-The candidate solution is then evaluated by an acceptance criterion, and possibly replaces the current solution.
-Based on the outcome of that evaluation, the operator selection scheme updates the likelihood that the applied operators are selected again.
-
-Our `alns` package provides a library containing a complete implementation of ALNS as described in @Pisinger_Ropke:2010.
-It additionally includes multiple stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes. 
+The `alns` Python package provides a complete implementation of the adaptive large neighbourhood search (ALNS) metaheuristic algorithm [@Ropke_Pisinger:2006; @Pisinger_Ropke:2010].
+ALNS has quickly become a favourite in the field of combinatorial optimisation and operations research [@Windras_Mara_et_al:2022] for solving difficult NP-hard problems.
+These problems include many variants of the vehicle routing problem and various scheduling problems.
+Our package has an easy-to-use API and includes various stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes.
 Furthermore, it supports many other single-trajectory neighbourhood search algorithms as special cases, including iterated local search (ILS), variable neighbourhood descent (VND), and the greedy randomised adaptive search procedure (GRASP).
-The package can thus be used for research into the application of these heuristic algorithms for various problems in industry, including TODO, TODO, and TODO.
-Additionally, it can be used for research into improving the metaheuristics themselves, for example by improving operator selection using machine learning methods TODO.
+The package can be used for research into the application of these heuristic algorithms to various problems in industry TODO, or research into improving the metaheuristic itself TODO.
 
 # Statement of need
 
 TODO:
 
-- Increase re-use, limit duplicate work
+- State of the art
+- Increase re-use, limit duplicate work (explain alternatives)
 - Allow more experimentation with different ALNS aspects (since we already implemented them)
 - Explain existing libraries are limited, poorly documented, and/or non-existent
 
@@ -53,10 +48,6 @@ The `alns` library is a Python package that offers:
 - TODO
 - TODO
 
-# Installation and usage
-
-The `alns` library is available on the Python package index, and can be installed using `pip`.
-
-TODO
+TODO documentation?
 
 # References

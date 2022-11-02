@@ -116,7 +116,7 @@ class ALNS:
     def iterate(
         self,
         initial_solution: State,
-        selection_scheme: SelectionScheme,
+        op_select: SelectionScheme,
         accept: AcceptanceCriterion,
         stop: StoppingCriterion,
         **kwargs,
@@ -131,11 +131,11 @@ class ALNS:
         ----------
         initial_solution
             The initial solution, as a State object.
-        selection_scheme
+        op_select
             The selection scheme to use for selecting operators.
             See also the ``alns.select`` module for an overview.
         accept
-            The acceptance criterion to use for candidate states.
+            The acceptance criterion to use for accepting candidate states.
             See also the ``alns.accept`` module for an overview.
         stop
             The stopping criterion to use for stopping the iterations.
@@ -177,7 +177,7 @@ class ALNS:
         stats.collect_runtime(time.perf_counter())
 
         while not stop(self._rnd_state, best, curr):
-            d_idx, r_idx = selection_scheme.select_operators(self._rnd_state)
+            d_idx, r_idx = op_select.select_operators(self._rnd_state)
 
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
@@ -191,7 +191,7 @@ class ALNS:
                 accept, best, curr, cand, **kwargs
             )
 
-            selection_scheme.update(d_idx, r_idx, s_idx)
+            op_select.update(d_idx, r_idx, s_idx)
 
             stats.collect_objective(curr.objective())
             stats.collect_destroy_operator(d_name, s_idx)

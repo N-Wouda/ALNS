@@ -56,21 +56,3 @@ class WeightScheme(SelectionScheme):
     @property
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
-
-    @abstractmethod
-    def update(self, d_idx: int, r_idx: int, s_idx: int):
-        """
-        Updates the weights associated with the applied destroy (d_idx) and
-        repair (r_idx) operators. The score index (s_idx) indicates the
-        outcome.
-
-        Parameters
-        ----------
-        d_idx
-            Destroy operator index.
-        r_idx
-            Repair operator index
-        s_idx
-            Score index.
-        """
-        return NotImplemented

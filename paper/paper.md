@@ -37,8 +37,8 @@ It is common in the operations research community for researchers to implement h
 This results in significant extra work for each researcher, and typically results in implementations that are relatively limited, often containing just enough to solve the researcher's problem well.
 Such an implementation, for example, often only implements a single acceptance criterion and operator selection scheme, thus limiting the freedom to experiment with these aspects of the algorithm, and is often tied quite tightly to the researcher's problem domain.
 This makes re-use difficult.
-Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, including various acceptance and stopping criteria, operator selection schemes.
-Additionally, we provide diagnostic statistics, plotting methods, logging, and the option to register custom callbacks at various points of the search.
+Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, including various acceptance and stopping criteria, and operator selection schemes.
+Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.
 These allow for rapid development of state-of-the-art metaheuristics in a wide range of problem domains.
 
 TODO explain existing libraries are limited, poorly documented, and/or non-existent

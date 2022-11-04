@@ -51,12 +51,20 @@ Based on the outcome of that evaluation, the operator selection scheme updates l
 
 The `alns` Python package offers:
 
-- TODO
-- TODO
-- TODO
+- A full-featured ALNS implementation. 
+  This implementation supports user-defined callbacks whenever a new solution is found, including when that new solution is a new global best, which could be used to support additional intensification methods.
+  Furthermore, it can be supplied with arbitrary user-defined destroy and repair operators.
+- Multiple acceptance criteria in `alns.accept`.
+  These include standard ones as hill-climbing and simulated annealing, but we also offer, for example, record-to-record travel and the great deluge criteria [@Dueck:1993].
+- Several operator selection schemes in `alns.select`.
+  These include the classic (segmented) roulette wheel mechanism of @Ropke_Pisinger:2006, but we also provide an upper confidence bound bandit algorithm based on TODO.
+- Various stopping criteria in `alns.stop` based on maximum run-times or iterations.
+  This includes a criterion that stops after a fixed number of iterations without improvement, which could be used to restart the search.
+- Diagnostic statistics collection and plotting methods that can be accessed after solving.
 
 The package can easily be installed through `pip`.
-Further, our detailed [documentation](TODO) provides several complete implementations solving instances of the travelling salesman problem, a capacitated vehicle routing problem, a cutting stock problem, and a project scheduling problem.
+Further, our detailed [documentation](TODO) provides a complete reference of the functionality available in the package.
+We also present several complete implementations solving instances of the travelling salesman problem, a capacitated vehicle routing problem, a cutting stock problem, and a project scheduling problem.
 These implementations can help users get started quickly solving their own problems using `alns`.
 
 # References

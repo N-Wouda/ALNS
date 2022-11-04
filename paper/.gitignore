@@ -2,3 +2,5 @@
 *.png
 *.template
 *.pdf
+
+tex2pdf*/

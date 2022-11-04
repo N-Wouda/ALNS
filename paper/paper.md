@@ -28,19 +28,19 @@ The `alns` Python package provides a complete implementation of the adaptive lar
 ALNS has quickly become a favourite in the field of operations research [@Windras_Mara_et_al:2022] for solving difficult combinatorial problems, including the vehicle routing problem and various scheduling problems.
 Our package has an easy-to-use API and includes various stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes.
 Furthermore, it supports many other single-trajectory neighbourhood search algorithms as special cases, including iterated local search (ILS), variable neighbourhood descent (VND), and the greedy randomised adaptive search procedure (GRASP).
-The package has already been used for research into further improvement of these heuristics [@Reijnen_et_al:2022] and the development of a high-quality heuristic for an industry problem [@Wouda_et_al:2022].
-As such, we expect the package to be useful to the wider operations research community.
+The package has already been successfully used for research into further improvement of these heuristics [@Reijnen_et_al:2022] and the development of a high-quality heuristic for an industry problem [@Wouda_et_al:2022].
+Because of this success, we expect the package to be useful to the wider operations research community.
 
 # Statement of need
 
 It is common in the operations research community to re-implement heuristics [@vidal:2022].
-This results in significant extra work, and implementations that are relatively limited, often containing just enough to solve just one problem well.
+This results in significant extra work, and implementations that are relatively limited, often containing just enough to solve a single problem well.
 The resulting ALNS implementations, for example, often only implement a single acceptance criterion and operator selection scheme, thus limiting the freedom to experiment with these aspects of the algorithm.
-Further, such implementations are often tied quite tightly to a single problem domain.
-This makes re-use by others or for other problem domains difficult.
+Such implementations are also often tied tightly to a single problem domain.
+This makes re-use by others or in other problem domains difficult.
 Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, and provides many acceptance criteria and operator selection schemes.
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.
-These allow researchers and practitioners to rapidly develop of state-of-the-art metaheuristics in a wide range of problem domains.
+These allow researchers and practitioners to rapidly develop state-of-the-art metaheuristics in a wide range of problem domains.
 
 # Features
 
@@ -54,9 +54,9 @@ The `alns` Python package offers:
 
 - A full-featured ALNS implementation. 
   This implementation supports user-defined callbacks whenever a new solution is found, including when that new solution is a new global best, which could be used to support additional intensification methods.
-  Furthermore, it can be supplied with arbitrary user-defined destroy and repair operators.
+  Furthermore, it can be supplied with arbitrary user-defined destroy and repair operators that are tailored to the user's problem domain.
 - Multiple acceptance criteria in `alns.accept`.
-  These include standard ones as hill-climbing and simulated annealing, but we also offer, for example, record-to-record travel and the great deluge criteria [@Dueck:1993].
+  These include standard ones like hill-climbing and simulated annealing, and several variants of record-to-record travel and the great deluge criteria [@Dueck:1993].
 - Several operator selection schemes in `alns.select`.
   These include the original (segmented) roulette wheel mechanism of @Ropke_Pisinger:2006, but we also provide an upper confidence bound bandit algorithm based on TODO.
 - Various stopping criteria in `alns.stop` based on maximum run-times or iterations.
@@ -65,7 +65,7 @@ The `alns` Python package offers:
 
 The package can easily be installed through `pip`.
 Further, our detailed [documentation](https://alns.readthedocs.io/) provides a complete reference of the functionality available in the package.
-We also present several complete implementations solving instances of the travelling salesman problem, a capacitated vehicle routing problem, a cutting stock problem, and a project scheduling problem.
+We also present several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, and the resource-constrained project scheduling problem.
 These implementations can help users quickly get started solving their own problems using `alns`.
 
 # References

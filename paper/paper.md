@@ -34,23 +34,29 @@ As such, we expect the package to be useful to the wider operations research com
 # Statement of need
 
 It is common in the operations research community for researchers to implement heuristics from scratch [@vidal:2022].
-This results in significant extra work for each researcher, and typically results in implementations that are relatively limited, often containing just enough to solve the researcher's problem well.
-Such an ALNS implementation, for example, often only implements a single acceptance criterion and operator selection scheme, thus limiting the freedom to experiment with these aspects of the algorithm, and is often tied quite tightly to the researcher's problem domain.
-This makes re-use difficult.
-Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, including various acceptance and stopping criteria, and operator selection schemes.
+This results in significant extra work, and typically results in implementations that are relatively limited, often containing just enough to solve just one problem well.
+Such an ALNS implementation, for example, often only implements a single acceptance criterion and operator selection scheme, thus limiting the freedom to experiment with these aspects of the algorithm, and is often tied quite tightly to a single problem domain.
+This makes re-use by others or for other problem domains difficult.
+Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, and provides many acceptance criteria and operator selection schemes.
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.
-These allow for rapid development of state-of-the-art metaheuristics in a wide range of problem domains.
-
-TODO explain existing libraries are limited, poorly documented, and/or non-existent
+These allow researchers and practitioners to rapidly develop of state-of-the-art metaheuristics in a wide range of problem domains.
 
 # Features
 
-The `alns` library is a Python package that offers:
+At its core, ALNS is an iterative ruin-and-recreate algorithm that runs until some stopping criterion is met.
+The algorithm starts with some initial solution.
+In each iteration, the current solution is transformed into a new candidate solution using problem-specific destroy and repair operators, which are selected via an operator selection scheme.
+The candidate solution is then evaluated by an acceptance criterion, and possibly replaces the current solution.
+Based on the outcome of that evaluation, the operator selection scheme updates likelihood that the applied operators are selected again.
+
+The `alns` Python package offers:
 
 - TODO
 - TODO
 - TODO
 
-TODO documentation?
+The package can easily be installed through `pip`.
+Further, our detailed [documentation](TODO) provides several complete implementations solving instances of the travelling salesman problem, a capacitated vehicle routing problem, a cutting stock problem, and a project scheduling problem.
+These implementations can help users get started quickly solving their own problems using `alns`.
 
 # References

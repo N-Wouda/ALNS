@@ -3,12 +3,10 @@ name: ALNS
 on:
   push:
     branches: [ master ]
-    paths:
-      - '**.py'
   pull_request:
     branches: [ master ]
     paths:
-      - '**.py'
+      - 'alns/**.py'
   release:
     types: [created]
 

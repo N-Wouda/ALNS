@@ -1,11 +1,15 @@
 import datetime
+import os
+import sys
 
 # -- Project information
 
-today = datetime.date.today()
+sys.path.insert(0, os.path.abspath("../../"))
+
+now = datetime.date.today()
 
 project = "ALNS"
-copyright = f"2019 - {today.year}, Niels Wouda and contributors"
+copyright = f"2019 - {now.year}, Niels Wouda and contributors"
 author = "Niels Wouda and contributors"
 
 release = "0.1"

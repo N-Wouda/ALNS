@@ -35,7 +35,7 @@ As such, we expect the package to be useful to the wider operations research com
 
 It is common in the operations research community for researchers to implement heuristics from scratch [@vidal:2022].
 This results in significant extra work for each researcher, and typically results in implementations that are relatively limited, often containing just enough to solve the researcher's problem well.
-Such an implementation, for example, often only implements a single acceptance criterion and operator selection scheme, thus limiting the freedom to experiment with these aspects of the algorithm, and is often tied quite tightly to the researcher's problem domain.
+Such an ALNS implementation, for example, often only implements a single acceptance criterion and operator selection scheme, thus limiting the freedom to experiment with these aspects of the algorithm, and is often tied quite tightly to the researcher's problem domain.
 This makes re-use difficult.
 Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, including various acceptance and stopping criteria, and operator selection schemes.
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.

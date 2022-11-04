@@ -64,7 +64,7 @@ The `alns` Python package offers:
 - Diagnostic statistics collection and plotting methods that can be accessed after solving.
 
 The package can easily be installed through `pip`.
-Further, our detailed [documentation](TODO) provides a complete reference of the functionality available in the package.
+Further, our detailed [documentation](https://alns.readthedocs.io/) provides a complete reference of the functionality available in the package.
 We also present several complete implementations solving instances of the travelling salesman problem, a capacitated vehicle routing problem, a cutting stock problem, and a project scheduling problem.
 These implementations can help users quickly get started solving their own problems using `alns`.
 

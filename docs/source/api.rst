@@ -1,38 +1,11 @@
 API Reference
 =============
-TODO
 
-ALNS
-~~~~~~~~~~
-.. autosummary::
+Welcome to ALNS's API reference!
 
-    ~alns.ALNS
-    ~alns.Result
+.. toctree::
+   :maxdepth: 1
 
-Acceptance criteria
-~~~~~~~~~~~~~~~~~~~
-.. autosummary::
-
-    ~alns.accept.AcceptanceCriterion
-    ~alns.accept.GreatDeluge
-    ~alns.accept.NonLinearGreatDeluge
-    ~alns.accept.HillClimbing
-    ~alns.accept.LateAcceptanceHillClimbing
-    ~alns.accept.RandomWalk
-    ~alns.accept.RecordToRecordTravel
-    ~alns.accept.SimulatedAnnealing
-    ~alns.accept.WorseAccept
-
-Stopping criteria
-~~~~~~~~~~~~~~~~~
-.. autosummary::
-
-    ~alns.stop.StoppingCriterion
-    ~alns.stop.MaxIterations
-    ~alns.stop.MaxRuntime
-    ~alns.stop.NoImprovement
-
-Operator selection schemes
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-TODO
+   alns
+   stop
+   accept

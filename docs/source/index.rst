@@ -8,14 +8,7 @@ Contents
 ========
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
+   examples
    api
-
-
-Index
-=====
-
-:ref:`genindex`
-
-:ref:`modindex`

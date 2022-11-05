@@ -130,7 +130,8 @@ class SimulatedAnnealing(AcceptanceCriterion):
         Raises
         ------
         ValueError
-            When ``worse`` not in [0, 1] or when ``accept_prob``not in (0, 1).
+            When ``worse`` not in [0, 1] or when ``accept_prob`` is not in
+            (0, 1).
 
         Returns
         -------

@@ -47,8 +47,6 @@ flake8 = "^4.0.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
 
-# i.a. Sphinx
-tomli = "^2.0.1"
 
 
 [tool.mypy]

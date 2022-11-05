@@ -7,5 +7,6 @@ Welcome to ALNS's API reference!
    :maxdepth: 1
 
    alns
-   stop
    accept
+   select
+   stop

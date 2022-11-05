@@ -10,11 +10,21 @@ ALNS can be installed through *pip* via
 
 The documentation hosted on this site provides several examples of how the ALNS library may be used to solve real-world problems, and provides a full API reference.
 
-Contents
---------
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   examples/alns_features
+   examples/cutting_stock_problem
+   examples/resource_constrained_project_scheduling_problem
+   examples/travelling_salesman_problem
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :caption: API reference
 
-   examples
-   api
+   alns
+   accept
+   select
+   stop
+

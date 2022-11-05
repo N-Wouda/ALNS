@@ -11,7 +11,7 @@ from alns.State import State
 from alns.Statistics import Statistics
 from alns.accept import AcceptanceCriterion
 from alns.stop import StoppingCriterion
-from alns.weights import WeightScheme
+from alns.select import SelectionScheme
 
 # Potential candidate solution consideration outcomes.
 _BEST = 0
@@ -162,7 +162,7 @@ class ALNS:
     def iterate(
         self,
         initial_solution: State,
-        weight_scheme: WeightScheme,
+        op_select: SelectionScheme,
         accept: AcceptanceCriterion,
         stop: StoppingCriterion,
         **kwargs,
@@ -177,12 +177,12 @@ class ALNS:
         ----------
         initial_solution
             The initial solution, as a State object.
-        weight_scheme
-            The weight scheme to use for updating the (adaptive) weights. See
-            also the ``alns.weight_schemes`` module for an overview.
+        op_select
+            The selection scheme to use for selecting operators.
+            See also the ``alns.select`` module for an overview.
         accept
-            The acceptance criterion to use for candidate states. See also
-            the ``alns.accept`` module for an overview.
+            The acceptance criterion to use for candidate states.
+            See also the ``alns.accept`` module for an overview.
         stop
             The stopping criterion to use for stopping the iterations.
             See also the ``alns.stop`` module for an overview.
@@ -224,7 +224,7 @@ class ALNS:
         stats.collect_runtime(time.perf_counter())
 
         while not stop(self._rnd_state, best, curr):
-            d_idx, r_idx = weight_scheme.select_operators(
+            d_idx, r_idx = op_select.select_operators(
                 self._rnd_state, op_coupling
             )
 
@@ -240,7 +240,7 @@ class ALNS:
                 accept, best, curr, cand, **kwargs
             )
 
-            weight_scheme.update_weights(d_idx, r_idx, s_idx)
+            op_select.update_weights(d_idx, r_idx, s_idx)
 
             stats.collect_objective(curr.objective())
             stats.collect_destroy_operator(d_name, s_idx)

@@ -5,6 +5,7 @@ from numpy.testing import assert_almost_equal, assert_raises
 from pytest import mark
 
 from alns.select import SegmentedRouletteWheel
+from alns.tests.states import Zero
 
 
 @mark.parametrize("seg_decay", [1.01, -0.01, -0.5, 1.5])
@@ -29,16 +30,13 @@ def test_does_not_raise_valid_seg_decay(seg_decay: float):
         ([5, 5, 5, 5], 0.5, [3, 3]),
     ],
 )
-def test_update_weights(
-    scores: List[float], seg_decay: float, expected: List[float]
-):
+def test_update(scores: List[float], seg_decay: float, expected: List[float]):
     rnd_state = np.random.RandomState(1)
     select = SegmentedRouletteWheel(scores, 1, 1, seg_decay, 1)
-    op_coupling = np.ones((1, 1))
 
     # TODO other weights?
-    select.update_weights(0, 0, 1)
-    select.select_operators(rnd_state, op_coupling)
+    select.update(Zero(), 0, 0, 1)
+    select(rnd_state, Zero(), Zero())
 
     assert_almost_equal(select.destroy_weights[0], expected[0])
     assert_almost_equal(select.repair_weights[0], expected[1])

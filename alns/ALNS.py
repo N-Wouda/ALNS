@@ -177,7 +177,7 @@ class ALNS:
         stats.collect_runtime(time.perf_counter())
 
         while not stop(self._rnd_state, best, curr):
-            d_idx, r_idx = op_select.select_operators(self._rnd_state)
+            d_idx, r_idx = op_select(self._rnd_state, best, curr)
 
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
@@ -191,7 +191,7 @@ class ALNS:
                 accept, best, curr, cand, **kwargs
             )
 
-            op_select.update_weights(d_idx, r_idx, s_idx)
+            op_select.update(cand, d_idx, r_idx, s_idx)
 
             stats.collect_objective(curr.objective())
             stats.collect_destroy_operator(d_name, s_idx)

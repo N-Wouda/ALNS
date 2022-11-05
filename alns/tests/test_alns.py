@@ -163,68 +163,6 @@ def test_add_repair_operator_name():
     assert_(operator is repair_operator)
 
 
-def test_compute_op_coupling():
-    """
-    Tests if the compute_op_coupling method correctly computes the matrix
-    that describes the dependencies between repair and destroy operators.
-    """
-    alns = ALNS()
-
-    d_operators = get_destroy_operators(2)
-    r_operators = get_repair_operators(2)
-
-    for d_op in d_operators:
-        alns.add_destroy_operator(d_op)
-
-    for r_op in r_operators:
-        alns.add_repair_operator(r_op)
-
-    op_coupling = alns._compute_op_coupling()
-
-    assert_almost_equal(op_coupling, np.ones((2, 2)))
-
-
-def test_compute_op_coupling_only_after():
-    """
-    Tests if the compute_op_coupling method correctly computes the matrix
-    when the only_after paramter is specified for certain repair operators.
-    """
-    alns = ALNS()
-
-    d_operators = get_destroy_operators(2)
-    r_operators = get_repair_operators(2)
-
-    for d_op in d_operators:
-        alns.add_destroy_operator(d_op)
-
-    for idx, r_op in enumerate(r_operators):
-        alns.add_repair_operator(r_op, only_after=[d_operators[idx]])
-
-    op_coupling = alns._compute_op_coupling()
-
-    assert_almost_equal(op_coupling, np.eye(2))
-
-
-def test_raise_uncoupled_destroy_op():
-    """
-    Tests if having a destroy operator that is not coupled to any of the
-    repair operators raises an an error when computing the operator coupling.
-    """
-    alns = ALNS()
-
-    d_operators = get_destroy_operators(2)
-    r_operators = get_repair_operators(2)
-
-    for d_op in d_operators:
-        alns.add_destroy_operator(d_op)
-
-    for r_op in r_operators:
-        alns.add_repair_operator(r_op, only_after=[d_operators[0]])
-
-    with assert_raises(ValueError):
-        alns._compute_op_coupling()
-
-
 # PARAMETERS ------------------------------------------------------------------
 
 

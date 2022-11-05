@@ -234,7 +234,7 @@ def test_raises_missing_destroy_operator():
     """
     alns = get_alns_instance(repair_operators=[lambda state, rnd: None])
 
-    # Pretend we have a destroy operator for the weight scheme, so that
+    # Pretend we have a destroy operator for the selection scheme, so that
     # does not raise an error.
     select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.95)
 
@@ -248,7 +248,7 @@ def test_raises_missing_repair_operator():
     """
     alns = get_alns_instance(destroy_operators=[lambda state, rnd: None])
 
-    # Pretend we have a destroy operator for the weight scheme, so that
+    # Pretend we have a destroy operator for the selection scheme, so that
     # does not raise an error.
     select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.95)
 

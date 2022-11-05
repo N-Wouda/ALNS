@@ -1,0 +1,5 @@
+numpy >= 1.15.2
+matplotlib >= 2.2.0
+tomli >= 2.0.1
+nbsphinx >= 0.8.9
+ipython >= 8.6.0"

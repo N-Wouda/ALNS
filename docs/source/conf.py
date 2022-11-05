@@ -2,6 +2,8 @@ import datetime
 import os
 import sys
 
+import tomli
+
 # -- Project information
 
 sys.path.insert(0, os.path.abspath("../../"))
@@ -12,7 +14,9 @@ project = "ALNS"
 copyright = f"2019 - {now.year}, Niels Wouda and contributors"
 author = "Niels Wouda and contributors"
 
-release = version = "4.1.0"
+with open("../../pyproject.toml", "rb") as fh:
+    pyproj = tomli.load(fh)
+    release = version = pyproj["tool"]["poetry"]["version"]
 
 # -- Autodoc
 

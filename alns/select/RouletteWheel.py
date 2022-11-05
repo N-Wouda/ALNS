@@ -1,9 +1,9 @@
 from typing import List
 
-from .WeightScheme import WeightScheme
+from .SelectionScheme import SelectionScheme
 
 
-class SimpleWeights(WeightScheme):
+class RouletteWheel(SelectionScheme):
     """
     A simple weighting scheme, where the operator weights are adjusted
     continuously throughout the algorithm runs. This works as follows.
@@ -14,7 +14,7 @@ class SimpleWeights(WeightScheme):
 
     Parameters
     ----------
-    (other arguments are explained in ``WeightScheme``)
+    (other arguments are explained in ``SelectionScheme``)
 
     op_decay
         Decay parameter in [0, 1]. This parameter is used to weigh the

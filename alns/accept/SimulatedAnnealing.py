@@ -140,8 +140,9 @@ class SimulatedAnnealing(AcceptanceCriterion):
         References
         ----------
         .. [1] Ropke, Stefan, and David Pisinger. 2006. "An Adaptive Large
-               Neighborhood Search Heuristic for the Pickup and Delivery Problem
-               with Time Windows." *Transportation Science* 40 (4): 455 - 472.
+               Neighborhood Search Heuristic for the Pickup and Delivery
+               Problem with Time Windows." *Transportation Science* 40 (4): 455
+               - 472.
         .. [2] Roozbeh et al. 2018. "An Adaptive Large Neighbourhood Search for
                asset protection during escaped wildfires."
                *Computers & Operations Research* 97: 125 - 134.

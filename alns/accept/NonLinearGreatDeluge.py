@@ -33,8 +33,8 @@ class NonLinearGreatDeluge(GreatDeluge):
 
     References
     ----------
-    .. [1] Dueck, G. New optimization heuristics: The great deluge algorithm and
-           the record-to-record travel. *Journal of Computational Physics*
+    .. [1] Dueck, G. New optimization heuristics: The great deluge algorithm
+           and the record-to-record travel. *Journal of Computational Physics*
            (1993) 104 (1): 86-92.
     .. [2] Landa-Silva, D., & Obit, J. H. Great deluge with non-linear decay
            rate for solving course timetabling problems. *4th international

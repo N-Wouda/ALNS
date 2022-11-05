@@ -28,8 +28,8 @@ class GreatDeluge(AcceptanceCriterion):
 
     References
     ----------
-    .. [1] Dueck, G. New optimization heuristics: The great deluge algorithm and
-           the record-to-record travel. *Journal of Computational Physics*
+    .. [1] Dueck, G. New optimization heuristics: The great deluge algorithm
+           and the record-to-record travel. *Journal of Computational Physics*
            (1993) 104 (1): 86-92.
     .. [2] Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
            criteria for the adaptive large neighbourhood search metaheuristic.

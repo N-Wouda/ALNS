@@ -20,11 +20,11 @@ with open("../../pyproject.toml", "rb") as fh:
 
 # -- Autodoc
 
-autoclass_content = 'class'
+autoclass_content = "class"
 
-autodoc_member_order = 'bysource'
+autodoc_member_order = "bysource"
 
-autodoc_default_flags = ['members']
+autodoc_default_flags = ["members"]
 
 # -- Numpydoc
 
@@ -47,7 +47,7 @@ extensions = [
     "numpydoc",
 ]
 
-exclude_patterns = ['_build', '**.ipynb_checkpoints']
+exclude_patterns = ["_build", "**.ipynb_checkpoints"]
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),

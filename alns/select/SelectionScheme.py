@@ -5,9 +5,9 @@ import numpy as np
 from numpy.random import RandomState
 
 
-class WeightScheme(ABC):
+class SelectionScheme(ABC):
     """
-    Base class from which to implement a weight scheme.
+    Base class from which to implement a selection scheme.
 
     Parameters
     ----------

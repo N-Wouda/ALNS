@@ -3,12 +3,12 @@ from typing import List
 
 import numpy as np
 
-from alns.weights.WeightScheme import WeightScheme
+from .SelectionScheme import SelectionScheme
 
 logger = logging.getLogger(__name__)
 
 
-class SegmentedWeights(WeightScheme):
+class SegmentedRouletteWheel(SelectionScheme):
     """
     A segmented weight scheme. Weights are not updated in each iteration,
     but only after each segment. Scores are gathered during each segment,
@@ -23,7 +23,7 @@ class SegmentedWeights(WeightScheme):
 
     Parameters
     ----------
-    (other arguments are explained in ``WeightScheme``)
+    (other arguments are explained in ``SelectionScheme``)
 
     seg_decay
         Decay parameter in [0, 1]. This parameter is used to weigh segment

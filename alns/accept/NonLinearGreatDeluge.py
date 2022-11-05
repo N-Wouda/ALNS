@@ -33,15 +33,15 @@ class NonLinearGreatDeluge(GreatDeluge):
 
     References
     ----------
-    [1]: Dueck, G. New optimization heuristics: The great deluge algorithm and
-         the record-to-record travel. *Journal of Computational Physics* (1993)
-         104 (1): 86-92.
-    [2]: Landa-Silva, D., & Obit, J. H. Great deluge with non-linear decay rate
-         for solving course timetabling problems. *4th international IEEE
-         conference intelligent systems* (2008) Vol. 1: 8-11.
-    [3]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-         criteria for the adaptive large neighbourhood search metaheuristic.
-         *Journal of Heuristics* (2018) 24 (5): 783–815.
+    .. [1] Dueck, G. New optimization heuristics: The great deluge algorithm and
+           the record-to-record travel. *Journal of Computational Physics*
+           (1993) 104 (1): 86-92.
+    .. [2] Landa-Silva, D., & Obit, J. H. Great deluge with non-linear decay
+           rate for solving course timetabling problems. *4th international
+           IEEE conference intelligent systems* (2008) Vol. 1: 8-11.
+    .. [3] Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+           criteria for the adaptive large neighbourhood search metaheuristic.
+           *Journal of Heuristics* (2018) 24 (5): 783–815.
     """
 
     def __init__(self, alpha: float, beta: float, gamma: float, delta: float):

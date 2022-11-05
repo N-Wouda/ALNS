@@ -11,7 +11,7 @@ ALNS can be installed through *pip* via
 The documentation hosted on this site provides several examples of how the ALNS library may be used to solve real-world problems, and provides a full API reference.
 
 Contents
-========
+--------
 
 .. toctree::
    :maxdepth: 2

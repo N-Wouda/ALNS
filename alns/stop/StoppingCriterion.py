@@ -13,7 +13,7 @@ class StoppingCriterion(ABC):
     @abstractmethod
     def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
         """
-        Determines whether to stop based on the implemented stopping criterion.
+        Determines whether to stop.
 
         Parameters
         ----------
@@ -26,6 +26,7 @@ class StoppingCriterion(ABC):
 
         Returns
         -------
-        Whether to stop iterating (True), or not (False).
+        bool
+            Whether to stop iterating (True), or not (False).
         """
         return NotImplemented

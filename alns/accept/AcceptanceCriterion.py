@@ -31,6 +31,7 @@ class AcceptanceCriterion(ABC):
 
         Returns
         -------
-        Whether to accept the candidate state (True), or not (False).
+        bool
+            Whether to accept the candidate state (True), or not (False).
         """
         return NotImplemented

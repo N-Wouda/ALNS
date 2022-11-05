@@ -26,15 +26,25 @@ autodoc_member_order = 'bysource'
 
 autodoc_default_flags = ['members']
 
+# -- Numpydoc
+
+numpydoc_xref_param_type = True
+numpydoc_class_members_toctree = False
+
+# -- nbsphinx
+
+nbsphinx_execute = "never"
+
 # -- General configuration
 
 extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
+    # "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "nbsphinx",
+    "numpydoc",
 ]
 
 exclude_patterns = ['_build', '**.ipynb_checkpoints']

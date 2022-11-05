@@ -42,9 +42,9 @@ class ALNS:
 
     References
     ----------
-    [1]: Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In
-         M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
-         - 420). Springer.
+    .. [1] Pisinger, D., and Røpke, S. (2010). Large Neighborhood Search. In
+           M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
+           - 420). Springer.
     """
 
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
@@ -65,8 +65,9 @@ class ALNS:
 
         Returns
         -------
-        A list of (name, operator) tuples. Their order is the same as the one
-        in which they were passed to the ALNS instance.
+        list
+            A list of (name, operator) tuples. Their order is the same as the
+            one in which they were passed to the ALNS instance.
         """
         return list(self._d_ops.items())
 
@@ -77,8 +78,9 @@ class ALNS:
 
         Returns
         -------
-        A list of (name, operator) tuples. Their order is the same as the one
-        in which they were passed to the ALNS instance.
+        list
+            A list of (name, operator) tuples. Their order is the same as the
+            one in which they were passed to the ALNS instance.
         """
         return list(self._r_ops.items())
 
@@ -197,18 +199,19 @@ class ALNS:
 
         Returns
         -------
-        A result object, containing the best solution and some additional
-        statistics.
+        Result
+            A result object, containing the best solution and some additional
+            statistics.
 
         References
         ----------
-        [1]: Pisinger, D., & Røpke, S. (2010). Large Neighborhood Search. In M.
-        Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399-420).
-        Springer.
+        .. [1] Pisinger, D., & Røpke, S. (2010). Large Neighborhood Search. In
+               M. Gendreau (Ed.), *Handbook of Metaheuristics* (2 ed., pp. 399
+               - 420). Springer.
 
-        [2]: S. Røpke and D. Pisinger (2006). A unified heuristic for a large
-        class of vehicle routing problems with backhauls. *European Journal of
-        Operational Research*, 171: 750–775, 2006.
+        .. [2] S. Røpke and D. Pisinger (2006). A unified heuristic for a large
+               class of vehicle routing problems with backhauls. *European
+               Journal of Operational Research*, 171: 750–775, 2006.
         """
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing destroy or repair operators.")
@@ -283,7 +286,9 @@ class ALNS:
 
         Returns
         -------
-        A tuple of the best and current solution, along with the weight index.
+        tuple
+            A tuple of the best and current solution, along with the weight
+            index.
         """
         w_idx = _REJECT
 

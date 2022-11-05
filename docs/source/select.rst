@@ -8,13 +8,13 @@ Operator selection schemes
 The :mod:`alns.select` module contains the various operator selection schemes the `alns` package ships with.
 These are used during the ALNS search to select a destroy and repair operator pair in each iteration.
 
-All stopping criteria inherit from :class:`~alns.select.SelectionScheme`, which can be subclassed to create your own.
+All stopping criteria inherit from :class:`~alns.select.SelectionScheme.SelectionScheme`, which can be subclassed to create your own.
 
-.. currentmodule:: alns.select
+.. automodule:: alns.select.SelectionScheme
+   :members:
 
-.. autosummary::
-   :toctree: generated/
+.. automodule:: alns.select.RouletteWheel
+   :members:
 
-   SelectionScheme
-   RouletteWheel
-   SegmentedRouletteWheel
+.. automodule:: alns.select.SegmentedRouletteWheel
+   :members:

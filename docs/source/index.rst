@@ -2,7 +2,13 @@ ALNS
 ====
 
 **ALNS** is a general, well-documented and tested implementation of the adaptive large neighbourhood search (ALNS) meta-heuristic in Python.
+ALNS can be installed through *pip* via
 
+.. code-block:: shell
+
+   pip install alns
+
+The documentation hosted on this site provides several examples of how the ALNS library may be used to solve real-world problems, and provides a full API reference.
 
 Contents
 ========

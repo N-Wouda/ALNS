@@ -38,6 +38,7 @@ def test_update(scores: List[float], op_decay: float, expected: List[float]):
     assert_almost_equal(select.repair_weights[0], expected[1])
 
 
+# TODO Move the op_coupling related tests to RandomSelect
 @mark.parametrize(
     "op_coupling",
     [
@@ -62,3 +63,18 @@ def test_select_operators(op_coupling):
     d_idx, r_idx = select(rnd_state, Zero(), Zero())
 
     assert_((d_idx, r_idx) in np.argwhere(op_coupling == 1))
+
+
+@mark.parametrize(
+    "op_coupling", [np.zeros((3, 3)), np.array([[0, 0, 0], [1, 1, 1]])]
+)
+def test_raise_uncoupled_destroy_op(op_coupling):
+    """
+    Tests if having a destroy operator that is not coupled to any of the
+    repair operators raises an an error.
+    """
+    with assert_raises(ValueError):
+        n_destroy, n_repair = op_coupling.shape
+        RouletteWheel(
+            [0, 0, 0, 0], n_destroy, n_repair, 0, op_coupling=op_coupling
+        )

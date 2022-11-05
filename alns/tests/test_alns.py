@@ -1,4 +1,3 @@
-import numpy as np
 import numpy.random as rnd
 from numpy.testing import (
     assert_,

@@ -1,9 +1,7 @@
 import logging
 import time
-from collections import defaultdict
-from typing import Callable, Dict, Iterable, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
-import numpy as np
 import numpy.random as rnd
 
 from alns.Result import Result
@@ -50,7 +48,6 @@ class ALNS:
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
         self._d_ops: Dict[str, _OperatorType] = {}
         self._r_ops: Dict[str, _OperatorType] = {}
-        self._only_after: Dict[_OperatorType, set] = defaultdict(set)
 
         # Optional callback that may be used to improve a new best solution
         # further, via e.g. local search.
@@ -99,13 +96,7 @@ class ALNS:
         logger.debug(f"Adding destroy operator {op.__name__}.")
         self._d_ops[op.__name__ if name is None else name] = op
 
-    def add_repair_operator(
-        self,
-        op: _OperatorType,
-        name: str = None,
-        *,
-        only_after: Optional[Iterable[_OperatorType]] = None,
-    ):
+    def add_repair_operator(self, op: _OperatorType, name: str = None):
         """
         Adds a repair operator to the heuristic instance.
 

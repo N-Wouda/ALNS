@@ -132,7 +132,7 @@ class ALNS:
         initial_solution
             The initial solution, as a State object.
         op_select
-            The selection scheme to use for selecting operators.
+            The operator selection scheme to use for selecting operators.
             See also the ``alns.select`` module for an overview.
         accept
             The acceptance criterion to use for candidate states.

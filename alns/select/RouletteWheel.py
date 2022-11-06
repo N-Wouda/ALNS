@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 class RouletteWheel(OperatorSelection):
     """
-    A selection scheme based on the roulette wheel mechanism, where each
-    operator is selected based on normalised weights. The operator weights
+    An operator selection scheme based on the roulette wheel mechanism, where
+    each operator is selected based on normalised weights. The operator weights
     are adjusted continuously throughout the algorithm runs. This works as
     follows. In each iteration, the old weight is updated with a score based
     on a convex combination of the existing weight and the new score, as:

@@ -11,15 +11,15 @@ logger = logging.getLogger(__name__)
 
 class SegmentedRouletteWheel(RouletteWheel):
     """
-    A selection scheme based on the roulette wheel mechanism, where each
-    operator is selected based on normalised weights. Weights are not updated
-    in each iteration, but only after each segment. Scores are gathered during
-    each segment, as:
+    An operator selection scheme based on the roulette wheel mechanism, where
+    each operator is selected based on normalised weights. Weights are not
+    updated in each iteration, but only after each segment. Scores are gathered
+    during each segment, as:
 
     ``seg_weight += score``
 
-    At the start of each segment, ``seg_weight`` is reset to zero. At the
-    end of a segment, the weights are updated as:
+    At the start of each segment, ``seg_weight`` is reset to zero. At the end
+    of a segment, the weights are updated as:
 
     ``new_weight = decay * old_weight + (1 - decay) * seg_weight``
 

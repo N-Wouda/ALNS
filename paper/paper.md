@@ -27,7 +27,7 @@ bibliography: paper.bib
 The `alns` Python package provides a complete implementation of the adaptive large neighbourhood search (ALNS) metaheuristic algorithm [@Ropke_Pisinger:2006; @Pisinger_Ropke:2010].
 ALNS has quickly become a favourite in the field of operations research for solving difficult combinatorial problems, including the vehicle routing problem and various scheduling problems.
 Our package has an easy-to-use API and includes various stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes.
-Furthermore, it supports many other single-trajectory neighbourhood search algorithms as special cases, including iterated local search (ILS), variable neighbourhood descent (VND), and the greedy randomised adaptive search procedure (GRASP).
+Furthermore, it supports many other single-trajectory neighbourhood search algorithms as special cases, including iterated local search (ILS), variable neighbourhood search (VNS), and the greedy randomised adaptive search procedure (GRASP).
 The package has already been successfully used for research into methodological improvements of ALNS itself [@Reijnen_et_al:2022], and for the development of a high-quality ALNS metaheuristic for an industry problem [@Wouda_et_al:2022].
 Because of this success, we expect the package to be useful to the wider operations research community.
 
@@ -63,9 +63,9 @@ The `alns` Python package offers:
   This includes a criterion that stops after a fixed number of iterations without improvement, which could be used to restart the search.
 - Diagnostic statistics collection and plotting methods that can be accessed after solving.
 
-The package can easily be installed through `pip`.
-Further, our detailed [documentation](https://alns.readthedocs.io/) provides a reference of the functionality available in the package.
-The documentation also presents several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, and the resource-constrained project scheduling problem.
-These implementations can help users quickly get started solving their own problems using `alns`.
+The package can easily be installed through `pip`, and our detailed documentation is available [here](https://alns.readthedocs.io/).
+The documentation also explains how to implement several other single-trajectory nieghbourhood search algorithms using `alns`.
+Further, the documentation provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, and the resource-constrained project scheduling problem.
+These implementations will help users quickly get started solving their own problems using `alns`.
 
 # References

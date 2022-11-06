@@ -32,9 +32,9 @@ class RouletteWheel(OperatorSelectionScheme):
         Decay parameter in [0, 1]. This parameter is used to weigh the
         running performance of each operator.
     op_coupling
-        Optional keyword argument. Matrix that indicates coupling between
-        destroy and repair operators. Entry (i, j) is 1 if destroy operator i
-        can be used in conjunction with repair operator j and 0 otherwise.
+        Optional matrix that indicates coupling between destroy and repair
+        operators. Entry (i, j) is 1 if destroy operator i can be used in
+        conjunction with repair operator j and 0 otherwise.
     """
 
     def __init__(
@@ -43,10 +43,9 @@ class RouletteWheel(OperatorSelectionScheme):
         num_destroy: int,
         num_repair: int,
         decay: float,
-        *,
         op_coupling: Optional[np.ndarray] = None,
     ):
-        super().__init__(num_destroy, num_repair, op_coupling=op_coupling)
+        super().__init__(num_destroy, num_repair, op_coupling)
 
         if any(score < 0 for score in scores):
             raise ValueError("Negative scores are not understood.")

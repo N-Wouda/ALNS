@@ -18,27 +18,26 @@ class OperatorSelectionScheme(ABC):
     num_repair
         Number of repair operators.
     op_coupling
-        Optional keyword argument. Matrix that indicates coupling between
-        destroy and repair operators. Entry (i, j) is 1 if destroy operator i
-        can be used in conjunction with repair operator j and 0 otherwise.
+        Optional matrix that indicates coupling between destroy and repair
+        operators. Entry (i, j) is 1 if destroy operator i can be used in
+        conjunction with repair operator j and 0 otherwise.
     """
 
     def __init__(
         self,
         num_destroy: int,
         num_repair: int,
-        *,
         op_coupling: Optional[np.ndarray] = None,
     ):
         self._validate_arguments(num_destroy, num_repair, op_coupling)
 
         self._num_destroy = num_destroy
         self._num_repair = num_repair
-        self._op_coupling = (
-            op_coupling
-            if op_coupling is not None
-            else np.ones((num_destroy, num_repair))
-        )
+
+        if op_coupling is not None:
+            self._op_coupling = op_coupling
+        else:
+            self._op_coupling = np.ones((num_destroy, num_repair))
 
     @property
     def num_destroy(self) -> int:

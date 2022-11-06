@@ -31,13 +31,13 @@ class RouletteWheel(SelectionScheme):
         Number of destroy operators.
     num_repair
         Number of repair operators.
+    decay
+        Decay parameter in [0, 1]. This parameter is used to weigh the
+        running performance of each operator.
     op_coupling
         Optional keyword argument. Matrix that indicates coupling between
         destroy and repair operators. Entry (i, j) is 1 if destroy operator i
         can be used in conjunction with repair operator j and 0 otherwise.
-    decay
-        Decay parameter in [0, 1]. This parameter is used to weigh the
-        running performance of each operator.
     """
 
     def __init__(
@@ -79,8 +79,9 @@ class RouletteWheel(SelectionScheme):
     ) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.
-        The default implementation uses a roulette wheel mechanism, where each
-        operator is selected based on the normalised weights.
+        The probability of an operator being selected is based on the operator
+        weights: operators that frequently improve the current solution - and
+        thus have higher weights - are selected with a higher probability.
 
         Parameters
         ----------

@@ -38,27 +38,27 @@ def test_properties(scores, num_destroy, num_repair, decay, op_coupling):
     assert_equal(select.decay, decay)
 
 
-@mark.parametrize("op_decay", [1.01, -0.01, -0.5, 1.5])
-def test_raises_invalid_op_decay(op_decay: float):
+@mark.parametrize("decay", [1.01, -0.01, -0.5, 1.5])
+def test_raises_invalid_decay(decay: float):
     with assert_raises(ValueError):
-        RouletteWheel([0, 0, 0, 0], 1, 1, op_decay)
+        RouletteWheel([0, 0, 0, 0], 1, 1, decay)
 
 
-@mark.parametrize("op_decay", np.linspace(0, 1, num=5))
-def test_does_not_raise_valid_op_decay(op_decay: float):
-    RouletteWheel([0, 0, 0, 0], 1, 1, op_decay)
+@mark.parametrize("decay", np.linspace(0, 1, num=5))
+def test_does_not_raise_valid_decay(decay: float):
+    RouletteWheel([0, 0, 0, 0], 1, 1, decay)
 
 
 @mark.parametrize(
-    "scores,op_decay,expected",
+    "scores,decay,expected",
     [
         ([0, 0, 0, 0], 1, [1, 1]),  # scores are not used
         ([0, 0, 0, 0], 0, [0, 0]),  # initial weights are not used
         ([0.5, 0.5, 0.5, 0.5], 0.5, [0.75, 0.75]),
     ],
 )  # convex combination
-def test_update(scores: List[float], op_decay: float, expected: List[float]):
-    select = RouletteWheel(scores, 1, 1, op_decay)
+def test_update(scores: List[float], decay: float, expected: List[float]):
+    select = RouletteWheel(scores, 1, 1, decay)
 
     # TODO other weights?
     select.update(Zero(), 0, 0, 1)

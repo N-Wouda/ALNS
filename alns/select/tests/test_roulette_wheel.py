@@ -27,7 +27,7 @@ def test_properties(scores, num_destroy, num_repair, decay, op_coupling):
         scores, num_destroy, num_repair, decay, op_coupling=op_coupling
     )
 
-    # TODO move these properties to RandomSelect
+    # TODO move these property tests to RandomSelect
     assert_equal(select.num_destroy, num_destroy)
     assert_equal(select.num_repair, num_repair)
     assert_equal(select.op_coupling, op_coupling)
@@ -67,7 +67,6 @@ def test_update(scores: List[float], decay: float, expected: List[float]):
     assert_almost_equal(select.repair_weights[0], expected[1])
 
 
-# TODO Move the op_coupling related tests to RandomSelect
 @mark.parametrize(
     "op_coupling",
     [
@@ -76,10 +75,9 @@ def test_update(scores: List[float], decay: float, expected: List[float]):
         np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
         np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]]),
         np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]]),
-        np.array([[1, 0, 0], [1, 0, 0], [1, 0, 0]]),  # Not allowed by ALNS
     ],
 )
-def test_select_operators(op_coupling):
+def test_select_coupled_operators(op_coupling):
     """
     Test if the indices of the selected operators correspond to the
     ones that are given by the operator coupling.
@@ -95,7 +93,7 @@ def test_select_operators(op_coupling):
 
 
 @mark.parametrize(
-    "op_coupling", [np.zeros((3, 3)), np.array([[0, 0, 0], [1, 1, 1]])]
+    "op_coupling", [np.zeros((2, 2)), np.array([[0, 0, 0], [1, 1, 1]])]
 )
 def test_raise_uncoupled_destroy_op(op_coupling):
     """

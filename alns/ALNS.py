@@ -9,7 +9,7 @@ from alns.State import State
 from alns.Statistics import Statistics
 from alns.accept import AcceptanceCriterion
 from alns.stop import StoppingCriterion
-from alns.select import OperatorSelection
+from alns.select import OperatorSelectionScheme
 
 # Potential candidate solution consideration outcomes.
 _BEST = 0
@@ -116,7 +116,7 @@ class ALNS:
     def iterate(
         self,
         initial_solution: State,
-        op_select: OperatorSelection,
+        op_select: OperatorSelectionScheme,
         accept: AcceptanceCriterion,
         stop: StoppingCriterion,
         **kwargs,

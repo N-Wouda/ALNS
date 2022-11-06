@@ -7,7 +7,7 @@ from numpy.random import RandomState
 from alns.State import State
 
 
-class OperatorSelection(ABC):
+class OperatorSelectionScheme(ABC):
     """
     Base class from which to implement an operator selection scheme.
 

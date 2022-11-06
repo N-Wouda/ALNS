@@ -4,11 +4,11 @@ from typing import List, Optional, Tuple
 import numpy as np
 from numpy.random import RandomState
 
-from alns.select.OperatorSelection import OperatorSelection
+from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 from alns.State import State
 
 
-class RouletteWheel(OperatorSelection):
+class RouletteWheel(OperatorSelectionScheme):
     """
     An operator selection scheme based on the roulette wheel mechanism, where
     each operator is selected based on normalised weights. The operator weights

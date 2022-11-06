@@ -18,6 +18,7 @@ The documentation hosted on this site provides several examples of how the ALNS 
    examples/cutting_stock_problem
    examples/resource_constrained_project_scheduling_problem
    examples/travelling_salesman_problem
+   other single-trajectory heuristics
 
 .. toctree::
    :maxdepth: 1

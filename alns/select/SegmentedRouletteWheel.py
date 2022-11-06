@@ -53,6 +53,10 @@ class SegmentedRouletteWheel(RouletteWheel):
 
         self._reset_segment_weights()
 
+    @property
+    def seg_length(self):
+        return self._seg_length
+
     def __call__(self, rnd_state, best: State, curr: State):
         self._iter += 1
 

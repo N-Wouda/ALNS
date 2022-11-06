@@ -23,19 +23,19 @@ from alns.tests.states import Zero
     ],
 )
 def test_properties(scores, num_destroy, num_repair, decay, op_coupling):
-    weights = RouletteWheel(
+    select = RouletteWheel(
         scores, num_destroy, num_repair, decay, op_coupling=op_coupling
     )
 
     # TODO move these properties to RandomSelect
-    assert_equal(weights.num_destroy, num_destroy)
-    assert_equal(weights.num_repair, num_repair)
-    assert_equal(weights.op_coupling, op_coupling)
+    assert_equal(select.num_destroy, num_destroy)
+    assert_equal(select.num_repair, num_repair)
+    assert_equal(select.op_coupling, op_coupling)
 
-    assert_equal(weights.scores, scores)
-    assert_equal(weights.destroy_weights, np.ones(num_destroy))
-    assert_equal(weights.repair_weights, np.ones(num_repair))
-    assert_equal(weights.decay, decay)
+    assert_equal(select.scores, scores)
+    assert_equal(select.destroy_weights, np.ones(num_destroy))
+    assert_equal(select.repair_weights, np.ones(num_repair))
+    assert_equal(select.decay, decay)
 
 
 @mark.parametrize("op_decay", [1.01, -0.01, -0.5, 1.5])

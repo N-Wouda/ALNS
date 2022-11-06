@@ -7,8 +7,6 @@ from numpy.random import RandomState
 from alns.select.OperatorSelection import OperatorSelection
 from alns.State import State
 
-logger = logging.getLogger(__name__)
-
 
 class RouletteWheel(OperatorSelection):
     """

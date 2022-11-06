@@ -67,12 +67,20 @@ class RouletteWheel(SelectionScheme):
         self._decay = decay
 
     @property
+    def scores(self) -> List[float]:
+        return self._scores
+
+    @property
     def destroy_weights(self) -> np.ndarray:
         return self._d_weights
 
     @property
     def repair_weights(self) -> np.ndarray:
         return self._r_weights
+
+    @property
+    def decay(self) -> float:
+        return self._decay
 
     def __call__(
         self, rnd_state: RandomState, best: State, curr: State

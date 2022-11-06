@@ -11,6 +11,7 @@ The second can be subclassed to define a solution state: all that is needed is t
 
 Finally, the :meth:`~alns.ALNS.ALNS.iterate` method on :class:`~alns.ALNS.ALNS` instances returns a :class:`~alns.Result.Result` object.
 Its properties and methods can be used to access the final solution and runtime statistics.
+The :class:`~alns.Statistics.Statistics` object is also presented below, but it is typically not necessary to interact with it: most things are already available via the :class:`~alns.Result.Result` object.
 
 .. automodule:: alns.ALNS
    :members:
@@ -19,4 +20,7 @@ Its properties and methods can be used to access the final solution and runtime 
    :members:
 
 .. automodule:: alns.Result
+   :members:
+
+.. automodule:: alns.Statistics
    :members:

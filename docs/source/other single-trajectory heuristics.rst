@@ -78,4 +78,4 @@ At a high level, one could thus implement the following:
    alns.add_destroy_operator(destroy)
    alns.add_repair_operator(greedy_randomised_repair)
 
-We again suggest to use :class:`~alns.select.RouletteWheel`, and leave the choice of acceptance and stopping criterion are left to the user.
+We again suggest to use :class:`~alns.select.RouletteWheel`, and leave the choice of acceptance and stopping criterion to the user.

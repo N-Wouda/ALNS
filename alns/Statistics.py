@@ -55,7 +55,8 @@ class Statistics:
 
         Returns
         -------
-        Destroy operator counts.
+        defaultdict
+            Destroy operator counts.
         """
         return self._destroy_operator_counts
 
@@ -69,7 +70,8 @@ class Statistics:
 
         Returns
         -------
-        Repair operator counts.
+        defaultdict
+            Repair operator counts.
         """
         return self._repair_operator_counts
 

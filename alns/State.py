@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Union
 
 
 class State(ABC):
@@ -12,13 +11,8 @@ class State(ABC):
     """
 
     @abstractmethod
-    def objective(self) -> Union[int, float]:
+    def objective(self) -> float:
         """
         Computes the state's associated objective value.
-
-        Returns
-        -------
-        Union[int, float]
-            Some numeric value.
         """
         return NotImplemented

@@ -64,7 +64,7 @@ The `alns` Python package offers:
 - Diagnostic statistics collection and plotting methods that can be accessed after solving.
 
 The package can easily be installed through `pip`, and our detailed documentation is available [here](https://alns.readthedocs.io/).
-The documentation also explains how to implement several other single-trajectory nieghbourhood search algorithms using `alns`.
+The documentation also explains how to implement several other single-trajectory neighbourhood search algorithms using `alns`.
 Further, the documentation provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, and the resource-constrained project scheduling problem.
 These implementations will help users quickly get started solving their own problems using `alns`.
 

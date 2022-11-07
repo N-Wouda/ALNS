@@ -35,9 +35,9 @@ class OperatorSelectionScheme(ABC):
         self._num_repair = num_repair
 
         if op_coupling is not None:
-            self._op_coupling = op_coupling
+            self._op_coupling = op_coupling.astype(bool)
         else:
-            self._op_coupling = np.ones((num_destroy, num_repair))
+            self._op_coupling = np.ones((num_destroy, num_repair), dtype=bool)
 
     @property
     def num_destroy(self) -> int:

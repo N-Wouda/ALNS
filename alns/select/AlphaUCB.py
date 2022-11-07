@@ -68,7 +68,7 @@ class AlphaUCB(OperatorSelectionScheme):
         super().__init__(num_destroy, num_repair, op_coupling)
 
         if not (0 <= alpha <= 1):
-            raise ValueError(f"Alpha outside [0, 1] not understood.")
+            raise ValueError(f"Alpha {alpha:} outside [0, 1] not understood.")
 
         if any(score < 0 for score in scores):
             raise ValueError("Negative scores are not understood.")
@@ -80,9 +80,9 @@ class AlphaUCB(OperatorSelectionScheme):
         self._scores = scores
         self._alpha = alpha
 
-        self._avg_rewards = np.zeros_like(self._op_coupling)  # avg. reward
-        self._times = np.zeros_like(self._op_coupling)  # times played
-        self._iter = 0  # current iteration (time t)
+        self._avg_rewards = np.ones_like(self._op_coupling, dtype=float)
+        self._times = np.zeros_like(self._op_coupling, dtype=int)
+        self._iter = 0  # current iteration
 
     @property
     def scores(self) -> List[float]:
@@ -106,7 +106,9 @@ class AlphaUCB(OperatorSelectionScheme):
         values = value + explore_bonus
         values[~self._op_coupling] = -1  # avoid selecting disallowed pairs
 
-        return tuple(np.argmax(values))
+        print(values)
+
+        return tuple(np.unravel_index(np.argmax(values), values.shape))
 
     def update(self, candidate, d_idx, r_idx, s_idx):
         """

@@ -2,12 +2,7 @@ from typing import List
 
 import numpy as np
 import numpy.random as rnd
-from numpy.testing import (
-    assert_,
-    assert_almost_equal,
-    assert_equal,
-    assert_raises,
-)
+from numpy.testing import assert_equal, assert_raises
 from pytest import mark
 
 from alns.select import AlphaUCB
@@ -59,9 +54,30 @@ def test_raises_invalid_arguments(
         AlphaUCB(scores, alpha, num_destroy, num_repair)
 
 
-def test_update():
-    pass
+def test_call_with_only_one_operator_pair():
+    # Only one operator pair, so the algorithm should select (0, 0).
+    select = AlphaUCB([2, 1, 1, 0], 0.5, 1, 1)
+    state = rnd.RandomState()
+
+    selected = select(state, Zero(), Zero())
+    assert_equal(selected, (0, 0))
 
 
-def test_call():
-    pass
+def test_update_with_two_operator_pairs():
+    select = AlphaUCB([2, 1, 1, 0], 0.5, 2, 1)
+    state = rnd.RandomState()
+
+    # Avg. reward for (0, 0) after this is 2, for (1, 0) is still 1 (default).
+    select.update(Zero(), 0, 0, s_idx=0)  # accepted
+
+    # So now (0, 0) is selected again.
+    selected = select(state, Zero(), Zero())
+    assert_equal(selected, (0, 0))
+
+    # One more update. Avg. reward goes to 1, and number of times to 2.
+    select.update(Zero(), 0, 0, s_idx=3)  # rejected
+
+    # The Q value of (0, 0) is now approx 1.432, and that of (1, 0) is now
+    # approx 1.74. So (1, 0) is selected.
+    selected = select(state, Zero(), Zero())
+    assert_equal(selected, (1, 0))

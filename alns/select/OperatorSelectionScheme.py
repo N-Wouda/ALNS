@@ -76,7 +76,7 @@ class OperatorSelectionScheme(ABC):
         return NotImplemented
 
     @abstractmethod
-    def update(self, candidate: State, d_idx: int, r_idx: int, outcome: int):
+    def update(self, candidate: State, d_idx: int, r_idx: int, s_idx: int):
         """
         Updates the weights associated with the applied destroy (d_idx) and
         repair (r_idx) operators.
@@ -89,8 +89,8 @@ class OperatorSelectionScheme(ABC):
             Destroy operator index.
         r_idx
             Repair operator index.
-        outcome
-            The iteration outcome.
+        s_idx
+            Score index.
         """
         return NotImplemented
 

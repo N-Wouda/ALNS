@@ -1,3 +1,3 @@
-from .SegmentedRouletteWheel import SegmentedRouletteWheel
+from .OperatorSelectionScheme import OperatorSelectionScheme
 from .RouletteWheel import RouletteWheel
-from .SelectionScheme import SelectionScheme
+from .SegmentedRouletteWheel import SegmentedRouletteWheel

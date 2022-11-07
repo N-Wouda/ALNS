@@ -43,13 +43,66 @@ Where the choice of acceptance and stopping criterion are left to the user.
 VNS
 ---
 
-`VNS <https://en.wikipedia.org/wiki/Variable_neighborhood_search>`_ is an iterative algorithm that, in each iteration, performs the following steps:
+`VNS <https://en.wikipedia.org/wiki/Variable_neighborhood_search>`_ is an iterative algorithm that, in each iteration, performs the following steps given a neighbourhood :math:`\mathcal{N}_k`:
 
-1. Perturb the current solution;
-2. Perform local search on the perturbed solution;
-3. Possibly change neighbourhoods.
+1. Perturb the current solution (possibly using :math:`\mathcal{N}_k`);
+2. Perform local search in :math:`\mathcal{N}_k` on the perturbed solution;
+3. Possibly change neighbourhoods :math:`k \gets k + 1`.
 
-TODO
+The first two steps look a lot like ILS.
+For the third, we need a bit more: an object to store :math:`k` and a list of neighbourhoods.
+Assume we have this list of neighbourhoods available.
+Then, a high-level implementation could look like:
+
+.. code-block:: python
+
+   from dataclasses import dataclass
+
+   from alns import ALNS, State
+
+
+   @dataclass
+   class Neighbourhood:
+       neighbourhoods: list
+       k: int
+
+
+   def perturb(sol: State, rnd_state, neighbourhood: Neighbourhood) -> State:
+       <perturb sol, possibly using neighbourhood k>
+       return <perturbed solution>
+
+
+   def local_search(
+       sol: State,
+       rnd_state,
+       neighbourhood: Neighbourhood
+   ) -> State:
+       <perform local search around sol using neighbourhood k>
+
+       neighbourhood.k += 1
+       return <improved solution>
+
+
+   def on_best(sol: State, rnd_state, neighbourhood: Neighbourhood) -> State:
+       # new best solution: start again from first neighbourhood
+       neighbourhood.k = 0
+       return sol
+
+
+   neighbourhood = Neighbourhood(<neighbourhoods>, 0)
+   alns = ALNS()
+   alns.on_best(on_best)
+   alns.add_destroy_operator(perturb)
+   alns.add_repair_operator(local_search)
+
+   res = alns.iterate(..., neighbourhood=neighbourhood)
+
+
+This example uses two somewhat advanced features: first, we use the :meth:`~alns.ALNS.ALNS.on_best` callback function to reset the neighbourhoods.
+Second, we use the flexible ``**kwargs`` argument of :meth:`~alns.ALNS.ALNS.iterate` to pass the ``neighbourhood`` object to the operators.
+
+We again suggest to use :class:`~alns.select.RouletteWheel`, and leave the choice of acceptance and stopping criterion to the user.
+
 
 GRASP
 -----

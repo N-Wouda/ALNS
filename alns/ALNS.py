@@ -264,7 +264,8 @@ class ALNS:
         func
             A function that should take a solution State as its first argument,
             and a numpy RandomState as its second (cf. the operator signature).
-            It should return a (new) solution State.
+            It should return a (new) solution State. The returned solution
+            state replaces the passed-in state.
         """
         logger.debug(f"Adding on_best callback {func.__name__}.")
         self._on_best = func

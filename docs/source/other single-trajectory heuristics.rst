@@ -47,7 +47,7 @@ VNS
 
 1. Perturb the current solution (possibly using :math:`\mathcal{N}_k`);
 2. Perform local search in :math:`\mathcal{N}_k` on the perturbed solution;
-3. Possibly change neighbourhoods :math:`k \gets k + 1`.
+3. Change neighbourhoods.
 
 The first two steps look a lot like ILS.
 For the third, we need a bit more: an object to store :math:`k` and a list of neighbourhoods.
@@ -79,17 +79,24 @@ Then, a high-level implementation could look like:
    ) -> State:
        <perform local search around sol using neighbourhood k>
 
-       neighbourhood.k += 1
+       # Set next neighbourhood: if we found an improving solution, the
+       # callback will reset the neighbourhood; else we start from the next
+       # neighbourhood in the following iteration.
+       neighbourhood.k = min(
+           neighbourhood.k + 1,
+           len(neighbourhood.neighbourhoods)
+       )
+
        return <improved solution>
 
 
    def on_best(sol: State, rnd_state, neighbourhood: Neighbourhood) -> State:
-       # new best solution: start again from first neighbourhood
-       neighbourhood.k = 0
+       # New best solution: start again from first neighbourhood.
+       neighbourhood.k = 1
        return sol
 
 
-   neighbourhood = Neighbourhood(<neighbourhoods>, 0)
+   neighbourhood = Neighbourhood(<neighbourhoods>, 1)
    alns = ALNS()
    alns.on_best(on_best)
    alns.add_destroy_operator(perturb)
@@ -98,7 +105,7 @@ Then, a high-level implementation could look like:
    res = alns.iterate(..., neighbourhood=neighbourhood)
 
 
-This example uses two somewhat advanced features: first, we use the :meth:`~alns.ALNS.ALNS.on_best` callback function to reset the neighbourhoods.
+This example uses two somewhat advanced features: first, we use the :meth:`~alns.ALNS.ALNS.on_best` callback function to reset the neighbourhoods in case of improvement.
 Second, we use the flexible ``**kwargs`` argument of :meth:`~alns.ALNS.ALNS.iterate` to pass the ``neighbourhood`` object to the operators.
 
 We again suggest to use :class:`~alns.select.RouletteWheel`, and leave the choice of acceptance and stopping criterion to the user.

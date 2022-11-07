@@ -22,12 +22,16 @@ class AlphaUCB(OperatorSelectionScheme):
 
     where :math:`T_a(t - 1)` is the number of times action :math:`a` has been
     played, and :math:`\\bar r_a(t - 1)` is the average reward of action
-    :math:`a`, both in the first :math:`t - 1` iterations.
-
-    Initially, each action pair is played once. After that, the action
-    :math:`Q(t)` is played for each later iteration :math:`t`. See
+    :math:`a`, both in the first :math:`t - 1` iterations. See
     :meth:`~alns.select.AlphaUCB.AlphaUCB.update` for details on how
     :math:`\\bar r_a` is updated.
+
+    .. note::
+
+        The average reward :math:`\\bar r_a(0)` of each action :math:`a \\in A`
+        is initialised to 1. The ``scores`` list passed into the
+        :math:`\\alpha`-UCB scheme should be 'reasonable' with respect to this
+        default.
 
     Parameters
     ----------

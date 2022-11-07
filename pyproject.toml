@@ -69,6 +69,7 @@ addopts = "--cov=. --cov-report=xml"
 omit = [
     "*/tests/*",
     "venv/*",
+    "docs/*",
 ]
 
 [tool.coverage.report]

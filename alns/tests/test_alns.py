@@ -1,4 +1,3 @@
-import numpy as np
 import numpy.random as rnd
 from numpy.testing import (
     assert_,
@@ -11,7 +10,7 @@ from pytest import mark
 from alns import ALNS, State
 from alns.accept import HillClimbing, SimulatedAnnealing
 from alns.stop import MaxIterations, MaxRuntime
-from alns.weights import SimpleWeights
+from alns.select import RouletteWheel
 from .states import One, Zero
 
 
@@ -93,8 +92,8 @@ def test_on_best_is_called():
     # should then also be returned by the entire algorithm.
     alns.on_best(lambda *args: ValueState(10))
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
-    result = alns.iterate(One(), weights, HillClimbing(), MaxIterations(1))
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
+    result = alns.iterate(One(), select, HillClimbing(), MaxIterations(1))
     assert_equal(result.best_state.objective(), 10)
 
 
@@ -163,68 +162,6 @@ def test_add_repair_operator_name():
     assert_(operator is repair_operator)
 
 
-def test_compute_op_coupling():
-    """
-    Tests if the compute_op_coupling method correctly computes the matrix
-    that describes the dependencies between repair and destroy operators.
-    """
-    alns = ALNS()
-
-    d_operators = get_destroy_operators(2)
-    r_operators = get_repair_operators(2)
-
-    for d_op in d_operators:
-        alns.add_destroy_operator(d_op)
-
-    for r_op in r_operators:
-        alns.add_repair_operator(r_op)
-
-    op_coupling = alns._compute_op_coupling()
-
-    assert_almost_equal(op_coupling, np.ones((2, 2)))
-
-
-def test_compute_op_coupling_only_after():
-    """
-    Tests if the compute_op_coupling method correctly computes the matrix
-    when the only_after paramter is specified for certain repair operators.
-    """
-    alns = ALNS()
-
-    d_operators = get_destroy_operators(2)
-    r_operators = get_repair_operators(2)
-
-    for d_op in d_operators:
-        alns.add_destroy_operator(d_op)
-
-    for idx, r_op in enumerate(r_operators):
-        alns.add_repair_operator(r_op, only_after=[d_operators[idx]])
-
-    op_coupling = alns._compute_op_coupling()
-
-    assert_almost_equal(op_coupling, np.eye(2))
-
-
-def test_raise_uncoupled_destroy_op():
-    """
-    Tests if having a destroy operator that is not coupled to any of the
-    repair operators raises an an error when computing the operator coupling.
-    """
-    alns = ALNS()
-
-    d_operators = get_destroy_operators(2)
-    r_operators = get_repair_operators(2)
-
-    for d_op in d_operators:
-        alns.add_destroy_operator(d_op)
-
-    for r_op in r_operators:
-        alns.add_repair_operator(r_op, only_after=[d_operators[0]])
-
-    with assert_raises(ValueError):
-        alns._compute_op_coupling()
-
-
 # PARAMETERS ------------------------------------------------------------------
 
 
@@ -234,12 +171,12 @@ def test_raises_missing_destroy_operator():
     """
     alns = get_alns_instance(repair_operators=[lambda state, rnd: None])
 
-    # Pretend we have a destroy operator for the weight scheme, so that
+    # Pretend we have a destroy operator for the selection scheme, so that
     # does not raise an error.
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.95)
 
     with assert_raises(ValueError):
-        alns.iterate(One(), weights, HillClimbing(), MaxIterations(1))
+        alns.iterate(One(), select, HillClimbing(), MaxIterations(1))
 
 
 def test_raises_missing_repair_operator():
@@ -248,12 +185,12 @@ def test_raises_missing_repair_operator():
     """
     alns = get_alns_instance(destroy_operators=[lambda state, rnd: None])
 
-    # Pretend we have a destroy operator for the weight scheme, so that
+    # Pretend we have a destroy operator for the selection scheme, so that
     # does not raise an error.
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.95)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.95)
 
     with assert_raises(ValueError):
-        alns.iterate(One(), weights, HillClimbing(), MaxIterations(1))
+        alns.iterate(One(), select, HillClimbing(), MaxIterations(1))
 
 
 def test_zero_max_iterations():
@@ -266,10 +203,10 @@ def test_zero_max_iterations():
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
-        initial_solution, weights, HillClimbing(), MaxIterations(0)
+        initial_solution, select, HillClimbing(), MaxIterations(0)
     )
 
     assert_(result.best_state is initial_solution)
@@ -285,10 +222,10 @@ def test_zero_max_runtime():
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
-        initial_solution, weights, HillClimbing(), MaxRuntime(0)
+        initial_solution, select, HillClimbing(), MaxRuntime(0)
     )
 
     assert_(result.best_state is initial_solution)
@@ -302,11 +239,11 @@ def test_iterate_kwargs_are_correctly_passed_to_operators():
     alns = get_alns_instance([lambda state, rnd, item: state], [test_operator])
 
     init_sol = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     orig_item = object()
 
     alns.iterate(
-        init_sol, weights, HillClimbing(), MaxIterations(10), item=orig_item
+        init_sol, select, HillClimbing(), MaxIterations(10), item=orig_item
     )
 
 
@@ -324,11 +261,11 @@ def test_bugfix_pass_kwargs_to_on_best():
     alns.on_best(lambda state, rnd, item: state)
 
     init_sol = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     orig_item = object()
 
     alns.iterate(
-        init_sol, weights, HillClimbing(), MaxIterations(10), item=orig_item
+        init_sol, select, HillClimbing(), MaxIterations(10), item=orig_item
     )
 
 
@@ -344,8 +281,8 @@ def test_trivial_example():
         [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
     )
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
-    result = alns.iterate(One(), weights, HillClimbing(), MaxIterations(100))
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
+    result = alns.iterate(One(), select, HillClimbing(), MaxIterations(100))
 
     assert_equal(result.best_state.objective(), 0)
 
@@ -362,10 +299,10 @@ def test_fixed_seed_outcomes(seed: int, desired: float):
         seed,
     )
 
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
     sa = SimulatedAnnealing(1, 0.25, 1 / 100)
 
-    result = alns.iterate(One(), weights, sa, MaxIterations(100))
+    result = alns.iterate(One(), select, sa, MaxIterations(100))
     assert_almost_equal(result.best_state.objective(), desired, decimal=5)
 
 
@@ -379,11 +316,11 @@ def test_nonnegative_max_iterations(max_iterations):
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
         initial_solution,
-        weights,
+        select,
         HillClimbing(),
         MaxIterations(max_iterations),
     )
@@ -402,10 +339,10 @@ def test_nonnegative_max_runtime(max_runtime):
     )
 
     initial_solution = One()
-    weights = SimpleWeights([1, 1, 1, 1], 1, 1, 0.5)
+    select = RouletteWheel([1, 1, 1, 1], 1, 1, 0.5)
 
     result = alns.iterate(
-        initial_solution, weights, HillClimbing(), MaxRuntime(max_runtime)
+        initial_solution, select, HillClimbing(), MaxRuntime(max_runtime)
     )
 
     assert_almost_equal(

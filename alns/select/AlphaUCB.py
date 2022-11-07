@@ -110,8 +110,6 @@ class AlphaUCB(OperatorSelectionScheme):
         values = value + explore_bonus
         values[~self._op_coupling] = -1  # avoid selecting disallowed pairs
 
-        print(values)
-
         return tuple(np.unravel_index(np.argmax(values), values.shape))
 
     def update(self, candidate, d_idx, r_idx, s_idx):

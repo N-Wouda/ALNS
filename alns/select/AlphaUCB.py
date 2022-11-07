@@ -80,18 +80,14 @@ class AlphaUCB(OperatorSelectionScheme):
         self._scores = scores
         self._alpha = alpha
 
-        # These are, in order, the number of times each pair has been played,
-        # the average reward of each operator pair, the matrix of Q-values, and
-        # the current iteration counter.
-        self._times = np.zeros_like(self._op_coupling)
-        self._rewards = np.zeros_like(self._op_coupling)
-
         # Set +inf for all operator pairs, except those that can never be
         # played. Those are set to zero.
-        self._Q_values = np.full_like(self._op_coupling, np.inf)
+        self._Q_values = np.full_like(self._op_coupling, np.inf)  # Q value
         self._Q_values[~self._op_coupling] = 0
 
-        self._iter = 0
+        self._times = np.zeros_like(self._op_coupling)  # times played
+        self._avg_rewards = np.zeros_like(self._op_coupling)  # avg. reward
+        self._iter = 0  # current iteration (time t)
 
     @property
     def scores(self) -> List[float]:
@@ -123,19 +119,16 @@ class AlphaUCB(OperatorSelectionScheme):
 
         and :math:`T_a(t) = T_a (t - 1) + 1`.
         """
-        # Update current iteration (that we are already in, so after this,
-        # ``_iter`` corresponds to time t)
-        self._iter += 1
-
         # Update everything for the next iteration (t + 1)
         a = self._alpha
         t = self._iter + 1
         t_a = self._times[d_idx, r_idx]
-        r = self._rewards[d_idx, r_idx]
+        r = self._avg_rewards[d_idx, r_idx]
 
         avg_reward = (t_a * r + self.scores[s_idx]) / (t_a + 1)
         value = avg_reward + np.sqrt((a * np.log(1 + t)) / (t_a + 1))
 
-        self._times[d_idx, r_idx] += 1
-        self._rewards[d_idx, r_idx] = avg_reward
         self._Q_values[d_idx, r_idx] = value
+        self._times[d_idx, r_idx] += 1
+        self._avg_rewards[d_idx, r_idx] = avg_reward
+        self._iter += 1

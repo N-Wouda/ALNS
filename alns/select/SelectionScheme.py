@@ -56,8 +56,9 @@ class SelectionScheme(ABC):
 
         Returns
         -------
-        A tuple of (d_idx, r_idx), which are indices into the destroy and
-        repair operator lists, respectively.
+        tuple
+            A tuple of (d_idx, r_idx), which are indices into the destroy and
+            repair operator lists, respectively.
         """
 
         def select(op_weights):

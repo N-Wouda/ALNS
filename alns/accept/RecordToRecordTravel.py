@@ -39,13 +39,13 @@ class RecordToRecordTravel(AcceptanceCriterion):
 
     References
     ----------
-    [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-         criteria for the adaptive large neighbourhood search metaheuristic.
-         *Journal of Heuristics* (2018) 24 (5): 783–815.
-    [2]: Dueck, G. New optimization heuristics: The great deluge algorithm and
-         the record-to-record travel. *Journal of Computational Physics* (1993)
-         104 (1): 86-92.
-    [3]: Dueck, G., Scheuer, T. Threshold accepting: A general purpose
+    .. [1] Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+           criteria for the adaptive large neighbourhood search metaheuristic.
+           *Journal of Heuristics* (2018) 24 (5): 783–815.
+    .. [2] Dueck, G. New optimization heuristics: The great deluge algorithm
+           and the record-to-record travel. *Journal of Computational Physics*
+           (1993) 104 (1): 86-92.
+    .. [3] Dueck, G., Scheuer, T. Threshold accepting: A general purpose
          optimization algorithm appearing superior to simulated annealing.
          *Journal of Computational Physics* (1990) 90 (1): 161-175.
     """

@@ -33,11 +33,11 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
     References
     ----------
-    [1]: Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
-         criteria for the adaptive large neighbourhood search metaheuristic.
-         *Journal of Heuristics* (2018) 24 (5): 783–815.
-    [2]: Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
-         by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
+    .. [1] Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
+           criteria for the adaptive large neighbourhood search metaheuristic.
+           *Journal of Heuristics* (2018) 24 (5): 783–815.
+    .. [2] Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
+           by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
     """
 
     def __init__(
@@ -130,20 +130,23 @@ class SimulatedAnnealing(AcceptanceCriterion):
         Raises
         ------
         ValueError
-            When ``worse`` not in [0, 1] or when ``accept_prob``not in (0, 1).
+            When ``worse`` not in [0, 1] or when ``accept_prob`` is not in
+            (0, 1).
 
         Returns
         -------
-        An autofitted SimulatedAnnealing acceptance criterion.
+        SimulatedAnnealing
+            An autofitted SimulatedAnnealing acceptance criterion.
 
         References
         ----------
-        [1]: Ropke, Stefan, and David Pisinger. 2006. "An Adaptive Large
-             Neighborhood Search Heuristic for the Pickup and Delivery Problem
-             with Time Windows." _Transportation Science_ 40 (4): 455 - 472.
-        [2]: Roozbeh et al. 2018. "An Adaptive Large Neighbourhood Search for
-             asset protection during escaped wildfires." _Computers &
-             Operations Research_ 97: 125 - 134.
+        .. [1] Ropke, Stefan, and David Pisinger. 2006. "An Adaptive Large
+               Neighborhood Search Heuristic for the Pickup and Delivery
+               Problem with Time Windows." *Transportation Science* 40 (4): 455
+               - 472.
+        .. [2] Roozbeh et al. 2018. "An Adaptive Large Neighbourhood Search for
+               asset protection during escaped wildfires."
+               *Computers & Operations Research* 97: 125 - 134.
         """
         if not (0 <= worse <= 1):
             raise ValueError("worse outside [0, 1] not understood.")

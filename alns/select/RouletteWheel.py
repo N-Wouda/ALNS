@@ -24,13 +24,13 @@ class RouletteWheel(OperatorSelectionScheme):
         updates when the candidate solution results in a new global best
         (idx 0), is better than the current solution (idx 1), the solution
         is accepted (idx 2), or rejected (idx 3).
+    decay
+        Decay parameter in [0, 1]. This parameter is used to weigh the
+        running performance of each operator.
     num_destroy
         Number of destroy operators.
     num_repair
         Number of repair operators.
-    decay
-        Decay parameter in [0, 1]. This parameter is used to weigh the
-        running performance of each operator.
     op_coupling
         Optional matrix that indicates coupling between destroy and repair
         operators. Entry (i, j) is 1 if destroy operator i can be used in
@@ -38,12 +38,12 @@ class RouletteWheel(OperatorSelectionScheme):
     """
 
     def __init__(
-        self,
-        scores: List[float],
-        num_destroy: int,
-        num_repair: int,
-        decay: float,
-        op_coupling: Optional[np.ndarray] = None,
+            self,
+            scores: List[float],
+            decay: float,
+            num_destroy: int,
+            num_repair: int,
+            op_coupling: Optional[np.ndarray] = None,
     ):
         super().__init__(num_destroy, num_repair, op_coupling)
 
@@ -79,7 +79,7 @@ class RouletteWheel(OperatorSelectionScheme):
         return self._decay
 
     def __call__(
-        self, rnd_state: RandomState, best: State, curr: State
+            self, rnd_state: RandomState, best: State, curr: State
     ) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.

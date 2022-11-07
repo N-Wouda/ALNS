@@ -1,9 +1,7 @@
 import logging
 import time
-from collections import defaultdict
-from typing import Callable, Dict, Iterable, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple
 
-import numpy as np
 import numpy.random as rnd
 
 from alns.Result import Result
@@ -11,7 +9,7 @@ from alns.State import State
 from alns.Statistics import Statistics
 from alns.accept import AcceptanceCriterion
 from alns.stop import StoppingCriterion
-from alns.select import SelectionScheme
+from alns.select import OperatorSelectionScheme
 
 # Potential candidate solution consideration outcomes.
 _BEST = 0
@@ -50,7 +48,6 @@ class ALNS:
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
         self._d_ops: Dict[str, _OperatorType] = {}
         self._r_ops: Dict[str, _OperatorType] = {}
-        self._only_after: Dict[_OperatorType, set] = defaultdict(set)
 
         # Optional callback that may be used to improve a new best solution
         # further, via e.g. local search.
@@ -101,13 +98,7 @@ class ALNS:
         logger.debug(f"Adding destroy operator {op.__name__}.")
         self._d_ops[op.__name__ if name is None else name] = op
 
-    def add_repair_operator(
-        self,
-        op: _OperatorType,
-        name: str = None,
-        *,
-        only_after: Optional[Iterable[_OperatorType]] = None,
-    ):
+    def add_repair_operator(self, op: _OperatorType, name: str = None):
         """
         Adds a repair operator to the heuristic instance.
 
@@ -120,51 +111,14 @@ class ALNS:
         name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
-        only_after
-            Optional keyword-only argument indicating which destroy operators
-            work with the passed-in repair operator. If passed, this argument
-            should be an iterable (e.g. a list) of destroy operators. If not
-            passed, the default is to assume that all destroy operators work
-            with the new repair operator.
         """
         logger.debug(f"Adding repair operator {op.__name__}.")
         self._r_ops[name if name else op.__name__] = op
 
-        if only_after:
-            self._only_after[op].update(only_after)
-
-    def _compute_op_coupling(self) -> np.ndarray:
-        """
-        Internal helper to compute a matrix that describes the
-        coupling between destroy and repair operators. The matrix has size
-        |d_ops|-by-|r_ops| and entry (i, j) is 1 if destroy operator i can
-        be used in conjunction with repair operator j and 0 otherwise.
-
-        If the only_after keyword-only argument was not used when adding
-        the repair operators, then all entries of the matrix are 1.
-        """
-        op_coupling = np.ones((len(self._d_ops), len(self._r_ops)))
-
-        for r_idx, (_, r_op) in enumerate(self.repair_operators):
-            coupled_d_ops = self._only_after[r_op]
-
-            for d_idx, (_, d_op) in enumerate(self.destroy_operators):
-                if coupled_d_ops and d_op not in coupled_d_ops:
-                    op_coupling[d_idx, r_idx] = 0
-
-        # Destroy operators must be coupled with at least one repair operator
-        d_idcs = np.flatnonzero(np.count_nonzero(op_coupling, axis=1) == 0)
-
-        if d_idcs.size != 0:
-            d_name, _ = self.destroy_operators[d_idcs[0]]
-            raise ValueError(f"{d_name} has no coupled repair operators.")
-
-        return op_coupling
-
     def iterate(
         self,
         initial_solution: State,
-        op_select: SelectionScheme,
+        op_select: OperatorSelectionScheme,
         accept: AcceptanceCriterion,
         stop: StoppingCriterion,
         **kwargs,
@@ -180,7 +134,7 @@ class ALNS:
         initial_solution
             The initial solution, as a State object.
         op_select
-            The selection scheme to use for selecting operators.
+            The operator selection scheme to use for selecting operators.
             See also the ``alns.select`` module for an overview.
         accept
             The acceptance criterion to use for candidate states.
@@ -218,7 +172,6 @@ class ALNS:
 
         curr = best = initial_solution
         init_obj = initial_solution.objective()
-        op_coupling = self._compute_op_coupling()
 
         logger.debug(f"Initial solution has objective {init_obj:.2f}.")
 
@@ -227,9 +180,7 @@ class ALNS:
         stats.collect_runtime(time.perf_counter())
 
         while not stop(self._rnd_state, best, curr):
-            d_idx, r_idx = op_select.select_operators(
-                self._rnd_state, op_coupling
-            )
+            d_idx, r_idx = op_select(self._rnd_state, best, curr)
 
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
@@ -243,7 +194,7 @@ class ALNS:
                 accept, best, curr, cand, **kwargs
             )
 
-            op_select.update_weights(d_idx, r_idx, s_idx)
+            op_select.update(cand, d_idx, r_idx, s_idx)
 
             stats.collect_objective(curr.objective())
             stats.collect_destroy_operator(d_name, s_idx)

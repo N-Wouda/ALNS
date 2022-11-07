@@ -58,12 +58,12 @@ class AlphaUCB(OperatorSelectionScheme):
     """
 
     def __init__(
-            self,
-            scores: List[float],
-            alpha: float,
-            num_destroy: int,
-            num_repair: int,
-            op_coupling: Optional[np.ndarray] = None,
+        self,
+        scores: List[float],
+        alpha: float,
+        num_destroy: int,
+        num_repair: int,
+        op_coupling: Optional[np.ndarray] = None,
     ):
         super().__init__(num_destroy, num_repair, op_coupling)
 
@@ -80,13 +80,8 @@ class AlphaUCB(OperatorSelectionScheme):
         self._scores = scores
         self._alpha = alpha
 
-        # Set +inf for all operator pairs, except those that can never be
-        # played. Those are set to zero.
-        self._Q_values = np.full_like(self._op_coupling, np.inf)  # Q value
-        self._Q_values[~self._op_coupling] = 0
-
-        self._times = np.zeros_like(self._op_coupling)  # times played
         self._avg_rewards = np.zeros_like(self._op_coupling)  # avg. reward
+        self._times = np.zeros_like(self._op_coupling)  # times played
         self._iter = 0  # current iteration (time t)
 
     @property
@@ -102,7 +97,16 @@ class AlphaUCB(OperatorSelectionScheme):
         Returns the (destroy, repair) operator pair that maximises the average
         reward and exploration bonus.
         """
-        return tuple(np.argmax(self._Q_values))
+        a = self.alpha
+        t = self._iter
+
+        value = self._avg_rewards
+        explore_bonus = np.sqrt((a * np.log(1 + t)) / (self._times + 1))
+
+        values = value + explore_bonus
+        values[~self._op_coupling] = -1  # avoid selecting disallowed pairs
+
+        return tuple(np.argmax(values))
 
     def update(self, candidate, d_idx, r_idx, s_idx):
         """
@@ -120,15 +124,10 @@ class AlphaUCB(OperatorSelectionScheme):
         and :math:`T_a(t) = T_a (t - 1) + 1`.
         """
         # Update everything for the next iteration (t + 1)
-        a = self._alpha
-        t = self._iter + 1
         t_a = self._times[d_idx, r_idx]
         r = self._avg_rewards[d_idx, r_idx]
-
         avg_reward = (t_a * r + self.scores[s_idx]) / (t_a + 1)
-        value = avg_reward + np.sqrt((a * np.log(1 + t)) / (t_a + 1))
 
-        self._Q_values[d_idx, r_idx] = value
-        self._times[d_idx, r_idx] += 1
         self._avg_rewards[d_idx, r_idx] = avg_reward
+        self._times[d_idx, r_idx] += 1
         self._iter += 1

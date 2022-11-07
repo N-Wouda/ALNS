@@ -46,13 +46,13 @@ class SegmentedRouletteWheel(RouletteWheel):
     """
 
     def __init__(
-            self,
-            scores: List[float],
-            decay: float,
-            seg_length: int,
-            num_destroy: int,
-            num_repair: int,
-            op_coupling: Optional[np.ndarray] = None,
+        self,
+        scores: List[float],
+        decay: float,
+        seg_length: int,
+        num_destroy: int,
+        num_repair: int,
+        op_coupling: Optional[np.ndarray] = None,
     ):
         super().__init__(scores, decay, num_destroy, num_repair, op_coupling)
 

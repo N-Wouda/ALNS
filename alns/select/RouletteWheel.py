@@ -38,12 +38,12 @@ class RouletteWheel(OperatorSelectionScheme):
     """
 
     def __init__(
-            self,
-            scores: List[float],
-            decay: float,
-            num_destroy: int,
-            num_repair: int,
-            op_coupling: Optional[np.ndarray] = None,
+        self,
+        scores: List[float],
+        decay: float,
+        num_destroy: int,
+        num_repair: int,
+        op_coupling: Optional[np.ndarray] = None,
     ):
         super().__init__(num_destroy, num_repair, op_coupling)
 
@@ -79,7 +79,7 @@ class RouletteWheel(OperatorSelectionScheme):
         return self._decay
 
     def __call__(
-            self, rnd_state: RandomState, best: State, curr: State
+        self, rnd_state: RandomState, best: State, curr: State
     ) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.

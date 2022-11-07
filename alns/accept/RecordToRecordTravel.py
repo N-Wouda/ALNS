@@ -139,7 +139,8 @@ class RecordToRecordTravel(AcceptanceCriterion):
 
         Returns
         -------
-        An autofitted RecordToRecordTravel acceptance criterion.
+        RecordToRecordTravel
+            An autofitted RecordToRecordTravel acceptance criterion.
         """
         if not (0 <= end_gap <= start_gap):
             raise ValueError("Must have 0 <= end_gap <= start_gap")

@@ -54,7 +54,7 @@ class SegmentedRouletteWheel(RouletteWheel):
             num_repair: int,
             op_coupling: Optional[np.ndarray] = None,
     ):
-        super().__init__(scores, num_destroy, num_repair, decay, op_coupling)
+        super().__init__(scores, decay, num_destroy, num_repair, op_coupling)
 
         if seg_length < 1:
             raise ValueError("seg_length < 1 not understood.")

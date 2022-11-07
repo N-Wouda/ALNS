@@ -7,8 +7,8 @@ from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 class AlphaUCB(OperatorSelectionScheme):
     """
-    The :math:`\\alpha`-UCB (upper confidence bound) bandit scheme of Hendel
-    (2022).
+    The :math:`\\alpha`-UCB (upper confidence bound) bandit scheme adapted
+    from Hendel (2022).
 
     The action space :math:`A` is defined as each pair of (destroy, repair)
     operator that is allowed by the operator coupling matrix. The

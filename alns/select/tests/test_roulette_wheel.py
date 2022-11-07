@@ -15,16 +15,16 @@ from alns.tests.states import Zero
 
 
 @mark.parametrize(
-    "scores, num_destroy, num_repair, decay, op_coupling",
+    "scores, decay, num_destroy, num_repair, op_coupling",
     [
-        ([0, 0, 0, 0], 1, 1, 0, np.ones((1, 1))),
-        ([0, 1, 2, 3], 2, 2, 0.2, np.ones((2, 2))),
-        ([5, 3, 2, 1], 10, 10, 1, np.ones((10, 10))),
+        ([0, 0, 0, 0], 0, 1, 1, np.ones((1, 1))),
+        ([0, 1, 2, 3], 0.2, 2, 2, np.ones((2, 2))),
+        ([5, 3, 2, 1], 1, 10, 10, np.ones((10, 10))),
     ],
 )
-def test_properties(scores, num_destroy, num_repair, decay, op_coupling):
+def test_properties(scores, decay, num_destroy, num_repair, op_coupling):
     select = RouletteWheel(
-        scores, num_destroy, num_repair, decay, op_coupling=op_coupling
+        scores, decay, num_destroy, num_repair, op_coupling=op_coupling
     )
 
     # TODO move these property tests to RandomSelect
@@ -41,12 +41,12 @@ def test_properties(scores, num_destroy, num_repair, decay, op_coupling):
 @mark.parametrize("decay", [1.01, -0.01, -0.5, 1.5])
 def test_raises_invalid_decay(decay: float):
     with assert_raises(ValueError):
-        RouletteWheel([0, 0, 0, 0], 1, 1, decay)
+        RouletteWheel([0, 0, 0, 0], decay, 1, 1)
 
 
 @mark.parametrize("decay", np.linspace(0, 1, num=5))
 def test_does_not_raise_valid_decay(decay: float):
-    RouletteWheel([0, 0, 0, 0], 1, 1, decay)
+    RouletteWheel([0, 0, 0, 0], decay, 1, 1)
 
 
 @mark.parametrize(
@@ -58,7 +58,7 @@ def test_does_not_raise_valid_decay(decay: float):
     ],
 )  # convex combination
 def test_update(scores: List[float], decay: float, expected: List[float]):
-    select = RouletteWheel(scores, 1, 1, decay)
+    select = RouletteWheel(scores, decay, 1, 1)
 
     # TODO other weights?
     select.update(Zero(), 0, 0, 1)
@@ -85,7 +85,7 @@ def test_select_coupled_operators(op_coupling):
     rnd_state = rnd.RandomState()
     n_destroy, n_repair = op_coupling.shape
     select = RouletteWheel(
-        [0, 0, 0, 0], n_destroy, n_repair, 0, op_coupling=op_coupling
+        [0, 0, 0, 0], 0, n_destroy, n_repair, op_coupling=op_coupling
     )
     d_idx, r_idx = select(rnd_state, Zero(), Zero())
 
@@ -103,5 +103,5 @@ def test_raise_uncoupled_destroy_op(op_coupling):
     with assert_raises(ValueError):
         n_destroy, n_repair = op_coupling.shape
         RouletteWheel(
-            [0, 0, 0, 0], n_destroy, n_repair, 0, op_coupling=op_coupling
+            [0, 0, 0, 0], 0, n_destroy, n_repair, op_coupling=op_coupling
         )

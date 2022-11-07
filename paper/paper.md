@@ -58,7 +58,7 @@ The `alns` Python package offers:
 - Multiple acceptance criteria in `alns.accept`.
   These include standard ones like hill-climbing and simulated annealing, and several variants of record-to-record travel and the great deluge criteria [@Dueck:1993].
 - Several operator selection schemes in `alns.select`.
-  These include the original (segmented) roulette wheel mechanism of @Ropke_Pisinger:2006, but we also provide an upper confidence bound bandit algorithm based on TODO.
+  These include the original (segmented) roulette wheel mechanism of @Ropke_Pisinger:2006, but we also provide an upper confidence bound bandit algorithm based on @Hendel:2022.
 - Various stopping criteria in `alns.stop` based on maximum run-times or iterations.
   This includes a criterion that stops after a fixed number of iterations without improvement, which could be used to restart the search.
 - Diagnostic statistics collection and plotting methods that can be accessed after solving.

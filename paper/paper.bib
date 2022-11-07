@@ -58,7 +58,7 @@
 }
 
 @misc{Wouda_et_al:2022,
-    author = {Wouda, Niels A. and Ayse Aslan and Iris F.A. Vis},
+    author = {Wouda, Niels A. and Ayse Aslan and Iris F. A. Vis},
     title = {An adaptive large neighbourhood search metaheuristic for hourly learning activity planning in personalised learning},
     year = {2022},
     howpublished = {[Submitted for publication]},
@@ -89,4 +89,17 @@
     author={Dueck, Gunter},
     year={1993},
     pages={86–92},
+}
+
+@article{Hendel:2022,
+    title={Adaptive large neighborhood search for mixed integer programming},
+    volume={14},
+    ISSN={1867-2957},
+    DOI={10.1007/s12532-021-00209-7},
+    abstractNote={Large Neighborhood Search (LNS) heuristics are among the most powerful but also most expensive heuristics for mixed integer programs (MIP). Ideally, a solver adaptively concentrates its limited computational budget by learning which LNS heuristics work best for the MIP problem at hand. To this end, this work introduces Adaptive Large Neighborhood Search (ALNS) for MIP, a primal heuristic that acts as a framework for eight popular LNS heuristics such as Local Branching and Relaxation Induced Neighborhood Search (RINS). We distinguish the available LNS heuristics by their individual search spaces, which we call auxiliary problems. The decision which auxiliary problem should be executed is guided by selection strategies for the multi armed bandit problem, a related optimization problem during which suitable actions have to be chosen to maximize a reward function. In this paper, we propose an LNS-specific reward function to learn to distinguish between the available auxiliary problems based on successful calls and failures. A second, algorithmic enhancement is a generic variable fixing prioritization, which ALNS employs to adjust the subproblem complexity as needed. This is particularly useful for some LNS problems which do not fix variables by themselves. The proposed primal heuristic has been implemented within the MIP solver SCIP. An extensive computational study is conducted to compare different LNS strategies within our ALNS framework on a large set of publicly available MIP instances from the MIPLIB and Coral benchmark sets. The results of this simulation are used to calibrate the parameters of the bandit selection strategies. A second computational experiment shows the computational benefits of the proposed ALNS framework within the MIP solver SCIP.},
+    number={2},
+    journal={Mathematical Programming Computation},
+    author={Hendel, Gregor},
+    year={2022},
+    pages={185–221},
 }

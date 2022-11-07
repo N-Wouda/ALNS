@@ -81,7 +81,9 @@ class ALNS:
         """
         return list(self._r_ops.items())
 
-    def add_destroy_operator(self, op: _OperatorType, name: str = None):
+    def add_destroy_operator(
+        self, op: _OperatorType, name: Optional[str] = None
+    ):
         """
         Adds a destroy operator to the heuristic instance.
 
@@ -98,7 +100,9 @@ class ALNS:
         logger.debug(f"Adding destroy operator {op.__name__}.")
         self._d_ops[op.__name__ if name is None else name] = op
 
-    def add_repair_operator(self, op: _OperatorType, name: str = None):
+    def add_repair_operator(
+        self, op: _OperatorType, name: Optional[str] = None
+    ):
         """
         Adds a repair operator to the heuristic instance.
 

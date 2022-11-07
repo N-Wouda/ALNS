@@ -16,13 +16,12 @@ class AlphaUCB(OperatorSelectionScheme):
 
     .. math::
 
-        Q_{t} = \\arg \\max_{a \\in A} \\bar{r}_a (t - 1)
-                + \\sqrt{\\frac{\\alpha \\ln(1 + t)}{T_a (t - 1)}}
+        Q_{t} = \\arg \\max_{a \\in A} \\left\\{ \\bar{r}_a (t - 1)
+                + \\sqrt{\\frac{\\alpha \\ln(1 + t)}{T_a (t - 1)}} \\right \\},
 
     where :math:`T_a(t - 1)` is the number of times action :math:`a` has been
-    played up to time :math:`t`, and :math:`\\bar r_a(t - 1)` is the average
-    reward of action :math:`a` obtained during the first :math:`t - 1`
-    iterations.
+    played, and :math:`\\bar r_a(t - 1)` is the average reward of action
+    :math:`a`, both in the first :math:`t - 1` iterations.
 
     Initially, each action pair is played once. After that, the action
     :math:`Q(t)` is played for each iteration :math:`t`. See
@@ -32,10 +31,10 @@ class AlphaUCB(OperatorSelectionScheme):
     Parameters
     ----------
     scores
-        A list of four non-negative elements, representing the weight
-        updates when the candidate solution results in a new global best
-        (idx 0), is better than the current solution (idx 1), the solution
-        is accepted (idx 2), or rejected (idx 3).
+        A list of four non-negative elements, representing the rewards when the
+        candidate solution results in a new global best (idx 0), is better than
+        the current solution (idx 1), the solution is accepted (idx 2), or
+        rejected (idx 3).
     alpha
         The :math:`\\alpha` parameter controls the width of the confidence
         interval. Larger values force the algorithm to select inferior
@@ -106,7 +105,7 @@ class AlphaUCB(OperatorSelectionScheme):
         .. math::
 
             \\bar r_a (t) = \\frac{T_a(t - 1) \\bar r_a(t - 1)
-                            + \\text{scores}[\\text{s_idx}]}{T_a(t - 1) + 1}
+                            + \\text{scores}[\\text{s_idx}]}{T_a(t - 1) + 1},
 
         and :math:`T_a(t) = T_a (t - 1) + 1`.
         """

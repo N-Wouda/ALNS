@@ -28,4 +28,3 @@ The documentation hosted on this site provides several examples of how the ALNS 
    accept
    select
    stop
-

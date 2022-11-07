@@ -11,14 +11,14 @@ class AlphaUCB(OperatorSelectionScheme):
     from Hendel (2022).
 
     The action space :math:`A` is defined as each pair of (destroy, repair)
-    operator that is allowed by the operator coupling matrix. The
+    operators that is allowed by the operator coupling matrix. The
     :math:`\\alpha`-UCB algorithm plays the following action in each iteration
     :math:`t`, computed as
 
     .. math::
 
         Q(t) = \\arg \\max_{a \\in A} \\left\\{ \\bar{r}_a (t - 1)
-               + \\sqrt{\\frac{\\alpha \\ln(1 + t)}{T_a (t - 1)}} \\right \\},
+               + \\sqrt{\\frac{\\alpha \\ln(1 + t)}{T_a (t - 1)}} \\right\\},
 
     where :math:`T_a(t - 1)` is the number of times action :math:`a` has been
     played, and :math:`\\bar r_a(t - 1)` is the average reward of action

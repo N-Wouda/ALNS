@@ -15,9 +15,9 @@ pip install alns
 If you wish to dive right in, the [documentation][7] contains example notebooks
 showing how the ALNS library may be used. These include:
 
-- The travelling salesman problem (TSP), [here][2]. We solve an
-  instance of 131 cities to within 2% of optimality, using simple
-  destroy and repair heuristics with a post-processing step.
+- The travelling salesman problem (TSP), [here][2]. We solve an instance of 131
+  cities in one minute to a 2% optimality gap, using very simple destroy and
+  repair heuristics.
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with
   180 beams over 165 distinct sizes to within 1.35% of optimality in
   only a very limited number of iterations.

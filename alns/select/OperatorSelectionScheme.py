@@ -103,9 +103,6 @@ class OperatorSelectionScheme(ABC):
         if num_destroy <= 0 or num_repair <= 0:
             raise ValueError("Missing destroy or repair operators.")
 
-        if op_coupling is None:
-            return
-
         if op_coupling.shape != (num_destroy, num_repair):
             raise ValueError(
                 f"Coupling matrix of shape {op_coupling.shape}, expected "

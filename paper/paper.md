@@ -28,14 +28,13 @@ The `alns` Python package provides a complete implementation of the adaptive lar
 ALNS has quickly become a favourite in the field of operations research for solving difficult combinatorial problems, including the vehicle routing problem and various scheduling problems.
 Our package has an easy-to-use API and includes various stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes.
 Furthermore, it supports many other single-trajectory neighbourhood search algorithms as special cases, including iterated local search (ILS), variable neighbourhood search (VNS), and the greedy randomised adaptive search procedure (GRASP).
-The package has already been successfully used for research into methodological improvements of ALNS itself [@Reijnen_et_al:2022], and for the development of a high-quality ALNS metaheuristic for an industry problem [@Wouda_et_al:2022].
+The package has already been successfully used for research into methodological improvements of ALNS itself [@Reijnen_et_al:2022], and for the development of a high-quality ALNS metaheuristic solving an industry problem [@Wouda_et_al:2022].
 Because of this success, we expect the package to be useful to the wider operations research community.
 
 # Statement of need
 
 It is common in the operations research community to re-implement heuristics [@vidal:2022].
-This results in significant extra work, and implementations that are relatively limited, often containing just enough to solve a single problem well.
-Such implementations are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
+Such implementations are relatively limited, are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
 The survey of @Windras_Mara_et_al:2022 corroborates these claims: 205 out of the 251 papers they survey only consider a simulated annealing acceptance criterion, and only one paper uses an operator selection scheme that is not based on the roulette wheel mechanism of @Ropke_Pisinger:2006.
 This inhibits experimentation with different aspects of the algorithm, and makes re-use by others or in other problem domains difficult.
 Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, and provides many acceptance criteria and operator selection schemes.

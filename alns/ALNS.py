@@ -46,8 +46,7 @@ class ALNS:
         self._d_ops: Dict[str, _OperatorType] = {}
         self._r_ops: Dict[str, _OperatorType] = {}
 
-        # Optional callbacks that may be used to improve a candidate solution
-        # further, via e.g. local search.
+        # Registers callback for each possible evaluation outcome.
         self._on_outcome: Dict[Outcome, _OperatorType] = {}
 
     @property

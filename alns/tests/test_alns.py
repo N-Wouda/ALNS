@@ -9,8 +9,8 @@ from pytest import mark
 
 from alns import ALNS, State
 from alns.accept import HillClimbing, SimulatedAnnealing
-from alns.stop import MaxIterations, MaxRuntime
 from alns.select import RouletteWheel
+from alns.stop import MaxIterations, MaxRuntime
 from .states import One, Zero
 
 
@@ -98,6 +98,32 @@ def test_on_best_is_called():
     )
 
     assert_equal(result.best_state.objective(), 1)
+
+
+def test_other_callbacks_are_called():
+    alns = get_alns_instance(
+        [lambda state, rnd: state],
+        [lambda state, rnd: ValueState(rnd.random())],
+        seed=1,
+    )
+
+    registry = dict(on_better=False, on_accept=False, on_reject=False)
+
+    def mock_callback(state, rnd, key):
+        registry[key] = True
+        return state
+
+    alns.on_better(lambda state, rnd: mock_callback(state, rnd, "on_better"))
+    alns.on_accept(lambda state, rnd: mock_callback(state, rnd, "on_accept"))
+    alns.on_reject(lambda state, rnd: mock_callback(state, rnd, "on_reject"))
+
+    select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
+    accept = SimulatedAnnealing(1_000, 1, 0.05)
+    alns.iterate(ValueState(10), select, accept, MaxIterations(1_000))
+
+    assert_(registry["on_better"])
+    assert_(registry["on_accept"])
+    assert_(registry["on_reject"])
 
 
 # OPERATORS -------------------------------------------------------------------

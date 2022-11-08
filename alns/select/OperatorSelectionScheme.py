@@ -4,6 +4,7 @@ from typing import Optional, Tuple
 import numpy as np
 from numpy.random import RandomState
 
+from alns.Outcome import Outcome
 from alns.State import State
 
 
@@ -18,7 +19,7 @@ class OperatorSelectionScheme(ABC):
     num_repair
         Number of repair operators.
     op_coupling
-        Optional boolean matrix that indicates coupling between destroy and
+        Optional 2D boolean matrix that indicates coupling between destroy and
         repair operators. Entry (i, j) is True if destroy operator i can be
         used together with repair operator j, and False otherwise.
     """
@@ -29,15 +30,17 @@ class OperatorSelectionScheme(ABC):
         num_repair: int,
         op_coupling: Optional[np.ndarray] = None,
     ):
+        if op_coupling is not None:
+            op_coupling = np.asarray(op_coupling, dtype=bool)
+            op_coupling = np.atleast_2d(op_coupling)
+        else:
+            op_coupling = np.ones((num_destroy, num_repair), dtype=bool)
+
         self._validate_arguments(num_destroy, num_repair, op_coupling)
 
         self._num_destroy = num_destroy
         self._num_repair = num_repair
-
-        if op_coupling is not None:
-            self._op_coupling = op_coupling.astype(bool)
-        else:
-            self._op_coupling = np.ones((num_destroy, num_repair), dtype=bool)
+        self._op_coupling = op_coupling
 
     @property
     def num_destroy(self) -> int:
@@ -76,10 +79,12 @@ class OperatorSelectionScheme(ABC):
         return NotImplemented
 
     @abstractmethod
-    def update(self, candidate: State, d_idx: int, r_idx: int, s_idx: int):
+    def update(
+        self, candidate: State, d_idx: int, r_idx: int, outcome: Outcome
+    ):
         """
-        Updates the weights associated with the applied destroy (d_idx) and
-        repair (r_idx) operators.
+        Updates the selection schame based on the outcome of the applied
+        destroy (d_idx) and repair (r_idx) operators.
 
         Parameters
         ----------
@@ -89,18 +94,23 @@ class OperatorSelectionScheme(ABC):
             Destroy operator index.
         r_idx
             Repair operator index.
-        s_idx
-            Score index.
+        outcome
+            Score enum value used for the various iteration outcomes.
         """
         return NotImplemented
 
     @staticmethod
-    def _validate_arguments(num_destroy, num_repair, op_coupling):
+    def _validate_arguments(
+        num_destroy: int, num_repair: int, op_coupling: np.ndarray
+    ):
         if num_destroy <= 0 or num_repair <= 0:
             raise ValueError("Missing destroy or repair operators.")
 
-        if op_coupling is None:
-            return
+        if op_coupling.shape != (num_destroy, num_repair):
+            raise ValueError(
+                f"Coupling matrix of shape {op_coupling.shape}, expected "
+                f"{(num_destroy, num_repair)}."
+            )
 
         # Destroy ops. must be coupled with at least one repair operator
         d_idcs = np.flatnonzero(np.count_nonzero(op_coupling, axis=1) == 0)

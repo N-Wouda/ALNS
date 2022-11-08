@@ -105,3 +105,21 @@ def test_raise_uncoupled_destroy_op(op_coupling):
         RouletteWheel(
             [0, 0, 0, 0], 0, n_destroy, n_repair, op_coupling=op_coupling
         )
+
+
+@mark.parametrize(
+    "n_destroy, n_repair, op_coupling",
+    [
+        (1, 2, [0]),  # missing repair column
+        (2, 2, [0, 0]),  # missing destroy row
+        (2, 1, [0, 0]),  # too many repair, too few destroy
+    ],
+)
+def test_raises_wrong_op_coupling_shape(n_destroy, n_repair, op_coupling):
+    with assert_raises(ValueError):
+        RouletteWheel([0, 0, 0, 0], 0, n_destroy, n_repair, op_coupling)
+
+
+def test_single_destroy_operator_coerces_coupling_matrix():
+    select = RouletteWheel([0, 0, 0, 0], 0, 1, 2, [1, 0])
+    assert_equal(select.op_coupling.shape, (1, 2))

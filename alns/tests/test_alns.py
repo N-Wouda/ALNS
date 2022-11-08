@@ -7,11 +7,11 @@ from numpy.testing import (
 )
 from pytest import mark
 
-from alns import ALNS, State
+from alns import ALNS
 from alns.accept import HillClimbing, SimulatedAnnealing
-from alns.stop import MaxIterations, MaxRuntime
 from alns.select import RouletteWheel
-from .states import One, Zero
+from alns.stop import MaxIterations, MaxRuntime
+from .states import One, VarObj, Zero
 
 
 # HELPERS ---------------------------------------------------------------------
@@ -34,18 +34,6 @@ def get_alns_instance(
             alns.add_destroy_operator(destroy_operator, name=str(idx))
 
     return alns
-
-
-class ValueState(State):
-    """
-    Helper state for testing random values.
-    """
-
-    def __init__(self, value):
-        self._value = value
-
-    def objective(self):
-        return self._value
 
 
 def get_repair_operators(n):
@@ -84,17 +72,46 @@ def test_on_best_is_called():
     Tests if the callback is invoked when a new global best is found.
     """
     alns = get_alns_instance(
-        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+        [lambda state, rnd_state: Zero()], [lambda state, rnd_state: Zero()]
     )
 
     # Called when a new global best is found. In this case, that happens once:
-    # in the only iteration below. It returns a state with value 10, which
-    # should then also be returned by the entire algorithm.
-    alns.on_best(lambda *args: ValueState(10))
+    # in the only iteration below. We change the objective, and test whether
+    # that is indeed the solution that is returned
+    def callback(state, rnd_state):
+        state.obj = 1
+
+    alns.on_best(callback)
 
     select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
-    result = alns.iterate(One(), select, HillClimbing(), MaxIterations(1))
-    assert_equal(result.best_state.objective(), 10)
+    result = alns.iterate(VarObj(10), select, HillClimbing(), MaxIterations(1))
+
+    assert_equal(result.best_state.objective(), 1)
+
+
+def test_other_callbacks_are_called():
+    alns = get_alns_instance(
+        [lambda state, rnd: state],
+        [lambda state, rnd: VarObj(rnd.random())],
+        seed=1,
+    )
+
+    registry = dict(on_better=False, on_accept=False, on_reject=False)
+
+    def mock_callback(state, rnd, key):
+        registry[key] = True
+
+    alns.on_better(lambda state, rnd: mock_callback(state, rnd, "on_better"))
+    alns.on_accept(lambda state, rnd: mock_callback(state, rnd, "on_accept"))
+    alns.on_reject(lambda state, rnd: mock_callback(state, rnd, "on_reject"))
+
+    select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
+    accept = SimulatedAnnealing(1_000, 1, 0.05)
+    alns.iterate(VarObj(10), select, accept, MaxIterations(1_000))
+
+    assert_(registry["on_better"])
+    assert_(registry["on_accept"])
+    assert_(registry["on_reject"])
 
 
 # OPERATORS -------------------------------------------------------------------
@@ -294,7 +311,7 @@ def test_fixed_seed_outcomes(seed: int, desired: float):
     'random' acceptance criterion (here SA).
     """
     alns = get_alns_instance(
-        [lambda state, rnd: ValueState(rnd.random_sample())],
+        [lambda state, rnd: VarObj(rnd.random_sample())],
         [lambda state, rnd: None],
         seed,
     )
@@ -346,7 +363,7 @@ def test_nonnegative_max_runtime(max_runtime):
     )
 
     assert_almost_equal(
-        sum(result.statistics.runtimes), max_runtime, decimal=3
+        sum(result.statistics.runtimes), max_runtime, decimal=2
     )
 
 

@@ -16,6 +16,9 @@ All operator selection schemes inherit from :class:`~alns.select.OperatorSelecti
 .. automodule:: alns.select.AlphaUCB
    :members:
 
+.. automodule:: alns.select.RandomSelect
+   :members:
+
 .. automodule:: alns.select.RouletteWheel
    :members:
 

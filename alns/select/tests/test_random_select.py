@@ -60,3 +60,11 @@ def test_uniform_selection_op_coupling():
 
     # ...but this one's not allowed by the operator coupling matrix.
     assert_approx_equal(histogram[1, 0], 0, significant=7)
+
+
+def test_single_operators():
+    rnd_state = rnd.RandomState(1)
+    select = RandomSelect(1, 1)
+
+    # Only one (destroy, repair) operator pair, so should return (0, 0).
+    assert_(select(rnd_state, Zero(), Zero()) == (0, 0))

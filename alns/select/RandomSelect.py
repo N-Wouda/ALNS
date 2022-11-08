@@ -4,6 +4,10 @@ from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 
 class RandomSelect(OperatorSelectionScheme):
+    """
+    Randomly selects operator pairs with uniform probability. The operator
+    pairs respect the operator coupling matrix.
+    """
 
     def __call__(self, rnd, best, curr):
         """
@@ -13,7 +17,7 @@ class RandomSelect(OperatorSelectionScheme):
         """
         d_idx = rnd.randint(0, self.num_destroy)
 
-        r_indices = np.nonzero(self.op_coupling[d_idx, :])
+        r_indices = np.flatnonzero(self.op_coupling[d_idx, :])
         r_idx = rnd.choice(r_indices)
 
         return d_idx, r_idx

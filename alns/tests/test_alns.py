@@ -346,7 +346,7 @@ def test_nonnegative_max_runtime(max_runtime):
     )
 
     assert_almost_equal(
-        sum(result.statistics.runtimes), max_runtime, decimal=3
+        sum(result.statistics.runtimes), max_runtime, decimal=2
     )
 
 

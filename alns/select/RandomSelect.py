@@ -18,5 +18,5 @@ class RandomSelect(OperatorSelectionScheme):
 
         return tuple(allowed[idx])
 
-    def update(self, candidate, d_idx, r_idx, s_idx):
+    def update(self, candidate, d_idx, r_idx, outcome):
         pass  # pragma: no cover

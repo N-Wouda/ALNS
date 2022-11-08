@@ -109,7 +109,7 @@ class AlphaUCB(OperatorSelectionScheme):
         action = np.argmax(self._values())
         return tuple(np.unravel_index(action, self.op_coupling.shape))
 
-    def update(self, candidate, d_idx, r_idx, s_idx):
+    def update(self, candidate, d_idx, r_idx, outcome):
         """
         Updates the average reward of the given destroy and repair operator
         combination ``(d_idx, r_idx)``.
@@ -120,14 +120,14 @@ class AlphaUCB(OperatorSelectionScheme):
         .. math::
 
             \\bar r_a (t) = \\frac{T_a(t - 1) \\bar r_a(t - 1)
-                            + \\text{scores}[\\text{s_idx}]}{T_a(t - 1) + 1},
+                            + \\text{scores}[\\text{outcome}]}{T_a(t - 1) + 1},
 
         and :math:`T_a(t) = T_a(t - 1) + 1`.
         """
         # Update everything for the next iteration (t + 1)
         t_a = self._times[d_idx, r_idx]
         r = self._avg_rewards[d_idx, r_idx]
-        avg_reward = (t_a * r + self.scores[s_idx]) / (t_a + 1)
+        avg_reward = (t_a * r + self.scores[outcome]) / (t_a + 1)
 
         self._avg_rewards[d_idx, r_idx] = avg_reward
         self._times[d_idx, r_idx] += 1

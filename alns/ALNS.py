@@ -4,18 +4,13 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy.random as rnd
 
+from alns.Outcome import Outcome
 from alns.Result import Result
 from alns.State import State
 from alns.Statistics import Statistics
 from alns.accept import AcceptanceCriterion
-from alns.stop import StoppingCriterion
 from alns.select import OperatorSelectionScheme
-
-# Potential candidate solution consideration outcomes.
-_BEST = 0
-_BETTER = 1
-_ACCEPT = 2
-_REJECT = 3
+from alns.stop import StoppingCriterion
 
 # TODO this should become a Protocol to allow for kwargs. See also this issue:
 #  https://stackoverflow.com/q/61569324/4316405.
@@ -46,14 +41,14 @@ class ALNS:
     """
 
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
+        self._rnd_state = rnd_state
+
         self._d_ops: Dict[str, _OperatorType] = {}
         self._r_ops: Dict[str, _OperatorType] = {}
 
-        # Optional callback that may be used to improve a new best solution
+        # Optional callbacks that may be used to improve a candidate solution
         # further, via e.g. local search.
-        self._on_best: Optional[_OperatorType] = None
-
-        self._rnd_state = rnd_state
+        self._on_outcome: Dict[Outcome, _OperatorType] = {}
 
     @property
     def destroy_operators(self) -> List[Tuple[str, _OperatorType]]:
@@ -194,15 +189,15 @@ class ALNS:
             destroyed = d_operator(curr, self._rnd_state, **kwargs)
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
-            best, curr, s_idx = self._eval_cand(
+            best, curr, outcome = self._eval_cand(
                 accept, best, curr, cand, **kwargs
             )
 
-            op_select.update(cand, d_idx, r_idx, s_idx)
+            op_select.update(cand, d_idx, r_idx, outcome)
 
             stats.collect_objective(curr.objective())
-            stats.collect_destroy_operator(d_name, s_idx)
-            stats.collect_repair_operator(r_name, s_idx)
+            stats.collect_destroy_operator(d_name, outcome)
+            stats.collect_repair_operator(r_name, outcome)
             stats.collect_runtime(time.perf_counter())
 
         logger.info(f"Finished iterating in {stats.total_runtime:.2f}s.")
@@ -223,7 +218,28 @@ class ALNS:
             state replaces the passed-in state.
         """
         logger.debug(f"Adding on_best callback {func.__name__}.")
-        self._on_best = func
+        self._on_outcome[Outcome.BEST] = func
+
+    def on_better(self, func: _OperatorType):
+        """
+        TODO
+        """
+        logger.debug(f"Adding on_better callback {func.__name__}.")
+        self._on_outcome[Outcome.BETTER] = func
+
+    def on_accept(self, func: _OperatorType):
+        """
+        TODO
+        """
+        logger.debug(f"Adding on_accept callback {func.__name__}.")
+        self._on_outcome[Outcome.ACCEPT] = func
+
+    def on_reject(self, func: _OperatorType):
+        """
+        TODO
+        """
+        logger.debug(f"Adding on_reject callback {func.__name__}.")
+        self._on_outcome[Outcome.REJECT] = func
 
     def _eval_cand(
         self,
@@ -232,7 +248,7 @@ class ALNS:
         curr: State,
         cand: State,
         **kwargs,
-    ) -> Tuple[State, State, int]:
+    ) -> Tuple[State, State, Outcome]:
         """
         Considers the candidate solution by comparing it against the best and
         current solutions. Candidate solutions are accepted based on the
@@ -246,18 +262,39 @@ class ALNS:
             A tuple of the best and current solution, along with the weight
             index.
         """
-        w_idx = _REJECT
+        outcome = self._determine_outcome(accept, best, curr, cand)
+        func = self._on_outcome.get(outcome)
 
+        if callable(func):
+            cand = func(cand, self._rnd_state, **kwargs)
+            outcome = self._determine_outcome(accept, best, curr, cand)
+
+        if outcome == Outcome.BEST:
+            return cand, cand, outcome
+
+        if outcome != Outcome.REJECT:
+            return best, cand, outcome
+
+        return best, curr, outcome
+
+    def _determine_outcome(
+        self,
+        accept: AcceptanceCriterion,
+        best: State,
+        curr: State,
+        cand: State,
+    ) -> Outcome:
+        """
+        Determines the candidate solution's evaluation outcome.
+        """
         if accept(self._rnd_state, best, curr, cand):  # accept candidate
-            w_idx = _BETTER if cand.objective() < curr.objective() else _ACCEPT
-            curr = cand
+            if cand.objective() < curr.objective():
+                return Outcome.BETTER
+
+            return Outcome.ACCEPT
 
         if cand.objective() < best.objective():  # candidate is new best
             logger.info(f"New best with objective {cand.objective():.2f}.")
+            return Outcome.BEST
 
-            if self._on_best:
-                cand = self._on_best(cand, self._rnd_state, **kwargs)
-
-            return cand, cand, _BEST
-
-        return best, curr, w_idx
+        return Outcome.REJECT

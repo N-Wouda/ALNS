@@ -25,22 +25,36 @@ class SegmentedRouletteWheel(RouletteWheel):
 
     Parameters
     ----------
-    (other arguments are explained in ``RouletteWheel``)
-
+    scores
+        A list of four non-negative elements, representing the weight
+        updates when the candidate solution results in a new global best
+        (idx 0), is better than the current solution (idx 1), the solution
+        is accepted (idx 2), or rejected (idx 3).
+    decay
+        Decay parameter in [0, 1]. This parameter is used to weigh the
+        running performance of each operator.
     seg_length
-        Length of a single segment. Default 100.
+        Length of a single segment.
+    num_destroy
+        Number of destroy operators.
+    num_repair
+        Number of repair operators.
+    op_coupling
+        Optional boolean matrix that indicates coupling between destroy and
+        repair operators. Entry (i, j) is True if destroy operator i can be
+        used together with repair operator j, and False otherwise.
     """
 
     def __init__(
         self,
         scores: List[float],
+        decay: float,
+        seg_length: int,
         num_destroy: int,
         num_repair: int,
-        decay: float,
-        seg_length: int = 100,
         op_coupling: Optional[np.ndarray] = None,
     ):
-        super().__init__(scores, num_destroy, num_repair, decay, op_coupling)
+        super().__init__(scores, decay, num_destroy, num_repair, op_coupling)
 
         if seg_length < 1:
             raise ValueError("seg_length < 1 not understood.")

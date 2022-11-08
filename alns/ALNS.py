@@ -12,9 +12,10 @@ from alns.accept import AcceptanceCriterion
 from alns.select import OperatorSelectionScheme
 from alns.stop import StoppingCriterion
 
-# TODO this should become a Protocol to allow for kwargs. See also this issue:
+# TODO these should become Protocol to allow for kwargs. See also this issue:
 #  https://stackoverflow.com/q/61569324/4316405.
 _OperatorType = Callable[[State, rnd.RandomState], State]
+_CallbackType = Callable[[State, rnd.RandomState], None]
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,18 @@ class ALNS:
     Implements the adaptive large neighbourhood search (ALNS) algorithm.
     The implementation optimises for a minimisation problem, as explained
     in the text by Pisinger and Røpke (2010).
+
+    .. note::
+
+        Like the operators, each registered callback function (registered via
+        :meth:`~alns.ALNS.ALNS.on_best`, :meth:`~alns.ALNS.ALNS.on_better`,
+        :meth:`~alns.ALNS.ALNS.on_accept`, and
+        :meth:`~alns.ALNS.ALNS.on_reject`) should take a candidate
+        :class:`~alns.State.State` and :class:`~numpy.random.RandomState` as
+        arguments. Unlike the operators, no solution should be returned: if
+        desired, the given candidate solution should be modified in-place
+        instead. Note that this solution is **not** evaluated again (so a
+        rejected candidate solution will stay rejected!).
 
     Parameters
     ----------
@@ -47,7 +60,7 @@ class ALNS:
         self._r_ops: Dict[str, _OperatorType] = {}
 
         # Registers callback for each possible evaluation outcome.
-        self._on_outcome: Dict[Outcome, _OperatorType] = {}
+        self._on_outcome: Dict[Outcome, _CallbackType] = {}
 
     @property
     def destroy_operators(self) -> List[Tuple[str, _OperatorType]]:
@@ -203,37 +216,38 @@ class ALNS:
 
         return Result(best, stats)
 
-    def on_best(self, func: _OperatorType):
+    def on_best(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS finds a new global best
-        solution state. The solution returned by the callback is evaluated
-        again.
+        solution state. The solution returned by the callback is *not*
+        evaluated again.
         """
         logger.debug(f"Adding on_best callback {func.__name__}.")
         self._on_outcome[Outcome.BEST] = func
 
-    def on_better(self, func: _OperatorType):
+    def on_better(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS finds a better solution
         than the current incumbent. The solution returned by the callback is
-        evaluated again.
+        *not* evaluated again.
         """
         logger.debug(f"Adding on_better callback {func.__name__}.")
         self._on_outcome[Outcome.BETTER] = func
 
-    def on_accept(self, func: _OperatorType):
+    def on_accept(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS accepts a new solution
         as the current incumbent (that is not a new global best, or otherwise
-        improving). The solution returned by the callback is evaluated again.
+        improving). The solution returned by the callback is *not* evaluated
+        again.
         """
         logger.debug(f"Adding on_accept callback {func.__name__}.")
         self._on_outcome[Outcome.ACCEPT] = func
 
-    def on_reject(self, func: _OperatorType):
+    def on_reject(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS rejects a new solution.
-        The solution returned by the callback is evaluated again.
+        The solution returned by the callback is *not* evaluated again.
         """
         logger.debug(f"Adding on_reject callback {func.__name__}.")
         self._on_outcome[Outcome.REJECT] = func
@@ -263,8 +277,7 @@ class ALNS:
         func = self._on_outcome.get(outcome)
 
         if callable(func):
-            cand = func(cand, self._rnd_state, **kwargs)
-            outcome = self._determine_outcome(accept, best, curr, cand)
+            func(cand, self._rnd_state, **kwargs)
 
         if outcome == Outcome.BEST:
             return cand, cand, outcome

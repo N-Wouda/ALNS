@@ -88,13 +88,16 @@ def test_on_best_is_called():
     )
 
     # Called when a new global best is found. In this case, that happens once:
-    # in the only iteration below. It returns a state with value 10, which
+    # in the only iteration below. It returns a state with value 1, which
     # should then also be returned by the entire algorithm.
-    alns.on_best(lambda *args: ValueState(10))
+    alns.on_best(lambda *args: One())
 
     select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
-    result = alns.iterate(One(), select, HillClimbing(), MaxIterations(1))
-    assert_equal(result.best_state.objective(), 10)
+    result = alns.iterate(
+        ValueState(10), select, HillClimbing(), MaxIterations(1)
+    )
+
+    assert_equal(result.best_state.objective(), 1)
 
 
 # OPERATORS -------------------------------------------------------------------

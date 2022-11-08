@@ -207,36 +207,34 @@ class ALNS:
     def on_best(self, func: _OperatorType):
         """
         Sets a callback function to be called when ALNS finds a new global best
-        solution state.
-
-        Parameters
-        ----------
-        func
-            A function that should take a solution State as its first argument,
-            and a numpy RandomState as its second (cf. the operator signature).
-            It should return a (new) solution State. The returned solution
-            state replaces the passed-in state.
+        solution state. The solution returned by the callback is evaluated
+        again.
         """
         logger.debug(f"Adding on_best callback {func.__name__}.")
         self._on_outcome[Outcome.BEST] = func
 
     def on_better(self, func: _OperatorType):
         """
-        TODO
+        Sets a callback function to be called when ALNS finds a better solution
+        than the current incumbent. The solution returned by the callback is
+        evaluated again.
         """
         logger.debug(f"Adding on_better callback {func.__name__}.")
         self._on_outcome[Outcome.BETTER] = func
 
     def on_accept(self, func: _OperatorType):
         """
-        TODO
+        Sets a callback function to be called when ALNS accepts a new solution
+        as the current incumbent (that is not a new global best, or otherwise
+        improving). The solution returned by the callback is evaluated again.
         """
         logger.debug(f"Adding on_accept callback {func.__name__}.")
         self._on_outcome[Outcome.ACCEPT] = func
 
     def on_reject(self, func: _OperatorType):
         """
-        TODO
+        Sets a callback function to be called when ALNS rejects a new solution.
+        The solution returned by the callback is evaluated again.
         """
         logger.debug(f"Adding on_reject callback {func.__name__}.")
         self._on_outcome[Outcome.REJECT] = func
@@ -272,10 +270,10 @@ class ALNS:
         if outcome == Outcome.BEST:
             return cand, cand, outcome
 
-        if outcome != Outcome.REJECT:
-            return best, cand, outcome
+        if outcome == Outcome.REJECT:
+            return best, curr, outcome
 
-        return best, curr, outcome
+        return best, cand, outcome
 
     def _determine_outcome(
         self,
@@ -287,14 +285,16 @@ class ALNS:
         """
         Determines the candidate solution's evaluation outcome.
         """
-        if accept(self._rnd_state, best, curr, cand):  # accept candidate
-            if cand.objective() < curr.objective():
-                return Outcome.BETTER
+        outcome = Outcome.REJECT
 
-            return Outcome.ACCEPT
+        if accept(self._rnd_state, best, curr, cand):  # accept candidate
+            outcome = Outcome.ACCEPT
+
+            if cand.objective() < curr.objective():
+                outcome = Outcome.BETTER
 
         if cand.objective() < best.objective():  # candidate is new best
             logger.info(f"New best with objective {cand.objective():.2f}.")
-            return Outcome.BEST
+            outcome = Outcome.BEST
 
-        return Outcome.REJECT
+        return outcome

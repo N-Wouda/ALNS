@@ -75,11 +75,10 @@ class OperatorSelectionScheme(ABC):
         """
         return NotImplemented
 
-    @abstractmethod
     def update(self, candidate: State, d_idx: int, r_idx: int, s_idx: int):
         """
-        Updates the weights associated with the applied destroy (d_idx) and
-        repair (r_idx) operators.
+        Updates the selection schame based on the outcome of the applied
+        destroy (d_idx) and repair (r_idx) operators.
 
         Parameters
         ----------

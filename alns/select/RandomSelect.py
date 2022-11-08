@@ -15,7 +15,8 @@ class RandomSelect(OperatorSelectionScheme):
         repair operator with uniform probability, respecting the operator
         coupling matrix.
         """
-        d_idx = rnd.randint(0, self.num_destroy)
+        p = np.sum(self.op_coupling, axis=1) / np.sum(self.op_coupling)
+        d_idx = rnd.choice(np.arange(self.num_destroy), p=p)
 
         r_indices = np.flatnonzero(self.op_coupling[d_idx, :])
         r_idx = rnd.choice(r_indices)
@@ -23,4 +24,4 @@ class RandomSelect(OperatorSelectionScheme):
         return d_idx, r_idx
 
     def update(self, candidate, d_idx, r_idx, s_idx):
-        pass
+        pass  # pragma: no cover

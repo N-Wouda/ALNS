@@ -22,9 +22,13 @@ class AlphaUCB(OperatorSelectionScheme):
 
     where :math:`T_a(t - 1)` is the number of times action :math:`a` has been
     played, and :math:`\\bar r_a(t - 1)` is the average reward of action
-    :math:`a`, both in the first :math:`t - 1` iterations. See
-    :meth:`~alns.select.AlphaUCB.AlphaUCB.update` for details on how
-    :math:`\\bar r_a` is updated.
+    :math:`a`, both in the first :math:`t - 1` iterations. The value that is
+    maximised over the actions :math:`a \\in A` consists of the average reward
+    term :math:`\\bar r_a(t - 1)` and an exploration bonus depending on
+    :math:`t` and the number of times :math:`a` has been played.
+
+    See :meth:`~alns.select.AlphaUCB.AlphaUCB.update` for details on how the
+    average reward :math:`\\bar r_a` is updated.
 
     .. note::
 
@@ -101,16 +105,8 @@ class AlphaUCB(OperatorSelectionScheme):
         Returns the (destroy, repair) operator pair that maximises the average
         reward and exploration bonus.
         """
-        a = self.alpha
-        t = self._iter
-
-        value = self._avg_rewards
-        explore_bonus = np.sqrt((a * np.log(1 + t)) / (self._times + 1))
-
-        values = value + explore_bonus
-        values[~self._op_coupling] = -1  # avoid selecting disallowed pairs
-
-        return tuple(np.unravel_index(np.argmax(values), values.shape))
+        action = np.argmax(self._values())
+        return tuple(np.unravel_index(action, self.op_coupling.shape))
 
     def update(self, candidate, d_idx, r_idx, s_idx):
         """
@@ -125,7 +121,7 @@ class AlphaUCB(OperatorSelectionScheme):
             \\bar r_a (t) = \\frac{T_a(t - 1) \\bar r_a(t - 1)
                             + \\text{scores}[\\text{s_idx}]}{T_a(t - 1) + 1},
 
-        and :math:`T_a(t) = T_a (t - 1) + 1`.
+        and :math:`T_a(t) = T_a(t - 1) + 1`.
         """
         # Update everything for the next iteration (t + 1)
         t_a = self._times[d_idx, r_idx]
@@ -135,3 +131,15 @@ class AlphaUCB(OperatorSelectionScheme):
         self._avg_rewards[d_idx, r_idx] = avg_reward
         self._times[d_idx, r_idx] += 1
         self._iter += 1
+
+    def _values(self):
+        a = self.alpha
+        t = self._iter
+
+        value = self._avg_rewards
+        explore_bonus = np.sqrt((a * np.log(1 + t)) / (self._times + 1))
+
+        values = value + explore_bonus
+        values[~self._op_coupling] = -1  # avoid selecting disallowed pairs
+
+        return values

@@ -4,22 +4,18 @@ from typing import Callable, Dict, List, Optional, Tuple
 
 import numpy.random as rnd
 
+from alns.Outcome import Outcome
 from alns.Result import Result
 from alns.State import State
 from alns.Statistics import Statistics
 from alns.accept import AcceptanceCriterion
-from alns.stop import StoppingCriterion
 from alns.select import OperatorSelectionScheme
+from alns.stop import StoppingCriterion
 
-# Potential candidate solution consideration outcomes.
-_BEST = 0
-_BETTER = 1
-_ACCEPT = 2
-_REJECT = 3
-
-# TODO this should become a Protocol to allow for kwargs. See also this issue:
+# TODO these should become Protocol to allow for kwargs. See also this issue:
 #  https://stackoverflow.com/q/61569324/4316405.
 _OperatorType = Callable[[State, rnd.RandomState], State]
+_CallbackType = Callable[[State, rnd.RandomState], None]
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +25,18 @@ class ALNS:
     Implements the adaptive large neighbourhood search (ALNS) algorithm.
     The implementation optimises for a minimisation problem, as explained
     in the text by Pisinger and Røpke (2010).
+
+    .. note::
+
+        Like the operators passed into the ALNS instance, any registered
+        callback functions (registered via :meth:`~alns.ALNS.ALNS.on_best`,
+        :meth:`~alns.ALNS.ALNS.on_better`, :meth:`~alns.ALNS.ALNS.on_accept`,
+        or :meth:`~alns.ALNS.ALNS.on_reject`) should take a candidate
+        :class:`~alns.State.State` and :class:`~numpy.random.RandomState` as
+        arguments. Unlike the operators, no solution should be returned: if
+        desired, the given candidate solution should be modified in-place
+        instead. Note that this solution is **not** evaluated again (so a
+        rejected candidate solution will stay rejected!).
 
     Parameters
     ----------
@@ -46,14 +54,13 @@ class ALNS:
     """
 
     def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
+        self._rnd_state = rnd_state
+
         self._d_ops: Dict[str, _OperatorType] = {}
         self._r_ops: Dict[str, _OperatorType] = {}
 
-        # Optional callback that may be used to improve a new best solution
-        # further, via e.g. local search.
-        self._on_best: Optional[_OperatorType] = None
-
-        self._rnd_state = rnd_state
+        # Registers callback for each possible evaluation outcome.
+        self._on_outcome: Dict[Outcome, _CallbackType] = {}
 
     @property
     def destroy_operators(self) -> List[Tuple[str, _OperatorType]]:
@@ -147,8 +154,8 @@ class ALNS:
             The stopping criterion to use for stopping the iterations.
             See also the ``alns.stop`` module for an overview.
         **kwargs
-            Optional keyword arguments. These are passed to the operators,
-            including callbacks.
+            Optional keyword arguments. These are passed to the operators and
+            any registered callbacks.
 
         Raises
         ------
@@ -194,36 +201,56 @@ class ALNS:
             destroyed = d_operator(curr, self._rnd_state, **kwargs)
             cand = r_operator(destroyed, self._rnd_state, **kwargs)
 
-            best, curr, s_idx = self._eval_cand(
+            best, curr, outcome = self._eval_cand(
                 accept, best, curr, cand, **kwargs
             )
 
-            op_select.update(cand, d_idx, r_idx, s_idx)
+            op_select.update(cand, d_idx, r_idx, outcome)
 
             stats.collect_objective(curr.objective())
-            stats.collect_destroy_operator(d_name, s_idx)
-            stats.collect_repair_operator(r_name, s_idx)
+            stats.collect_destroy_operator(d_name, outcome)
+            stats.collect_repair_operator(r_name, outcome)
             stats.collect_runtime(time.perf_counter())
 
         logger.info(f"Finished iterating in {stats.total_runtime:.2f}s.")
 
         return Result(best, stats)
 
-    def on_best(self, func: _OperatorType):
+    def on_best(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS finds a new global best
-        solution state.
-
-        Parameters
-        ----------
-        func
-            A function that should take a solution State as its first argument,
-            and a numpy RandomState as its second (cf. the operator signature).
-            It should return a (new) solution State. The returned solution
-            state replaces the passed-in state.
+        solution state. The solution returned by the callback is *not*
+        evaluated again.
         """
         logger.debug(f"Adding on_best callback {func.__name__}.")
-        self._on_best = func
+        self._on_outcome[Outcome.BEST] = func
+
+    def on_better(self, func: _CallbackType):
+        """
+        Sets a callback function to be called when ALNS finds a better solution
+        than the current incumbent. The solution returned by the callback is
+        *not* evaluated again.
+        """
+        logger.debug(f"Adding on_better callback {func.__name__}.")
+        self._on_outcome[Outcome.BETTER] = func
+
+    def on_accept(self, func: _CallbackType):
+        """
+        Sets a callback function to be called when ALNS accepts a new solution
+        as the current incumbent (that is not a new global best, or otherwise
+        improving). The solution returned by the callback is *not* evaluated
+        again.
+        """
+        logger.debug(f"Adding on_accept callback {func.__name__}.")
+        self._on_outcome[Outcome.ACCEPT] = func
+
+    def on_reject(self, func: _CallbackType):
+        """
+        Sets a callback function to be called when ALNS rejects a new solution.
+        The solution returned by the callback is *not* evaluated again.
+        """
+        logger.debug(f"Adding on_reject callback {func.__name__}.")
+        self._on_outcome[Outcome.REJECT] = func
 
     def _eval_cand(
         self,
@@ -232,7 +259,7 @@ class ALNS:
         curr: State,
         cand: State,
         **kwargs,
-    ) -> Tuple[State, State, int]:
+    ) -> Tuple[State, State, Outcome]:
         """
         Considers the candidate solution by comparing it against the best and
         current solutions. Candidate solutions are accepted based on the
@@ -246,18 +273,40 @@ class ALNS:
             A tuple of the best and current solution, along with the weight
             index.
         """
-        w_idx = _REJECT
+        outcome = self._determine_outcome(accept, best, curr, cand)
+        func = self._on_outcome.get(outcome)
+
+        if callable(func):
+            func(cand, self._rnd_state, **kwargs)
+
+        if outcome == Outcome.BEST:
+            return cand, cand, outcome
+
+        if outcome == Outcome.REJECT:
+            return best, curr, outcome
+
+        return best, cand, outcome
+
+    def _determine_outcome(
+        self,
+        accept: AcceptanceCriterion,
+        best: State,
+        curr: State,
+        cand: State,
+    ) -> Outcome:
+        """
+        Determines the candidate solution's evaluation outcome.
+        """
+        outcome = Outcome.REJECT
 
         if accept(self._rnd_state, best, curr, cand):  # accept candidate
-            w_idx = _BETTER if cand.objective() < curr.objective() else _ACCEPT
-            curr = cand
+            outcome = Outcome.ACCEPT
+
+            if cand.objective() < curr.objective():
+                outcome = Outcome.BETTER
 
         if cand.objective() < best.objective():  # candidate is new best
             logger.info(f"New best with objective {cand.objective():.2f}.")
+            outcome = Outcome.BEST
 
-            if self._on_best:
-                cand = self._on_best(cand, self._rnd_state, **kwargs)
-
-            return cand, cand, _BEST
-
-        return best, curr, w_idx
+        return outcome

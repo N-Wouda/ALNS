@@ -18,6 +18,10 @@ showing how the ALNS library may be used. These include:
 - The travelling salesman problem (TSP), [here][2]. We solve an instance of 131
   cities in one minute to a 2% optimality gap, using very simple destroy and
   repair heuristics.
+- The capacitated vehicle routing problem (CVRP), [here][8]. We solve an 
+  instance with 241 customers to within 3% of optimality using a combination
+  of a greedy repair operator, and a _slack-induced substring removal_ destroy
+  operator.
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with
   180 beams over 165 distinct sizes to within 1.35% of optimality in
   only a very limited number of iterations.
@@ -58,3 +62,4 @@ in the documentation.
 [5]: https://alns.readthedocs.io/en/latest/examples/alns_features.html
 [6]: https://alns.readthedocs.io/en/latest/examples/resource_constrained_project_scheduling_problem.html
 [7]: https://alns.readthedocs.io/en/latest/
+[8]: https://alns.readthedocs.io/en/latest/examples/capacitated_vehicle_routing_problem.html

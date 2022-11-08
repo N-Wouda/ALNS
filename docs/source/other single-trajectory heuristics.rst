@@ -90,10 +90,9 @@ Then, a high-level implementation could look like:
        return <improved solution>
 
 
-   def on_best(sol: State, rnd_state, neighbourhood: Neighbourhood) -> State:
+   def on_best(sol: State, rnd_state, neighbourhood: Neighbourhood):
        # New best solution: start again from first neighbourhood.
        neighbourhood.k = 1
-       return sol
 
 
    neighbourhood = Neighbourhood(<neighbourhoods>, 1)

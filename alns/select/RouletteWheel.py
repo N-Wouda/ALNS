@@ -112,9 +112,9 @@ class RouletteWheel(OperatorSelectionScheme):
 
         return d_idx, r_idx
 
-    def update(self, cand, d_idx, r_idx, s_idx):
+    def update(self, cand, d_idx, r_idx, outcome):
         self._d_weights[d_idx] *= self._decay
-        self._d_weights[d_idx] += (1 - self._decay) * self._scores[s_idx]
+        self._d_weights[d_idx] += (1 - self._decay) * self._scores[outcome]
 
         self._r_weights[r_idx] *= self._decay
-        self._r_weights[r_idx] += (1 - self._decay) * self._scores[s_idx]
+        self._r_weights[r_idx] += (1 - self._decay) * self._scores[outcome]

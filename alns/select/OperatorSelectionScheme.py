@@ -4,6 +4,7 @@ from typing import Optional, Tuple
 import numpy as np
 from numpy.random import RandomState
 
+from alns.Outcome import Outcome
 from alns.State import State
 
 
@@ -78,7 +79,9 @@ class OperatorSelectionScheme(ABC):
         return NotImplemented
 
     @abstractmethod
-    def update(self, candidate: State, d_idx: int, r_idx: int, s_idx: int):
+    def update(
+        self, candidate: State, d_idx: int, r_idx: int, outcome: Outcome
+    ):
         """
         Updates the selection schame based on the outcome of the applied
         destroy (d_idx) and repair (r_idx) operators.
@@ -91,8 +94,8 @@ class OperatorSelectionScheme(ABC):
             Destroy operator index.
         r_idx
             Repair operator index.
-        s_idx
-            Score index.
+        outcome
+            Score enum value used for the various iteration outcomes.
         """
         return NotImplemented
 

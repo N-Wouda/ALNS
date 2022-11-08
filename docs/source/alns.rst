@@ -22,5 +22,8 @@ The :class:`~alns.Statistics.Statistics` object is also presented below, but it 
 .. automodule:: alns.Result
    :members:
 
+.. automodule:: alns.Outcome
+   :members:
+
 .. automodule:: alns.Statistics
    :members:

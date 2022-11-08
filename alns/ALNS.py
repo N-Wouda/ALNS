@@ -28,10 +28,10 @@ class ALNS:
 
     .. note::
 
-        Like the operators, each registered callback function (registered via
-        :meth:`~alns.ALNS.ALNS.on_best`, :meth:`~alns.ALNS.ALNS.on_better`,
-        :meth:`~alns.ALNS.ALNS.on_accept`, and
-        :meth:`~alns.ALNS.ALNS.on_reject`) should take a candidate
+        Like the operators passed into the ALNS instance, any registered
+        callback functions (registered via :meth:`~alns.ALNS.ALNS.on_best`,
+        :meth:`~alns.ALNS.ALNS.on_better`, :meth:`~alns.ALNS.ALNS.on_accept`,
+        or :meth:`~alns.ALNS.ALNS.on_reject`) should take a candidate
         :class:`~alns.State.State` and :class:`~numpy.random.RandomState` as
         arguments. Unlike the operators, no solution should be returned: if
         desired, the given candidate solution should be modified in-place
@@ -154,8 +154,8 @@ class ALNS:
             The stopping criterion to use for stopping the iterations.
             See also the ``alns.stop`` module for an overview.
         **kwargs
-            Optional keyword arguments. These are passed to the operators,
-            including callbacks.
+            Optional keyword arguments. These are passed to the operators and
+            any registered callbacks.
 
         Raises
         ------

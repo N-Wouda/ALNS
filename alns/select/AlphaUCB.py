@@ -45,10 +45,11 @@ class AlphaUCB(OperatorSelectionScheme):
         the current solution (idx 1), the solution is accepted (idx 2), or
         rejected (idx 3).
     alpha
-        The :math:`\\alpha` parameter controls the width of the confidence
-        interval. Larger values force the algorithm to select inferior
-        operators more frequently, resulting in more exploration.
-        :math:`\\alpha` must be in [0, 1].
+        The :math:`\\alpha \\in [0, 1]` parameter controls how much exploration
+        is performed. Values of :math:`\\alpha`  near one result in much
+        exploration, whereas values of :math:`\\alpha` nearer to zero result in
+        more exploitation of good operator pairs. Typically,
+        :math:`\\alpha \\le 0.1` is a good choice.
     num_destroy
         Number of destroy operators.
     num_repair

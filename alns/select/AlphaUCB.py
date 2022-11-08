@@ -55,9 +55,9 @@ class AlphaUCB(OperatorSelectionScheme):
     num_repair
         Number of repair operators.
     op_coupling
-        Optional matrix that indicates coupling between destroy and repair
-        operators. Entry (i, j) is 1 if destroy operator i can be used in
-        conjunction with repair operator j and 0 otherwise.
+        Optional boolean matrix that indicates coupling between destroy and
+        repair operators. Entry (i, j) is True if destroy operator i can be
+        used together with repair operator j, and False otherwise.
 
     References
     ----------

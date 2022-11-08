@@ -18,7 +18,7 @@ class OperatorSelectionScheme(ABC):
     num_repair
         Number of repair operators.
     op_coupling
-        Optional boolean matrix that indicates coupling between destroy and
+        Optional 2D boolean matrix that indicates coupling between destroy and
         repair operators. Entry (i, j) is True if destroy operator i can be
         used together with repair operator j, and False otherwise.
     """
@@ -29,15 +29,17 @@ class OperatorSelectionScheme(ABC):
         num_repair: int,
         op_coupling: Optional[np.ndarray] = None,
     ):
+        if op_coupling is not None:
+            op_coupling = np.asarray(op_coupling, dtype=bool)
+            op_coupling = np.atleast_2d(op_coupling)
+        else:
+            op_coupling = np.ones((num_destroy, num_repair), dtype=bool)
+
         self._validate_arguments(num_destroy, num_repair, op_coupling)
 
         self._num_destroy = num_destroy
         self._num_repair = num_repair
-
-        if op_coupling is not None:
-            self._op_coupling = op_coupling.astype(bool)
-        else:
-            self._op_coupling = np.ones((num_destroy, num_repair), dtype=bool)
+        self._op_coupling = op_coupling
 
     @property
     def num_destroy(self) -> int:
@@ -95,12 +97,20 @@ class OperatorSelectionScheme(ABC):
         return NotImplemented
 
     @staticmethod
-    def _validate_arguments(num_destroy, num_repair, op_coupling):
+    def _validate_arguments(
+        num_destroy: int, num_repair: int, op_coupling: np.ndarray
+    ):
         if num_destroy <= 0 or num_repair <= 0:
             raise ValueError("Missing destroy or repair operators.")
 
         if op_coupling is None:
             return
+
+        if op_coupling.shape != (num_destroy, num_repair):
+            raise ValueError(
+                f"Coupling matrix of shape {op_coupling.shape}, expected "
+                f"{(num_destroy, num_repair)}."
+            )
 
         # Destroy ops. must be coupled with at least one repair operator
         d_idcs = np.flatnonzero(np.count_nonzero(op_coupling, axis=1) == 0)

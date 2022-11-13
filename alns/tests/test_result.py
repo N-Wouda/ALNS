@@ -5,6 +5,7 @@ from numpy.testing import assert_
 
 from alns.Result import Result
 from alns.Statistics import Statistics
+
 from .states import Sentinel
 
 try:

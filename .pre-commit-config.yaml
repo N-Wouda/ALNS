@@ -16,6 +16,7 @@ repos:
     rev: 4.0.1
     hooks:
     -   id: flake8
+        args: [--per-file-ignores=__init__.py:F401, --extend-ignore="E203"]
 
 -   repo: https://github.com/pycqa/isort
     rev: 5.10.1

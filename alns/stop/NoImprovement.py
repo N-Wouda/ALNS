@@ -1,5 +1,6 @@
-from numpy.random import RandomState
 from typing import Optional
+
+from numpy.random import RandomState
 
 from alns.State import State
 from alns.stop.StoppingCriterion import StoppingCriterion

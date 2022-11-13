@@ -35,12 +35,10 @@ numpy = ">=1.15.2"
 matplotlib = ">=2.2.0"
 
 [tool.poetry.dev-dependencies]
+pre-commit = "^2.20.0"
 pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
-mypy = ">=0.670"
 codecov = "*"
-black = "^22.3.0"
-flake8 = "^4.0.1"
 
 # These are solely for work on the example notebooks, and not required for
 # the package itself.
@@ -48,23 +46,12 @@ cvrplib = "^0.1.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
 
-
-
-[tool.mypy]
-# These are generally already settled anyway, so there's no real
-# need to worry about them here
-ignore_missing_imports = true
-
-
-
 [tool.pytest.ini_options]
 markers = [
     "matplotlib: test related to matplotlib functionality.",
 ]
 
 addopts = "--cov=. --cov-report=xml"
-
-
 
 [tool.coverage.run]
 omit = [
@@ -80,13 +67,6 @@ exclude_lines = [
     "pragma: no cover",
     "@abstract"
 ]
-
-
-
-[tool.black]
-line-length = 79
-
-
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

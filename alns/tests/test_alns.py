@@ -11,8 +11,8 @@ from alns import ALNS
 from alns.accept import HillClimbing, SimulatedAnnealing
 from alns.select import RouletteWheel
 from alns.stop import MaxIterations, MaxRuntime
-from .states import One, VarObj, Zero
 
+from .states import One, VarObj, Zero
 
 # HELPERS ---------------------------------------------------------------------
 

@@ -29,7 +29,11 @@ showing how the ALNS library may be used. These include:
   an instance with 90 jobs and 4 resources to within 4% of the best known solution,
   using a number of different operators and enhancement techniques from the 
   literature.
-- The permutation flow shop problem (PFSP], [here][9]. TODO: add more when notebook is finished. 
+- The permutation flow shop problem (PFSP], [here][9]. We solve an instance with
+  50 jobs and 20 machines to within 1.5% of the best known solution. Moreover,
+  we demonstrate multiple advanced features of ALNS, including auto-fitting the
+  acceptance criterion, adding local search to repair operators, and tuning a
+  parameter of the destroy operators.
 
 Finally, the features notebook gives an overview of various options available 
 in the `alns` package (explained below). In the notebook we use these different

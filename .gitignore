@@ -70,3 +70,6 @@ venv/
 .ipynb_checkpoints/
 
 *.lock
+
+# macOS
+*.DS_Store

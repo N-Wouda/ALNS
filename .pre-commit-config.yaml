@@ -1,3 +1,5 @@
+fail_fast: true
+
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
@@ -19,3 +21,4 @@ repos:
     rev: v0.982
     hooks:
     -   id: mypy
+        args: [--ignore-missing-imports]

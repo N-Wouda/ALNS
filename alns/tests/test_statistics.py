@@ -1,4 +1,4 @@
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
+from numpy.testing import assert_allclose, assert_almost_equal, assert_equal
 
 from alns.Statistics import Statistics
 

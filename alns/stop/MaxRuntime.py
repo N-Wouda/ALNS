@@ -1,6 +1,6 @@
 import time
-
 from typing import Optional
+
 from numpy.random import RandomState
 
 from alns.State import State

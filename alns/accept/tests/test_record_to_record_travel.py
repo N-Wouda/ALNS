@@ -1,10 +1,5 @@
 import numpy.random as rnd
-from numpy.testing import (
-    assert_,
-    assert_allclose,
-    assert_equal,
-    assert_raises,
-)
+from numpy.testing import assert_, assert_allclose, assert_equal, assert_raises
 from pytest import mark
 
 from alns.accept import RecordToRecordTravel

@@ -29,6 +29,11 @@ showing how the ALNS library may be used. These include:
   an instance with 90 jobs and 4 resources to within 4% of the best known solution,
   using a number of different operators and enhancement techniques from the 
   literature.
+- The permutation flow shop problem (PFSP), [here][9]. We solve an instance with
+  50 jobs and 20 machines to within 1.5% of the best known solution. Moreover,
+  we demonstrate multiple advanced features of ALNS, including auto-fitting the
+  acceptance criterion and adding local search to repair operators. We also
+  demonstrate how one could tune ALNS parameters.
 
 Finally, the features notebook gives an overview of various options available 
 in the `alns` package (explained below). In the notebook we use these different
@@ -63,3 +68,4 @@ in the documentation.
 [6]: https://alns.readthedocs.io/en/latest/examples/resource_constrained_project_scheduling_problem.html
 [7]: https://alns.readthedocs.io/en/latest/
 [8]: https://alns.readthedocs.io/en/latest/examples/capacitated_vehicle_routing_problem.html
+[9]: https://alns.readthedocs.io/en/latest/examples/permutation_flow_shop_problem.html

@@ -27,14 +27,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry
           poetry install
+          poetry run pre-commit install
       - name: Run pytest
         run: poetry run pytest
-      - name: Run black
-        uses: psf/black@stable
-      - name: Run flake8
-        uses: py-actions/flake8@v2
-      - name: Run mypy
-        run: poetry run mypy alns
+      - name: Run pre-commit
+        run: poetry run pre-commit run --all-files
       - uses: codecov/codecov-action@v3
   deploy:
     needs: build

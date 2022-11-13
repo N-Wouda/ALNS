@@ -87,6 +87,11 @@ exclude_lines = [
 [tool.black]
 line-length = 79
 
+[tool.isort]
+case_sensitive = true
+profile = "black"
+line_length = 79
+
 
 
 [build-system]

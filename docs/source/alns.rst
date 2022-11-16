@@ -27,3 +27,6 @@ The :class:`~alns.Statistics.Statistics` object is also presented below, but it 
 
 .. automodule:: alns.Statistics
    :members:
+
+.. automodule:: alns.show_versions
+   :members:

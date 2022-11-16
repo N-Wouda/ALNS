@@ -1,5 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/alns.svg)](https://badge.fury.io/py/alns)
-[![ALNS](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yml/badge.svg)](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yml)
+[![ALNS](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml/badge.svg)](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml)
 [![Documentation Status](https://readthedocs.org/projects/alns/badge/?version=latest)](https://alns.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/N-Wouda/ALNS/branch/master/graph/badge.svg)](https://codecov.io/gh/N-Wouda/ALNS)
 
@@ -36,10 +36,10 @@ showing how the ALNS library may be used. These include:
   demonstrate how one could tune ALNS parameters.
 
 Finally, the features notebook gives an overview of various options available 
-in the `alns` package (explained below). In the notebook we use these different
-options to solve a toy 0/1-knapsack problem. The notebook is a good starting
-point for when you want to use different schemes, acceptance or stopping criteria 
-yourself. It is available [here][5].
+in the `alns` package. In the notebook we use these different options to solve
+a toy 0/1-knapsack problem. The notebook is a good starting point for when you
+want to use different schemes, acceptance or stopping criteria yourself. It is
+available [here][5].
 
 ## How to use
 Our [documentation][7] provides a complete overview of the `alns` package. In 

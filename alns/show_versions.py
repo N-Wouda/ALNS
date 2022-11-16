@@ -1,7 +1,7 @@
 import sys
 
 # TODO switch over to importlib.metadata once we drop support for Python 3.7
-import pkg_resources
+import pkg_resources  # type: ignore
 
 
 def show_versions():
@@ -12,7 +12,7 @@ def show_versions():
     alns = pkg_resources.get_distribution("alns")
     numpy = pkg_resources.get_distribution("numpy")
     matplotlib = pkg_resources.get_distribution("matplotlib")
-    python_version = '.'.join(map(str,sys.version_info[:3]))
+    python_version = ".".join(map(str, sys.version_info[:3]))
 
     print("INSTALLED VERSIONS")
     print("------------------")

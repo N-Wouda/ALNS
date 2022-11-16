@@ -18,7 +18,7 @@ Feel free to open a new issue if you have something to discuss.
 ## Making changes to the code
 
 For a pull request to be accepted, you must meet the below requirements. 
-This greatly helps in keeping the job of maintaining and releasing the software a shared effort.
+This greatly reduces the job of maintaining and releasing the software.
 
 - **One branch. One feature.** 
   Branches are cheap and GitHub makes it easy to merge and delete branches with a few clicks. 

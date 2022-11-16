@@ -23,10 +23,10 @@ This should explain **why** the current behaviour is a problem and why the expec
 
 <details>
 
-**Note**: Please be sure you are using the latest released version of `alns`, or a recent build of `main`.
-If your problem has been fixed in an unreleased version, you might be able to use `main` until a new release occurs.
+**Note**: Please be sure you are using the latest released version of `alns`, or a recent build of `master`.
+If your problem has been fixed in an unreleased version, you might be able to use `master` until a new release occurs.
 
-**Note**: If you are using a released version, have you verified that the bug exists in the main branch of this repository?
+**Note**: If you are using a released version, have you verified that the bug exists in the master branch of this repository?
 
 </details>
 

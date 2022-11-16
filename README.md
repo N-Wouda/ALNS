@@ -36,10 +36,10 @@ showing how the ALNS library may be used. These include:
   demonstrate how one could tune ALNS parameters.
 
 Finally, the features notebook gives an overview of various options available 
-in the `alns` package (explained below). In the notebook we use these different
-options to solve a toy 0/1-knapsack problem. The notebook is a good starting
-point for when you want to use different schemes, acceptance or stopping criteria 
-yourself. It is available [here][5].
+in the `alns` package. In the notebook we use these different options to solve
+a toy 0/1-knapsack problem. The notebook is a good starting point for when you
+want to use different schemes, acceptance or stopping criteria yourself. It is
+available [here][5].
 
 ## How to use
 Our [documentation][7] provides a complete overview of the `alns` package. In 

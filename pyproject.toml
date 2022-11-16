@@ -55,6 +55,7 @@ addopts = "--cov=. --cov-report=xml"
 
 [tool.coverage.run]
 omit = [
+    "alns/show_versions.py",  # only prints debug information
     "*/tests/*",
     "venv/*",
     "docs/*",

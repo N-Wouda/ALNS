@@ -28,8 +28,8 @@ This greatly helps in keeping the job of maintaining and releasing the software 
   This means a subject line of less than 80 characters, and, if necessary, a blank line followed by a commit message body.
 - Code submissions should always include tests.
 - Each function, class, method, and attribute needs to be documented using docstrings.
-  We conform to the `numpy docstring standard <https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard>`_.
-- If you are adding new functionality, you need to add it to the documentation by editing (or creating) the appropriate file in ``docs/source``.
+  We conform to the [NumPy docstring standard](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard).
+- If you are adding new functionality, you need to add it to the documentation by editing (or creating) the appropriate file in `docs/source`.
 - Make sure your documentation changes parse correctly. Change into the top-level `docs/` directory and type:
   ```shell
   make clean

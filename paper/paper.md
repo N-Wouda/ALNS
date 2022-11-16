@@ -33,7 +33,7 @@ Because of this success, we expect the package to be useful to the wider operati
 
 # Statement of need
 
-It is common in the operations research community to re-implement heuristics [@vidal:2022].
+It is common in the operations research community to re-implement heuristics [@Swan_et_al:2022; @vidal:2022].
 Such implementations are relatively limited, are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
 The survey of @Windras_Mara_et_al:2022 corroborates these claims: 205 out of the 251 papers they survey only consider a simulated annealing acceptance criterion, and only one paper uses an operator selection scheme that is not based on the roulette wheel mechanism of @Ropke_Pisinger:2006.
 This inhibits experimentation with different aspects of the algorithm, and makes re-use by others or in other problem domains difficult.
@@ -57,14 +57,14 @@ The `alns` Python package offers:
 - Multiple acceptance criteria in `alns.accept`.
   These include standard ones like hill-climbing and simulated annealing, and several variants of record-to-record travel and the great deluge criteria [@Dueck:1993].
 - Several operator selection schemes in `alns.select`.
-  These include the original (segmented) roulette wheel mechanism of @Ropke_Pisinger:2006, but we also provide an upper confidence bound bandit algorithm adapted from @Hendel:2022.
+  These include the original (segmented) roulette wheel mechanism of @Ropke_Pisinger:2006, and an upper confidence bound bandit algorithm adapted from @Hendel:2022.
 - Various stopping criteria in `alns.stop` based on maximum run-times or iterations.
   This includes a criterion that stops after a fixed number of iterations without improvement, which could be used to restart the search.
 - Diagnostic statistics collection and plotting methods that can be accessed after solving.
 
 The package can easily be installed through `pip`, and our detailed documentation is available [here](https://alns.readthedocs.io/).
 The documentation also explains how to implement several other single-trajectory neighbourhood search algorithms using `alns`.
-Further, the documentation provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, and the resource-constrained project scheduling problem.
+Further, the documentation provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, permutation flow shop problem, and the resource-constrained project scheduling problem.
 These implementations will help users quickly get started solving their own problems using `alns`.
 
 # References

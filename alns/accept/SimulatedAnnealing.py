@@ -55,6 +55,11 @@ class SimulatedAnnealing(AcceptanceCriterion):
                 "start_temperature < end_temperature not understood."
             )
 
+        method = method.lower()
+
+        if method not in ["linear", "exponential"]:
+            raise ValueError(f"Method {method} is not understood.")
+
         if method == "exponential" and step > 1:
             raise ValueError("Exponential updating cannot have step > 1.")
 
@@ -102,7 +107,12 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
     @classmethod
     def autofit(
-        cls, init_obj: float, worse: float, accept_prob: float, num_iters: int
+        cls,
+        init_obj: float,
+        worse: float,
+        accept_prob: float,
+        num_iters: int,
+        method: str = "exponential",
     ) -> "SimulatedAnnealing":
         """
         Returns an SA object with initial temperature such that there is a
@@ -126,12 +136,16 @@ class SimulatedAnnealing(AcceptanceCriterion):
             worse than the initial solution.
         num_iters
             Number of iterations the ALNS algorithm will run.
+        method
+            The updating method, one of {'linear', 'exponential'}. Default
+            'exponential'.
 
         Raises
         ------
         ValueError
-            When ``worse`` not in [0, 1] or when ``accept_prob`` is not in
-            (0, 1).
+            When ``worse`` not in [0, 1], ``accept_prob`` is not in (0, 1),
+            ``num_iters`` is not positive, or when ``method`` is not one of
+            {'linear', 'exponential'}.
 
         Returns
         -------
@@ -154,12 +168,16 @@ class SimulatedAnnealing(AcceptanceCriterion):
         if not (0 < accept_prob < 1):
             raise ValueError("accept_prob outside (0, 1) not understood.")
 
-        if num_iters < 0:
+        if num_iters <= 0:
             raise ValueError("Negative number of iterations not understood.")
 
         start_temp = -worse * init_obj / np.log(accept_prob)
-        step = (1 / start_temp) ** (1 / num_iters)
+
+        if method == "exponential":
+            step = (1 / start_temp) ** (1 / num_iters)
+        else:
+            step = (start_temp - 1) / num_iters
 
         logger.info(f"Autofit start_temp {start_temp:.2f}, step {step:.2f}.")
 
-        return cls(start_temp, 1, step, method="exponential")
+        return cls(start_temp, 1, step, method=method)

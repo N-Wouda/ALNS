@@ -166,23 +166,24 @@ def test_accepts_generator_and_random_state():
 
 
 @mark.parametrize(
-    "worse,accept_prob,iters",
+    "worse, accept_prob, iters, method",
     [
-        (1, 0, 10),  # zero accept prob
-        (1, 1.2, 10),  # prob outside unit interval
-        (1, 1, 10),  # unit accept prob
-        (-1, 0.5, 10),  # negative worse
-        (0, -1, 10),  # negative prob
-        (1.5, 0.5, 10),  # worse outside unit interval
-        (1, 0.9, -10),  # negative iterations
-        (1, 0.9, 0),  # zero iterations
+        (1, 0, 10, "exponential"),  # zero accept prob
+        (1, 1.2, 10, "exponential"),  # prob outside unit interval
+        (1, 1, 10, "exponential"),  # unit accept prob
+        (-1, 0.5, 10, "exponential"),  # negative worse
+        (0, -1, 10, "exponential"),  # negative prob
+        (1.5, 0.5, 10, "exponential"),  # worse outside unit interval
+        (1, 0.9, -10, "exponential"),  # negative iterations
+        (1, 0.9, 0, "exponential"),  # zero iterations
+        (1, 0.9, 10, "abc"),  # unknown method
     ],
-)  # negative number of iterations
+)
 def test_autofit_raises_for_invalid_inputs(
-    worse: float, accept_prob: float, iters: int
+    worse: float, accept_prob: float, iters: int, method: str
 ):
     with assert_raises(ValueError):
-        SimulatedAnnealing.autofit(1.0, worse, accept_prob, iters)
+        SimulatedAnnealing.autofit(1.0, worse, accept_prob, iters, method)
 
 
 @mark.parametrize(

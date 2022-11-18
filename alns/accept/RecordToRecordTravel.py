@@ -135,7 +135,13 @@ class RecordToRecordTravel(AcceptanceCriterion):
         num_iters
             The number of iterations that the ALNS algorithm will run.
         method
-            Updating method. Default 'linear'.
+            The updating method, one of {'linear', 'exponential'}. Default
+            'linear'.
+
+        Raises
+        ------
+        ValueError
+            When the parameters do not meet requirements.
 
         Returns
         -------
@@ -156,11 +162,11 @@ class RecordToRecordTravel(AcceptanceCriterion):
 
         if method == "linear":
             step = (start_threshold - end_threshold) / num_iters
-        elif method == "exponential":
+        else:
             step = (end_threshold / start_threshold) ** (1 / num_iters)
 
         logger.info(
-            f"Autofit start_threshold {start_threshold:.2f}"
+            f"Autofit {method} RRT: start_threshold {start_threshold:.2f}, "
             f"end_threshold {end_threshold:.2f}, step {step:.2f}."
         )
 

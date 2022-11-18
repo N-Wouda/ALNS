@@ -65,7 +65,10 @@ def test_does_not_raise():
     These sets of parameters should work correctly.
     """
     SimulatedAnnealing(10, 5, 1, "exponential")
+    SimulatedAnnealing(10, 5, 1, "EXPONENTIAL")
+
     SimulatedAnnealing(10, 5, 2, "linear")
+    SimulatedAnnealing(10, 5, 2, "LINEAR")
 
 
 @mark.parametrize("step", range(10))
@@ -163,22 +166,24 @@ def test_accepts_generator_and_random_state():
 
 
 @mark.parametrize(
-    "worse,accept_prob,iters",
+    "worse, accept_prob, iters, method",
     [
-        (1, 0, 10),  # zero accept prob
-        (1, 1.2, 10),  # prob outside unit interval
-        (1, 1, 10),  # unit accept prob
-        (-1, 0.5, 10),  # negative worse
-        (0, -1, 10),  # negative prob
-        (1.5, 0.5, 10),  # worse outside unit interval
-        (1, 0.9, -10),
+        (1, 0, 10, "exponential"),  # zero accept prob
+        (1, 1.2, 10, "exponential"),  # prob outside unit interval
+        (1, 1, 10, "exponential"),  # unit accept prob
+        (-1, 0.5, 10, "exponential"),  # negative worse
+        (0, -1, 10, "exponential"),  # negative prob
+        (1.5, 0.5, 10, "exponential"),  # worse outside unit interval
+        (1, 0.9, -10, "exponential"),  # negative iterations
+        (1, 0.9, 0, "exponential"),  # zero iterations
+        (1, 0.9, 10, "abc"),  # unknown method
     ],
-)  # negative number of iterations
+)
 def test_autofit_raises_for_invalid_inputs(
-    worse: float, accept_prob: float, iters: int
+    worse: float, accept_prob: float, iters: int, method: str
 ):
     with assert_raises(ValueError):
-        SimulatedAnnealing.autofit(1.0, worse, accept_prob, iters)
+        SimulatedAnnealing.autofit(1.0, worse, accept_prob, iters, method)
 
 
 @mark.parametrize(
@@ -206,3 +211,14 @@ def test_autofit_on_several_examples(
     assert_almost_equal(sa.end_temperature, sa_end)
     assert_almost_equal(sa.step, sa_step)
     assert_equal(sa.method, "exponential")
+
+
+def test_linear_autofit():
+    sa = SimulatedAnnealing.autofit(100, 0.05, 0.5, 100, "linear")
+    sa_start = -0.05 * 100 / np.log(0.5)
+    sa_step = (sa_start - 1) / 100
+
+    assert_almost_equal(sa.start_temperature, sa_start)
+    assert_almost_equal(sa.end_temperature, 1)
+    assert_almost_equal(sa.step, sa_step)
+    assert_equal(sa.method, "linear")

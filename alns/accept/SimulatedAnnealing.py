@@ -55,11 +55,6 @@ class SimulatedAnnealing(AcceptanceCriterion):
                 "start_temperature < end_temperature not understood."
             )
 
-        method = method.lower()
-
-        if method not in ["linear", "exponential"]:
-            raise ValueError(f"Method {method} is not understood.")
-
         if method == "exponential" and step > 1:
             raise ValueError("Exponential updating cannot have step > 1.")
 
@@ -169,7 +164,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
             raise ValueError("accept_prob outside (0, 1) not understood.")
 
         if num_iters <= 0:
-            raise ValueError("Negative number of iterations not understood.")
+            raise ValueError("number of iterations <= 0 not understood.")
 
         start_temp = -worse * init_obj / np.log(accept_prob)
 

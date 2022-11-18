@@ -60,12 +60,6 @@ def test_raises_start_smaller_than_end():
     SimulatedAnnealing(1, 1, 1)  # should not raise for equality
 
 
-def test_raises_unknown_method():
-    with assert_raises(ValueError):
-        # Accepts only 'exponential' or 'linear'
-        SimulatedAnnealing(10, 5, 1, "unknown method")
-
-
 def test_does_not_raise():
     """
     These sets of parameters should work correctly.
@@ -221,8 +215,9 @@ def test_autofit_on_several_examples(
 def test_linear_autofit():
     sa = SimulatedAnnealing.autofit(100, 0.05, 0.5, 100, "linear")
     sa_start = -0.05 * 100 / np.log(0.5)
+    sa_step = (sa_start - 1) / 100
 
     assert_almost_equal(sa.start_temperature, sa_start)
     assert_almost_equal(sa.end_temperature, 1)
-    assert_almost_equal(sa.step, (sa_start - 1) / 100)
+    assert_almost_equal(sa.step, sa_step)
     assert_equal(sa.method, "linear")

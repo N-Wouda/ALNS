@@ -123,12 +123,12 @@ class SimulatedAnnealing(AcceptanceCriterion):
         init_obj
             The initial solution objective.
         worse
-            Percentage (between 0 and 1) the candidate solution may be worse
-            than initial solution for it to be accepted with probability
+            Percentage (in (0, 1), exclusive) the candidate solution may be
+            worse than initial solution for it to be accepted with probability
             ``accept_prob``.
         accept_prob
-            Initial acceptance probability for a solution at most ``worse``
-            worse than the initial solution.
+            Initial acceptance probability (in [0, 1]) for a solution at most
+            ``worse`` worse than the initial solution.
         num_iters
             Number of iterations the ALNS algorithm will run.
         method
@@ -138,9 +138,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
         Raises
         ------
         ValueError
-            When ``worse`` not in [0, 1], ``accept_prob`` is not in (0, 1),
-            ``num_iters`` is not positive, or when ``method`` is not one of
-            {'linear', 'exponential'}.
+            When the parameters do not meet requirements.
 
         Returns
         -------
@@ -164,15 +162,21 @@ class SimulatedAnnealing(AcceptanceCriterion):
             raise ValueError("accept_prob outside (0, 1) not understood.")
 
         if num_iters <= 0:
-            raise ValueError("number of iterations <= 0 not understood.")
+            raise ValueError("Non-positive num_iters not understood.")
+
+        if method not in ["linear", "exponential"]:
+            raise ValueError("Method must be one of ['linear', 'exponential']")
 
         start_temp = -worse * init_obj / np.log(accept_prob)
 
-        if method == "exponential":
-            step = (1 / start_temp) ** (1 / num_iters)
-        else:
+        if method == "linear":
             step = (start_temp - 1) / num_iters
+        else:
+            step = (1 / start_temp) ** (1 / num_iters)
 
-        logger.info(f"Autofit start_temp {start_temp:.2f}, step {step:.2f}.")
+        logger.info(
+            f"Autofit {method} SA: start_temp {start_temp:.2f}, "
+            f"step {step:.2f}."
+        )
 
         return cls(start_temp, 1, step, method=method)

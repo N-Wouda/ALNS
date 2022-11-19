@@ -5,10 +5,8 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-    paths:
-      - 'alns/**.py'
   release:
-    types: [created]
+    types: [ created ]
 
 jobs:
   build:

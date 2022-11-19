@@ -24,7 +24,7 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-${{ date +'$Y-%m' }}
+          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-$(date +'%Y-%m')
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |

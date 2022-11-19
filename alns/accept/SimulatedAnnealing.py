@@ -10,23 +10,30 @@ logger = logging.getLogger(__name__)
 
 class SimulatedAnnealing(AcceptanceCriterion):
     """
-    Simulated annealing, using an updating temperature. The temperature is
-    updated as,
+    Simulated annealing, using an updating temperature. The current temperature
+    :math:`T` is updated as
 
-    ``temperature = max(end_temperature, temperature - step)`` (linear)
+    .. math::
 
-    ``temperature = max(end_temperature, step * temperature)`` (exponential)
+        T \\gets \\max \\{ T_\\text{end}, T - \\gamma \\}
 
-    where the initial temperature is set to ``start_temperature``.
+    when ``method = 'linear'``, or
+
+    .. math::
+
+        T \\gets \\max \\{ T_\\text{end}, \\gamma T \\}
+
+    when ``method = 'exponential'``. Initially, :math:`T` is set to
+    :math:`T_\\text{start}`.
 
     Parameters
     ----------
     start_temperature
-        The initial temperature.
+        The initial temperature :math:`T_\\text{start} > 0`.
     end_temperature
-        The final temperature.
+        The final temperature :math:`T_\\text{end} > 0`.
     step
-        The updating step.
+        The updating step :math:`\\gamma \\ge 0`.
     method
         The updating method, one of {'linear', 'exponential'}. Default
         'exponential'.

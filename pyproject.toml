@@ -46,6 +46,17 @@ cvrplib = "^0.1.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
 
+[tool.black]
+line-length = 79
+
+[tool.isort]
+case_sensitive = true
+line_length = 79
+profile = "black"
+
+[tool.mypy]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 markers = [
     "matplotlib: test related to matplotlib functionality.",

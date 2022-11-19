@@ -35,6 +35,26 @@ numpydoc_class_members_toctree = False
 
 nbsphinx_execute = "never"
 
+nbsphinx_prolog = r"""
+{% set docname = 'docs/source/' + env.doc2path(env.docname, base=None) %}
+{% set url_prefix = 'https://github.com/N-Wouda/ALNS/blob/' %}
+{% set release = env.config.release %}
+
+.. raw:: html
+
+   <div class="admonition note">
+     <p class="admonition-title">
+        Note
+     </p>
+     <p>
+        This page was generated from
+        <a class="reference external"
+           href="{{ url_prefix|e }}v{{ release|e }}/{{ docname|e }}">
+           {{ docname|e }}</a>.
+     </p>
+   </div>
+"""
+
 # -- General configuration
 
 extensions = [

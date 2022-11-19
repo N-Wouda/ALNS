@@ -4,28 +4,34 @@ from alns.accept.update import update
 
 class WorseAccept(AcceptanceCriterion):
     """
-    The Worse Accept criterion accepts a candidate solution 1) if it improves
-    over the current one or 2) with a given probability regardless of the cost.
-    The probability is updated in each iteration as:
+    The Worse Accept criterion accepts a candidate solution if it improves over
+    the current one, or with a given probability :math:`P` regardless of the
+    cost. :math:`P` is updated in each iteration as:
 
-    ``prob = max(end_prob, prob - step)`` (linear)
+    .. math::
 
-    ``prob = max(end_prob, step * prob)`` (exponential)
+        P \\gets \\max \\{ P_\\text{end},~P - \\gamma \\}
 
-    where the initial probability is set to ``start_prob``.
+    when ``method = 'linear'``, or
+
+    .. math::
+
+        P \\gets \\max \\{ P_\\text{end},~\\gamma P \\}
+
+    when ``method = 'exponential'``. Initially, :math:`P` is set to
+    :math:`P_\\text{start}`.
 
     Parameters
     ----------
     start_prob
-        The initial probability.
+        The initial probability :math:`P_\\text{start} \\in [0, 1]`.
     end_prob
-        The final probability.
+        The final probability :math:`P_\\text{end} \\in [0, 1]`.
     step:
-        The updating step.
+        The updating step :math:`\\gamma \\ge 0`.
     method
         The updating method, one of {'linear', 'exponential'}. Default
         'linear'.
-
     """
 
     def __init__(

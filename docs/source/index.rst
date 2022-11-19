@@ -20,13 +20,13 @@ The documentation hosted on this site provides several examples of how the ALNS 
    examples/travelling_salesman_problem
    examples/capacitated_vehicle_routing_problem
    examples/permutation_flow_shop_problem
-   other single-trajectory heuristics
+   examples/other single-trajectory heuristics
 
 .. toctree::
    :maxdepth: 1
    :caption: API reference
 
-   alns
-   accept
-   select
-   stop
+   api/alns
+   api/accept
+   api/select
+   api/stop

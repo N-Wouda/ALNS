@@ -15,13 +15,13 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
     .. math::
 
-        T \\gets \\max \\{ T_\\text{end}, T - \\gamma \\}
+        T \\gets \\max \\{ T_\\text{end},~T - \\gamma \\}
 
     when ``method = 'linear'``, or
 
     .. math::
 
-        T \\gets \\max \\{ T_\\text{end}, \\gamma T \\}
+        T \\gets \\max \\{ T_\\text{end},~\\gamma T \\}
 
     when ``method = 'exponential'``. Initially, :math:`T` is set to
     :math:`T_\\text{start}`.

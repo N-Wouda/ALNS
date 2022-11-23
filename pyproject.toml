@@ -40,7 +40,7 @@ pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
 codecov = "*"
 
-# The optional examples group is needed to run the example notebooks, but not
+# This optional examples group is needed to run the example notebooks, but not
 # required for the package itself.
 [tool.poetry.group.examples]
 optional = true

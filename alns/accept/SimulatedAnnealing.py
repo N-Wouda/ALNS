@@ -9,31 +9,41 @@ logger = logging.getLogger(__name__)
 
 
 class SimulatedAnnealing(AcceptanceCriterion):
-    """
-    Simulated annealing, using an updating temperature. The current temperature
+    R"""
+    Simulated annealing, using an updating temperature.
+
+    A candidate solution :math:`s^c` is compared against the current solution
+    :math:`s`. The probability of accepting :math:`s^c` is given by
+
+    .. math::
+
+        \exp \left\{ \frac{f(s) - f(s^c)}{T} \right\},
+
+    where :math:`T` is the current temperature, and :math:`f(\cdot)` gives the
+    objective value of the passed-in solution. The current temperature
     :math:`T` is updated as
 
     .. math::
 
-        T \\gets \\max \\{ T_\\text{end},~T - \\gamma \\}
+        T \gets \max \{ T_\text{end},~T - \gamma \}
 
     when ``method = 'linear'``, or
 
     .. math::
 
-        T \\gets \\max \\{ T_\\text{end},~\\gamma T \\}
+        T \gets \max \{ T_\text{end},~\gamma T \}
 
     when ``method = 'exponential'``. Initially, :math:`T` is set to
-    :math:`T_\\text{start}`.
+    :math:`T_\text{start}`.
 
     Parameters
     ----------
     start_temperature
-        The initial temperature :math:`T_\\text{start} > 0`.
+        The initial temperature :math:`T_\text{start} > 0`.
     end_temperature
-        The final temperature :math:`T_\\text{end} > 0`.
+        The final temperature :math:`T_\text{end} > 0`.
     step
-        The updating step :math:`\\gamma \\ge 0`.
+        The updating step :math:`\gamma \ge 0`.
     method
         The updating method, one of {'linear', 'exponential'}. Default
         'exponential'.

@@ -10,18 +10,28 @@ logger = logging.getLogger(__name__)
 
 
 class SegmentedRouletteWheel(RouletteWheel):
-    """
-    An operator selection scheme based on the roulette wheel mechanism, where
-    each operator is selected based on normalised weights. Weights are not
-    updated in each iteration, but only after each segment. Scores are gathered
-    during each segment, as:
+    R"""
+    .. note::
 
-    ``seg_weight += score``
+        First read the documentation for
+        :class:`~alns.select.RouletteWheel.RouletteWheel`, the parent of this
+        class.
 
-    At the start of each segment, ``seg_weight`` is reset to zero. At the end
-    of a segment, the weights are updated as:
+    The ``SegmentedRouletteWheel`` scheme extends the
+    :class:`~alns.select.RouletteWheel.RouletteWheel` scheme by fixing operator
+    weights for a number of iterations (the *segment length*). This allows
+    certain sets of operators to be selected more often in different
+    neighbourhoods.
 
-    ``new_weight = decay * old_weight + (1 - decay) * seg_weight``
+    Initially, all weights are set to one, as in
+    :class:`~alns.select.RouletteWheel.RouletteWheel`.
+    A separate score is tracked for each operator :math:`d` and :math:`r`, to
+    which the observed scores :math:`s_j` are added in each iteration where
+    :math:`d` and :math:`r` are applied. After the segment concludes, these
+    summed scores are added to the existing weights :math:`\omega_d` and
+    :math:`\omega_r` as a convex combination using a parameter :math:`\theta`
+    (the *segment decay rate*), as in ``RouletteWheel``. The separate
+    score list is then reset to zero, and a new segment begins.
 
     Parameters
     ----------
@@ -31,8 +41,8 @@ class SegmentedRouletteWheel(RouletteWheel):
         (idx 0), is better than the current solution (idx 1), the solution
         is accepted (idx 2), or rejected (idx 3).
     decay
-        Decay parameter in [0, 1]. This parameter is used to weigh the
-        running performance of each operator.
+        Operator decay parameter :math:`\theta \in [0, 1]`. This parameter is
+        used to weigh the running performance of each operator.
     seg_length
         Length of a single segment.
     num_destroy

@@ -35,25 +35,16 @@ numpydoc_class_members_toctree = False
 
 nbsphinx_execute = "never"
 
-nbsphinx_prolog = r"""
-{% set docname = 'docs/source/' + env.doc2path(env.docname, base=None) %}
-{% set url_prefix = 'https://github.com/N-Wouda/ALNS/blob/' %}
-{% set release = env.config.release %}
+# -- sphinx-collections
 
-.. raw:: html
-
-   <div class="admonition note">
-     <p class="admonition-title">
-        Note
-     </p>
-     <p>
-        This page was generated from
-        <a class="reference external"
-           href="{{ url_prefix|e }}v{{ release|e }}/{{ docname|e }}">
-           {{ docname|e }}</a>.
-     </p>
-   </div>
-"""
+collections = {
+    "examples": {  # copy example notebooks into source tree
+        "driver": "copy_folder",
+        "source": "../examples/",
+        "target": "examples/",
+        "ignore": [".ipynb_checkpoints/"],
+    },
+}
 
 # -- General configuration
 
@@ -63,6 +54,7 @@ extensions = [
     "sphinx.ext.autodoc",
     # "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
+    "sphinxcontrib.collections",
     "nbsphinx",
     "numpydoc",
 ]

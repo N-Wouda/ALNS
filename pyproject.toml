@@ -40,11 +40,16 @@ pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
 codecov = "*"
 
-# These are solely for work on the example notebooks, and not required for
-# the package itself.
+# The optional examples group is needed to run the example notebooks, but not
+# required for the package itself.
+[tool.poetry.group.examples]
+optional = true
+
+[tool.poetry.group.examples.dependencies]
 cvrplib = "^0.1.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
+jupyter = "^1.0.0"
 
 [tool.black]
 line-length = 79

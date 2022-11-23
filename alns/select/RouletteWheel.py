@@ -9,7 +9,7 @@ from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 class RouletteWheel(OperatorSelectionScheme):
     R"""
-    The ``RouletteWheel`` scheme updates operator weights according as a convex
+    The ``RouletteWheel`` scheme updates operator weights as a convex
     combination of the current weight, and the new score.
 
     When the algorithm starts, all operators :math:`i` are assigned weight

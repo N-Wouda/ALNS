@@ -11,7 +11,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
     The Record-to-Record Travel (RRT) criterion accepts a candidate solution
     if the absolute gap between the candidate and the best or current solution
     is smaller than a threshold. The threshold :math:`T` is updated in each
-    iteration as:
+    iteration using a step size :math:`\\gamma`, as:
 
     .. math::
 
@@ -33,7 +33,7 @@ class RecordToRecordTravel(AcceptanceCriterion):
     end_threshold
         The final threshold :math:`T_\\text{end} \\ge 0`.
     step
-        The updating step :math:`\\gamma \\ge 0`.
+        The updating step size :math:`\\gamma \\ge 0`.
     method
         The updating method, one of {'linear', 'exponential'}. Default
         'linear'.

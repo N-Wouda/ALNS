@@ -21,7 +21,8 @@ class SimulatedAnnealing(AcceptanceCriterion):
 
     where :math:`T` is the current temperature, and :math:`f(\cdot)` gives the
     objective value of the passed-in solution. The current temperature
-    :math:`T` is updated as
+    :math:`T` is updated in each iteration using a step size :math:`\gamma`,
+    as:
 
     .. math::
 
@@ -43,7 +44,7 @@ class SimulatedAnnealing(AcceptanceCriterion):
     end_temperature
         The final temperature :math:`T_\text{end} > 0`.
     step
-        The updating step :math:`\gamma \ge 0`.
+        The updating step size :math:`\gamma \ge 0`.
     method
         The updating method, one of {'linear', 'exponential'}. Default
         'exponential'.

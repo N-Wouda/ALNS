@@ -31,8 +31,7 @@ Simply type:
 
    pre-commit install
 
-After this completes, comming style and typing issues are automatically checked whenever you make a new commit to your feature branch.
-Note that we do not use pre-commit via ``poetry``.
+After this completes, style and typing issues are automatically checked whenever you make a new commit to your feature branch.
 
 
 Committing changes

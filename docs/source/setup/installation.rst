@@ -35,7 +35,7 @@ Then, make sure your Python version has ``poetry``:
 
 .. code-block::
 
-   pip install poetry
+   pip install --upgrade poetry
 
 Now, go into the ALNS repository and set-up a virtual environment.
 We want a virtual environment that also contains all dependencies needed to run the example notebooks, so we also need to install the optional ``examples`` dependency group.

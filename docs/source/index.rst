@@ -16,24 +16,21 @@ ALNS can be installed through *pip* via
 
    pip install alns
 
-Getting started
----------------
+.. note::
+
+    To set-up an installation from source, or to run the examples listed below yourself, please have a look at the :doc:`setup/installation`.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Getting started
 
    setup/installation
    setup/contributing
-
-Examples
---------
-
-The following pages show several complete, real-world examples of ALNS metaheuristics, implemented using the ``alns`` package.
-These examples can be used to quickstart your own metaheuristic.
-To run these examples yourself, please have a look at the :doc:`setup/installation`.
+   setup/getting_help
 
 .. toctree::
    :maxdepth: 1
+   :caption: Examples
 
    examples/alns_features
    examples/cutting_stock_problem
@@ -43,11 +40,9 @@ To run these examples yourself, please have a look at the :doc:`setup/installati
    examples/permutation_flow_shop_problem
    examples/other single-trajectory heuristics
 
-API reference
--------------
-
 .. toctree::
    :maxdepth: 1
+   :caption: API reference
 
    api/alns
    api/accept

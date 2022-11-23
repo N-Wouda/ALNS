@@ -32,12 +32,12 @@ ALNS can be installed through *pip* via
    :maxdepth: 1
    :caption: Examples
 
-   _collections/examples/alns_features
-   _collections/examples/cutting_stock_problem
-   _collections/examples/resource_constrained_project_scheduling_problem
-   _collections/examples/travelling_salesman_problem
-   _collections/examples/capacitated_vehicle_routing_problem
-   _collections/examples/permutation_flow_shop_problem
+   examples/alns_features
+   examples/cutting_stock_problem
+   examples/resource_constrained_project_scheduling_problem
+   examples/travelling_salesman_problem
+   examples/capacitated_vehicle_routing_problem
+   examples/permutation_flow_shop_problem
    examples/other single-trajectory heuristics
 
 .. toctree::

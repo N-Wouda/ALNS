@@ -1,6 +1,9 @@
 import datetime
+import glob
 import os
+import shutil
 import sys
+from pathlib import Path
 
 import tomli
 
@@ -17,6 +20,12 @@ author = "Niels Wouda and contributors"
 with open("../../pyproject.toml", "rb") as fh:
     pyproj = tomli.load(fh)
     release = version = pyproj["tool"]["poetry"]["version"]
+
+for file in glob.iglob("../../examples/*.ipynb"):
+    path = Path(file)
+
+    print(f"Copy {path.name} into docs/source/examples/")
+    shutil.copy(path, f"examples/{path.name}")
 
 # -- Autodoc
 
@@ -35,17 +44,6 @@ numpydoc_class_members_toctree = False
 
 nbsphinx_execute = "never"
 
-# -- sphinx-collections
-
-collections = {
-    "examples": {  # copy example notebooks into source tree
-        "driver": "copy_folder",
-        "source": "../examples/",
-        "target": "examples/",
-        "ignore": [".ipynb_checkpoints/"],
-    },
-}
-
 # -- General configuration
 
 extensions = [
@@ -54,7 +52,6 @@ extensions = [
     "sphinx.ext.autodoc",
     # "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
-    "sphinxcontrib.collections",
     "nbsphinx",
     "numpydoc",
 ]

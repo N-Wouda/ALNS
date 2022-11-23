@@ -20,6 +20,8 @@ To install the latest version of ``alns`` directly from the GitHub repository, y
 This can be useful to get updates that have not yet made it to the Python package index.
 
 
+.. _running-locally:
+
 Running the examples locally
 ----------------------------
 

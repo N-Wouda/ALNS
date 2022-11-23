@@ -25,7 +25,7 @@ for file in glob.iglob("../../examples/*.ipynb"):
     path = Path(file)
 
     print(f"Copy {path.name} into docs/source/examples/")
-    shutil.copy(path, f"examples/{path.name}")
+    shutil.copy2(path, f"examples/{path.name}")
 
 # -- Autodoc
 

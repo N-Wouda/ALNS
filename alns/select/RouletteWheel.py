@@ -8,14 +8,37 @@ from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 
 class RouletteWheel(OperatorSelectionScheme):
-    """
-    An operator selection scheme based on the roulette wheel mechanism, where
-    each operator is selected based on normalised weights. The operator weights
-    are adjusted continuously throughout the algorithm runs. This works as
-    follows. In each iteration, the old weight is updated with a score based
-    on a convex combination of the existing weight and the new score, as:
+    R"""
+    The ``RouletteWheel`` scheme updates operator weights as a convex
+    combination of the current weight, and the new score.
 
-    ``new_weight = decay * old_weight + (1 - decay) * score``
+    When the algorithm starts, all operators :math:`i` are assigned weight
+    :math:`\omega_i = 1`. In each iteration, a destroy and a repair operator
+    are selected by the ALNS algorithm, based on the normalised current weights
+    :math:`\omega_i`. The selected operators are applied to the current
+    solution, resulting in a new candidate solution. This candidate is
+    evaluated by the ALNS algorithm, which leads to one of four outcomes:
+
+    1. The candidate solution is a new global best.
+    2. The candidate solution is better than the current solution, but not a
+       new global best.
+    3. The candidate solution is accepted.
+    4. The candidate solution is rejected.
+
+    Each of these four outcomes is assigned a score :math:`s_j` (with
+    :math:`j = 1,...,4`). After observing outcome :math:`j`, the weights of
+    the selected destroy and repair operators :math:`d` and :math:`r` that
+    were applied are updated as follows:
+
+    .. math::
+
+        \begin{align}
+            \omega_d &= \theta \omega_d + (1 - \theta) s_j, \\
+            \omega_r &= \theta \omega_r + (1 - \theta) s_j,
+        \end{align}
+
+    where :math:`0 \le \theta \le 1` (known as the *operator decay rate*)
+    is a parameter.
 
     Parameters
     ----------
@@ -25,8 +48,8 @@ class RouletteWheel(OperatorSelectionScheme):
         (idx 0), is better than the current solution (idx 1), the solution
         is accepted (idx 2), or rejected (idx 3).
     decay
-        Decay parameter in [0, 1]. This parameter is used to weigh the
-        running performance of each operator.
+        Operator decay parameter :math:`\theta \in [0, 1]`. This parameter is
+        used to weigh the running performance of each operator.
     num_destroy
         Number of destroy operators.
     num_repair

@@ -1,7 +1,7 @@
 ALNS
 ====
 
-**ALNS** is a general, well-documented and tested implementation of the adaptive large neighbourhood search (ALNS) metaheuristic in Python.
+``alns`` is a general, well-documented and tested implementation of the adaptive large neighbourhood search (ALNS) metaheuristic in Python.
 
 It is common in the operations research community to re-implement heuristics such as ALNS.
 Such implementations are relatively limited, are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
@@ -48,3 +48,9 @@ The ``alns`` package can be installed through *pip* via
    api/accept
    api/select
    api/stop
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Miscellaneous
+
+   misc/publications

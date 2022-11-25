@@ -219,8 +219,7 @@ class ALNS:
     def on_best(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS finds a new global best
-        solution state. The solution returned by the callback is *not*
-        evaluated again.
+        solution state.
         """
         logger.debug(f"Adding on_best callback {func.__name__}.")
         self._on_outcome[Outcome.BEST] = func
@@ -228,8 +227,7 @@ class ALNS:
     def on_better(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS finds a better solution
-        than the current incumbent. The solution returned by the callback is
-        *not* evaluated again.
+        than the current incumbent.
         """
         logger.debug(f"Adding on_better callback {func.__name__}.")
         self._on_outcome[Outcome.BETTER] = func
@@ -238,8 +236,7 @@ class ALNS:
         """
         Sets a callback function to be called when ALNS accepts a new solution
         as the current incumbent (that is not a new global best, or otherwise
-        improving). The solution returned by the callback is *not* evaluated
-        again.
+        improving).
         """
         logger.debug(f"Adding on_accept callback {func.__name__}.")
         self._on_outcome[Outcome.ACCEPT] = func
@@ -247,7 +244,6 @@ class ALNS:
     def on_reject(self, func: _CallbackType):
         """
         Sets a callback function to be called when ALNS rejects a new solution.
-        The solution returned by the callback is *not* evaluated again.
         """
         logger.debug(f"Adding on_reject callback {func.__name__}.")
         self._on_outcome[Outcome.REJECT] = func

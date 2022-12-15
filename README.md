@@ -5,14 +5,13 @@
 
 This package offers a general, well-documented and tested
 implementation of the adaptive large neighbourhood search (ALNS)
-meta-heuristic, based on the description given in [Pisinger and Ropke
-(2010)][1]. It may be installed in the usual way as
+metaheuristic. It may be installed in the usual way as
 ```
 pip install alns
 ```
 
 ### Examples
-If you wish to dive right in, the [documentation][7] contains example notebooks
+If you wish to dive right in, the [documentation][1] contains example notebooks
 showing how the ALNS library may be used. These include:
 
 - The travelling salesman problem (TSP), [here][2]. We solve an instance of 131
@@ -42,7 +41,7 @@ want to use different schemes, acceptance or stopping criteria yourself. It is
 available [here][5].
 
 ## How to use
-Our [documentation][7] provides a complete overview of the `alns` package. In 
+Our [documentation][1] provides a complete overview of the `alns` package. In 
 short: the `alns` package exposes two classes, `ALNS` and `State`. The first
 may be used to run the ALNS algorithm, the second may be subclassed to
 store a solution state - all it requires is to define an `objective`
@@ -52,20 +51,10 @@ The ALNS algorithm must be supplied with an _operator selection scheme_, an
 _acceptance criterion_, and a _stopping criterion_. These are explained further
 in the documentation.
 
-## References
-- Pisinger, D., and Ropke, S. (2010). Large Neighborhood Search. In M.
-  Gendreau (Ed.), _Handbook of Metaheuristics_ (2 ed., pp. 399-420).
-  Springer.
-- Santini, A., Ropke, S. & Hvattum, L.M. (2018). A comparison of
-  acceptance criteria for the adaptive large neighbourhood search
-  metaheuristic. *Journal of Heuristics* 24 (5): 783-815.
-
-[1]: http://orbit.dtu.dk/en/publications/large-neighborhood-search(61a1b7ca-4bf7-4355-96ba-03fcdf021f8f).html
+[1]: https://alns.readthedocs.io/en/latest/
 [2]: https://alns.readthedocs.io/en/latest/examples/travelling_salesman_problem.html
-[3]: https://link.springer.com/article/10.1007%2Fs10732-018-9377-x
 [4]: https://alns.readthedocs.io/en/latest/examples/cutting_stock_problem.html
 [5]: https://alns.readthedocs.io/en/latest/examples/alns_features.html
 [6]: https://alns.readthedocs.io/en/latest/examples/resource_constrained_project_scheduling_problem.html
-[7]: https://alns.readthedocs.io/en/latest/
 [8]: https://alns.readthedocs.io/en/latest/examples/capacitated_vehicle_routing_problem.html
 [9]: https://alns.readthedocs.io/en/latest/examples/permutation_flow_shop_problem.html

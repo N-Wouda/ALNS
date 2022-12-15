@@ -48,9 +48,3 @@ The ``alns`` package can be installed through *pip* via
    api/accept
    api/select
    api/stop
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Miscellaneous
-
-   misc/publications

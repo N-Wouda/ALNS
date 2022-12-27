@@ -94,12 +94,19 @@ class ALNS:
         """
         Adds a destroy operator to the heuristic instance.
 
+        .. warning::
+
+            A destroy operator will receive the current solution state
+            maintained by the ALNS instance, not a copy. Make sure to modify
+            a **copy** of this state in the destroy operator, created using
+            e.g. :func:`copy.copy` or :func:`copy.deepcopy`.
+
         Parameters
         ----------
         op
             An operator that, when applied to the current state, returns a new
-            state reflecting its implemented destroy action. The second
-            argument is the random state constructed from the passed-in seed.
+            state reflecting its implemented destroy action. Its second
+            argument is the random state passed to the ALNS instance.
         name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
@@ -117,8 +124,8 @@ class ALNS:
         ----------
         op
             An operator that, when applied to the destroyed state, returns a
-            new state reflecting its implemented repair action. The second
-            argument is the random state constructed from the passed-in seed.
+            new state reflecting its implemented repair action. Its second
+            argument is the random state passed to the ALNS instance.
         name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.

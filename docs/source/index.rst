@@ -24,6 +24,7 @@ The ``alns`` package can be installed through *pip* via
 
 .. note::
 
+    Have a look at the :doc:`setup/template` to get started on your own ALNS metaheuristic.
     To set-up an installation from source, or to run the examples listed below yourself, please have a look at the :doc:`setup/installation`.
 
 .. toctree::

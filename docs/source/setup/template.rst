@@ -9,7 +9,9 @@ You should provide the following:
 
 - A solution state for your problem that implements an ``objective()`` function.
 - An initial feasible solution.
-- One or more destroy and repair operators tailored to your problem.
+- One or more destroy and repair operators tailored to your problem. Each destroy
+  operator should copy the passed-in state; see
+  :meth:`~alns.ALNS.ALNS.add_destroy_operator` for details.
 
 .. note::
 
@@ -24,20 +26,11 @@ You should provide the following:
    :math:`x` that mimimises :math:`-f(x)`. In your ALNS implementation, you
    should thus implement your objective as :math:`-f(x)`.
 
-
-.. warning::
-
-   The destroy operators are given the current solution state maintained by the
-   ALNS algorithm. This is *not* a copy, so you should not modify it. Since
-   it depends on the problem how to copy a solution state, you should copy the
-   argument in each destroy operator - using, for example, :func:`copy.copy`
-   or :func:`copy.deepcopy`.
-
-The following is a simple template that can help you get started:
+The following is a quickstart template that can help you get started:
 
 .. code-block:: python
 
-    from alns import ALNS, State
+    from alns import ALNS
     from alns.accept import HillClimbing
     from alns.select import RandomSelect
     from alns.stop import MaxRuntime
@@ -45,7 +38,7 @@ The following is a simple template that can help you get started:
     import numpy.random as rnd
 
 
-    class ProblemState(State):
+    class ProblemState:
         # TODO add attributes that encode a solution to the problem instance
 
         def objective(self) -> float:
@@ -93,5 +86,5 @@ The following is a simple template that can help you get started:
 
 .. note::
 
-    Have a look at the many example implementations to the right to get a feeling
-    for how to implement the TODOs!
+    Have a look at the examples to get a feeling for how to implement the TODOs
+    in the quickstart template!

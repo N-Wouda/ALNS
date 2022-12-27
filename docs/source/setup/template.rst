@@ -9,7 +9,7 @@ You should provide the following:
 
 - A solution state for your problem that implements an ``objective()`` function.
 - An initial feasible solution.
-- One or more destroy and repair operators.
+- One or more destroy and repair operators tailored to your problem.
 
 .. note::
 

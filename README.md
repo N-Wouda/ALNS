@@ -4,15 +4,14 @@
 [![codecov](https://codecov.io/gh/N-Wouda/ALNS/branch/master/graph/badge.svg)](https://codecov.io/gh/N-Wouda/ALNS)
 
 ``alns`` is a general, well-documented and tested implementation of the adaptive
-large neighbourhood search (ALNS) metaheuristic in Python. The ALNS
-metaheuristic is an algorithm that can be used to solve difficult combinatorial
-optimisation problems. The algorithm begins with an initial solution. This
-solution should be feasible, but need not be very good. Then the algorithm
-iterates until a stopping criterion is met. In each iteration, it selects a
-destroy and repair operator, which transform the current solution into a
-candidate solution. This candidate solution is then evaluated by an acceptance
-criterion, and the operator selection mechanism is updated based on the
-evaluation outcome.
+large neighbourhood search (ALNS) metaheuristic in Python. ALNS is an algorithm
+that can be used to solve difficult combinatorial optimisation problems. The
+algorithm begins with an initial solution. This solution should be feasible, but
+need not be very good. Then the algorithm iterates until a stopping criterion is
+met. In each iteration, a destroy and repair operator are selected, which
+transform the current solution into a candidate solution. This candidate
+solution is then evaluated by an acceptance criterion, and the operator
+selection scheme is updated based on the evaluation outcome.
 
 It may be installed in the usual way as
 
@@ -20,22 +19,24 @@ It may be installed in the usual way as
 pip install alns
 ```
 
+The documentation is available [here][1].
+
 ### Getting started
 
 The `alns` library provides the ALNS algorithm and various acceptance criteria,
-operator selection schemes, and stopping criteria. The available options are
-further explained in the [documentation][1]. You should provide the following:
+operator selection schemes, and stopping criteria. To solve your own problem,
+you should provide the following:
 
 - A solution state for your problem that implements an `objective()` function.
 - An initial feasible solution.
-- One or more destroy and repair operators.
+- One or more destroy and repair operators tailored to your problem.
 
-> A "quickstart" code template is available [here][10].
+A "quickstart" code template is available [here][10].
 
 ### Examples
 
-The [documentation][1] contains example notebooks showing how the ALNS library
-may be used. These include:
+We provide several example notebooks showing how the ALNS library may be used.
+These include:
 
 - The travelling salesman problem (TSP), [here][2]. We solve an instance of 131
   cities in one minute to a 2% optimality gap, using very simple destroy and

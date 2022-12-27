@@ -98,8 +98,8 @@ class ALNS:
 
             A destroy operator will receive the current solution state
             maintained by the ALNS instance, not a copy. Make sure to modify
-            a **copy** of this state in the destroy operator, created using
-            e.g. :func:`copy.copy` or :func:`copy.deepcopy`.
+            a **copy** of this state in the destroy operator, created using,
+            for example, :func:`copy.copy` or :func:`copy.deepcopy`.
 
         Parameters
         ----------

@@ -28,7 +28,7 @@ operator selection schemes, and stopping criteria. To solve your own problem,
 you should provide the following:
 
 - A solution state for your problem that implements an `objective()` function.
-- An initial feasible solution.
+- An initial solution.
 - One or more destroy and repair operators tailored to your problem.
 
 A "quickstart" code template is available [here][10].
@@ -39,24 +39,20 @@ We provide several example notebooks showing how the ALNS library may be used.
 These include:
 
 - The travelling salesman problem (TSP), [here][2]. We solve an instance of 131
-  cities in one minute to a 2% optimality gap, using very simple destroy and
-  repair heuristics.
+  cities using very simple destroy and repair heuristics.
 - The capacitated vehicle routing problem (CVRP), [here][8]. We solve an
-  instance with 241 customers to within 3% of optimality using a combination of
-  a greedy repair operator, and a _slack-induced substring removal_ destroy
-  operator.
+  instance with 241 customers using a combination of a greedy repair operator,
+  and a _slack-induced substring removal_ destroy operator.
 - The cutting-stock problem (CSP), [here][4]. We solve an instance with 180
-  beams over 165 distinct sizes to within 1.35% of optimality in only a very
-  limited number of iterations.
+  beams over 165 distinct sizes in only a very limited number of iterations.
 - The resource-constrained project scheduling problem (RCPSP), [here][6]. We
-  solve an instance with 90 jobs and 4 resources to within 4% of the best known
-  solution, using a number of different operators and enhancement techniques
-  from the literature.
+  solve an instance with 90 jobs and 4 resources using a number of different
+  operators and enhancement techniques from the literature.
 - The permutation flow shop problem (PFSP), [here][9]. We solve an instance with
-  50 jobs and 20 machines to within 1.5% of the best known solution. Moreover,
-  we demonstrate multiple advanced features of ALNS, including auto-fitting the
-  acceptance criterion and adding local search to repair operators. We also
-  demonstrate how one could tune ALNS parameters.
+  50 jobs and 20 machines. Moreover, we demonstrate multiple advanced features
+  of ALNS, including auto-fitting the acceptance criterion and adding local
+  search to repair operators. We also demonstrate how one could tune ALNS
+  parameters.
 
 Finally, the features notebook gives an overview of various options available in
 the `alns` package. In the notebook we use these different options to solve a
@@ -67,7 +63,7 @@ available [here][5].
 ### Contributing
 
 We are very grateful for any contributions you are willing to make. Please have
-a look [here][3] to get started. If you aim to make a large change, it likely
+a look [here][3] to get started. If you aim to make a large change, it is
 helpful to discuss the change first in a new GitHub issue. Feel free to open
 one!
 

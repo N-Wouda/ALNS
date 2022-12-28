@@ -8,7 +8,7 @@ acceptance criteria in :mod:`alns.accept`, operator selection schemes in
 You should provide the following:
 
 - A solution state for your problem that implements an ``objective()`` function.
-- An initial feasible solution.
+- An initial solution.
 - One or more destroy and repair operators tailored to your problem. Each destroy
   operator should copy the passed-in state; see
   :meth:`~alns.ALNS.ALNS.add_destroy_operator` for details.
@@ -47,7 +47,7 @@ The following is a quickstart template that can help you get started:
 
 
     def initial_state() -> ProblemState:
-        # TODO implement a function that returns an initial feasible solution
+        # TODO implement a function that returns an initial solution
         pass
 
 
@@ -58,8 +58,7 @@ The following is a quickstart template that can help you get started:
 
 
     def repair(destroyed: ProblemState, rnd_state: rnd.RandomState) -> ProblemState:
-        # TODO implement how to repair a destroyed state, and return the repaired,
-        #  feasible state.
+        # TODO implement how to repair a destroyed state, and return it
         pass
 
 

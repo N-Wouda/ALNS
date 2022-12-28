@@ -48,8 +48,8 @@ A large number of software libraries exists that facilitate the implementation o
 The most widely-used packages generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `PySwarms` [@Miranda2018-PySwarmsResearchToolkit]. 
 These libraries provide limited functionality for single-trajectory algorithms, which is the class of algorithms that ALNS belongs to.
 Among libraries that focus on single-trajectory algorithms are `Paradiseo` [@Dreo2021-ParadiseoModularFramework], which is implemented in C++, and `Chips-n-Salsa` [@Cicirello2020-ChipsnSalsaJavaLibrary], which is implemented in Java.
-However, these libraries not provide an implementation of ALNS out of the box, which requires additional effort from users to implement it.
-Another noteworthy mention is the ALNS C++ library by @Santini2019-AdaptiveLargeNeighbourhood. 
+However, these libraries do not provide an implementation of the ALNS algorithm out of the box.
+Finally, the ALNS library by @Santini2019-AdaptiveLargeNeighbourhood is a problem-agnostic implementation of ALNS in C++.
 This library provides a large number of acceptance criteria, but only provides the roulette wheel mechanism as operator selection scheme.
 
 # Features

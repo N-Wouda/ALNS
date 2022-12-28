@@ -33,10 +33,10 @@ Because of this success, we expect the package to be useful to the wider operati
 
 # Statement of need
 
-It is common in the operations research community to re-implement heuristics [@Swan_et_al:2022; @vidal:2022]. 
-As a result, re-implementations of the ALNS algorithm are often relatively limited, are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
+It is common in the operations research community to re-implement heuristics [@Swan_et_al:2022; @vidal:2022].
+As a result, implementations of the ALNS algorithm are often relatively limited, are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
 The survey of @Windras_Mara_et_al:2022 corroborates these claims: 205 out of the 251 papers they survey only consider a simulated annealing acceptance criterion, and only one paper uses an operator selection scheme that is not based on the roulette wheel mechanism of @Ropke_Pisinger:2006.
-While many general-purpose libraries that facilitate the implementation of metaheuristics, such as ..., such libraries often do not include a complete implementation of the ALNS algorithm.
+While many general-purpose libraries exists that could facilitate the implementation of metaheuristics, such as ..., these libraries often do not include a complete implementation of the ALNS algorithm.
 This inhibits experimentation with different aspects of the algorithm, and makes re-use by others or in other problem domains difficult.
 Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, and provides many acceptance criteria and operator selection schemes.
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.

@@ -45,12 +45,12 @@ These allow researchers and practitioners to rapidly develop state-of-the-art me
 # State of the field
 
 A large number of software libraries exists that facilitate the implementation of metaheuristics [@Parejo2012-MetaheuristicOptimizationFrameworks].
-The most widely-used packages generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework] and `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage]. 
-These libraries provide limited functionality for single-trajectory and single-objective algorithms, which is the class of algorithms that ALNS belongs to.
+The most widely-used packages generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `PySwarms` [@Miranda2018-PySwarmsResearchToolkit]. 
+These libraries provide limited functionality for single-trajectory algorithms, which is the class of algorithms that ALNS belongs to.
 Among libraries that focus on single-trajectory algorithms are `Paradiseo`, which is implemented in C++, and `Chips-n-Salsa` [@Cicirello2020-ChipsnSalsaJavaLibrary], which is implemented in Java.
 These libraries support algorithms such as simulated annealing, tabu search, and iterated local search, but do not include an implementation of ALNS.
 While it is possible to adapt the available algorithms to mimic the ALNS algorithm, it would require additional effort from users to add features specific to ALNS, such as operator selection schemes.
-Our `alns` package provides a feature-complete implementation of ALNS, is implemented in Python, and also supports other single-trajectory as special cases. 
+Another noteworthy mention is the ALNS C++ library by @Santini2019-AdaptiveLargeNeighbourhood, which also implements a large number of acceptance criteria.
 
 
 # Features

@@ -39,7 +39,7 @@ The survey of @Windras_Mara_et_al:2022 corroborates these claims: 205 out of the
 A large number of software libraries exists that facilitate the implementation of metaheuristics [@Parejo2012-MetaheuristicOptimizationFrameworks]. 
 Several widely-used packages are `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `Paradiseo` [@Dreo2021-ParadiseoModularFramework]. 
 These libraries generally focus on evolutionary algorithms and multi-objective optimization, and do not provide a complete implementation of ALNS algorithm out of the box. 
-While it is possible to adapt available algorithms to mimic the ALNS algorithm, it requires additional effort from users to add interfaces specific to ALNS, such as acceptance criteria and operator selection schemes.
+While it is possible to adapt available algorithms to mimic the ALNS algorithm, it requires additional effort from users to add features specific to ALNS, such as different acceptance criteria and operator selection schemes.
 This inhibits experimentation with different aspects of the algorithm, and makes re-use by others or in other problem domains difficult.
 Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, and provides many acceptance criteria and operator selection schemes.
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.

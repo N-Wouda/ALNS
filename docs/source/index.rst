@@ -2,6 +2,11 @@ ALNS
 ====
 
 ``alns`` is a general, well-documented and tested implementation of the adaptive large neighbourhood search (ALNS) metaheuristic in Python.
+ALNS is an algorithm that can be used to solve difficult combinatorial optimisation problems.
+The algorithm begins with an initial solution.
+Then the algorithm iterates until a stopping criterion is met.
+In each iteration, a destroy and repair operator are selected, which transform the current solution into a candidate solution.
+This candidate solution is then evaluated by an acceptance criterion, and the operator selection scheme is updated based on the evaluation outcome.
 
 It is common in the operations research community to re-implement heuristics such as ALNS.
 Such implementations are relatively limited, are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
@@ -18,6 +23,7 @@ The ``alns`` package can be installed through *pip* via
 
 .. note::
 
+    Have a look at the :doc:`setup/template` to get started on your own ALNS metaheuristic.
     To set-up an installation from source, or to run the examples listed below yourself, please have a look at the :doc:`setup/installation`.
 
 .. toctree::
@@ -27,6 +33,7 @@ The ``alns`` package can be installed through *pip* via
    setup/installation
    setup/contributing
    setup/getting_help
+   setup/template
 
 .. toctree::
    :maxdepth: 1
@@ -48,9 +55,3 @@ The ``alns`` package can be installed through *pip* via
    api/accept
    api/select
    api/stop
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Miscellaneous
-
-   misc/publications

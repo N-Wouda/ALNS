@@ -41,6 +41,17 @@ Our `alns` package, by contrast, offers a clear and problem-agnostic API for usi
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.
 These allow researchers and practitioners to rapidly develop state-of-the-art metaheuristics in a wide range of problem domains.
 
+
+# State of the field
+
+A large number of software libraries exists that facilitate the implementation of metaheuristics [@Parejo2012-MetaheuristicOptimizationFrameworks].
+The most widely-used packages generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `PySwarms` [@Miranda2018-PySwarmsResearchToolkit]. 
+These libraries provide limited functionality for single-trajectory algorithms, which is the class of algorithms that ALNS belongs to.
+Among libraries that focus on single-trajectory algorithms are `Paradiseo` [@Dreo2021-ParadiseoModularFramework], which is implemented in C++, and `Chips-n-Salsa` [@Cicirello2020-ChipsnSalsaJavaLibrary], which is implemented in Java.
+However, these libraries do not provide an implementation of the ALNS algorithm out of the box.
+Finally, the ALNS library by @Santini2019-AdaptiveLargeNeighbourhood is a problem-agnostic implementation of ALNS in C++.
+This library provides a large number of acceptance criteria, but only provides the roulette wheel mechanism as operator selection scheme.
+
 # Features
 
 At its core, ALNS is an iterative ruin-and-recreate algorithm that runs until some stopping criterion is met.

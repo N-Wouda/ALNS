@@ -18,7 +18,7 @@ affiliations:
    index: 1
  - name: "Department of Mathematics, Vrije Universiteit Amsterdam, Amsterdam, The Netherlands \\newline"
    index: 2
-date: 1 November 2022
+date: 31 December 2022
 bibliography: paper.bib
 ---
 
@@ -41,16 +41,15 @@ Our `alns` package, by contrast, offers a clear and problem-agnostic API for usi
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.
 These allow researchers and practitioners to rapidly develop state-of-the-art metaheuristics in a wide range of problem domains.
 
-
 # State of the field
 
-A large number of software libraries exists that facilitate the implementation of metaheuristics [@Parejo2012-MetaheuristicOptimizationFrameworks].
-The most widely-used packages generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `PySwarms` [@Miranda2018-PySwarmsResearchToolkit]. 
-These libraries provide limited functionality for single-trajectory algorithms, which is the class of algorithms that ALNS belongs to.
+Several software libraries exist that facilitate the implementation of metaheuristics [@Parejo2012-MetaheuristicOptimizationFrameworks].
+The most widely-used libraries generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `PySwarms` [@Miranda2018-PySwarmsResearchToolkit]. 
+However, these libraries provide limited functionality for single-trajectory algorithms---the class that ALNS belongs to.
 Among libraries that focus on single-trajectory algorithms are `Paradiseo` [@Dreo2021-ParadiseoModularFramework], which is implemented in C++, and `Chips-n-Salsa` [@Cicirello2020-ChipsnSalsaJavaLibrary], which is implemented in Java.
-However, these libraries do not provide an implementation of the ALNS algorithm out of the box.
+Neither provides an implementation of the ALNS algorithm out of the box.
 Finally, the ALNS library by @Santini2019-AdaptiveLargeNeighbourhood is a problem-agnostic implementation of ALNS in C++.
-This library provides a large number of acceptance criteria, but only provides the roulette wheel mechanism as operator selection scheme.
+This library provides a large number of acceptance criteria [@Santini_et_al:2018], but offers no support for different operator selection schemes or stopping criteria.
 
 # Features
 
@@ -77,5 +76,9 @@ The package can easily be installed through `pip`, and our detailed documentatio
 The documentation also explains how to implement several other single-trajectory neighbourhood search algorithms using `alns`.
 Further, the documentation provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, permutation flow shop problem, and the resource-constrained project scheduling problem.
 These implementations will help users quickly get started solving their own problems using `alns`.
+
+# A short example
+
+TODO
 
 # References

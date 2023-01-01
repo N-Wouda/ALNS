@@ -7,9 +7,9 @@ acceptance criteria in :mod:`alns.accept`, operator selection schemes in
 
 You should provide the following:
 
-- A solution state for your problem that implements an ``objective()`` function.
-- An initial solution.
-- One or more destroy and repair operators tailored to your problem. Each destroy
+* A solution state for your problem that implements an ``objective()`` function.
+* An initial solution.
+* One or more destroy and repair operators tailored to your problem. Each destroy
   operator should copy the passed-in state; see
   :meth:`~alns.ALNS.ALNS.add_destroy_operator` for details.
 

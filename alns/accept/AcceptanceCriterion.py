@@ -7,7 +7,7 @@ from alns.State import State
 
 class AcceptanceCriterion(ABC):
     """
-    Base class from which to implement an acceptance criterion.
+    Base class describing an acceptance criterion.
     """
 
     @abstractmethod

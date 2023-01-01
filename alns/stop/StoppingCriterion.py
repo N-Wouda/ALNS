@@ -7,7 +7,7 @@ from alns.State import State
 
 class StoppingCriterion(ABC):
     """
-    Base class from which to implement a stopping criterion.
+    Base class describing a stopping criterion.
     """
 
     @abstractmethod

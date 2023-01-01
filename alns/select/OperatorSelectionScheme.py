@@ -10,7 +10,7 @@ from alns.State import State
 
 class OperatorSelectionScheme(ABC):
     """
-    Base class from which to implement an operator selection scheme.
+    Base class describing an operator selection scheme.
 
     Parameters
     ----------

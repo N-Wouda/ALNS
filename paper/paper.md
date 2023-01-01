@@ -28,28 +28,26 @@ The `alns` Python package provides a complete implementation of the adaptive lar
 ALNS has quickly become a favourite in the field of operations research for solving difficult combinatorial problems, including the vehicle routing problem and various scheduling problems.
 Our package has an easy-to-use API and includes various stopping criteria, a large set of acceptance criteria based on @Santini_et_al:2018, and multiple operator selection schemes.
 Furthermore, it supports many other single-trajectory neighbourhood search algorithms as special cases, including iterated local search (ILS), variable neighbourhood search (VNS), and the greedy randomised adaptive search procedure (GRASP).
-The package has already been successfully used for research into methodological improvements of ALNS itself [@Reijnen_et_al:2022], and for the development of a high-quality ALNS metaheuristic solving an industry problem [@Wouda_et_al:2022].
+The package has already been successfully used for research into methodological improvements of ALNS itself [@Reijnen_et_al:2022], and for the development of a high-quality ALNS metaheuristic solving an industry problem [@Wouda_et_al:2023].
 Because of this success, we expect the package to be useful to the wider operations research community.
 
 # Statement of need
 
-It is common in the operations research community to re-implement heuristics [@Swan_et_al:2022; @vidal:2022].
+Several software libraries exist that facilitate the implementation of metaheuristics [@Parejo2012-MetaheuristicOptimizationFrameworks].
+The most widely-used libraries generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `PySwarms` [@Miranda2018-PySwarmsResearchToolkit].
+As such, these libraries provide limited functionality for single-trajectory algorithms like ALNS.
+Among libraries that focus on single-trajectory algorithms are `Paradiseo` [@Dreo2021-ParadiseoModularFramework], and `Chips-n-Salsa` [@Cicirello2020-ChipsnSalsaJavaLibrary].
+Neither provides an implementation of the ALNS algorithm out of the box.
+Finally, the ALNS library by @Santini2019-AdaptiveLargeNeighbourhood is a problem-agnostic implementation of ALNS in C++.
+This library provides a number of acceptance criteria, but supports only the roulette wheel operator selection scheme of @Ropke_Pisinger:2006.
+
+Despite the existence of these software libraries, it remains common in the operations research community to re-implement heuristics [@Swan_et_al:2022].
 Such implementations are relatively limited, are typically tied tightly to one particular problem domain, and often implement just a single acceptance criterion and operator selection scheme.
 The survey of @Windras_Mara_et_al:2022 corroborates these claims: 205 out of the 251 papers they survey only consider a simulated annealing acceptance criterion, and only one paper uses an operator selection scheme that is not based on the roulette wheel mechanism of @Ropke_Pisinger:2006.
 This inhibits experimentation with different aspects of the algorithm, and makes re-use by others or in other problem domains difficult.
 Our `alns` package, by contrast, offers a clear and problem-agnostic API for using the ALNS algorithm, and provides many acceptance criteria and operator selection schemes.
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.
 These allow researchers and practitioners to rapidly develop state-of-the-art metaheuristics in a wide range of problem domains.
-
-# State of the field
-
-Several software libraries exist that facilitate the implementation of metaheuristics [@Parejo2012-MetaheuristicOptimizationFrameworks].
-The most widely-used libraries generally focus on population-based evolutionary algorithms and multi-objective optimization, for example `DEAP` [@Fortin2012-DEAPEvolutionaryAlgorithms], `ECJ` [@Scott2019-ECJ20General], `jMetal` [@Durillo2011-JMetalJavaFramework], `Metaheuristics.jl` [@Mejia-de-Dios2022-MetaheuristicsJuliaPackage], and `PySwarms` [@Miranda2018-PySwarmsResearchToolkit]. 
-However, these libraries provide limited functionality for single-trajectory algorithms---the class that ALNS belongs to.
-Among libraries that focus on single-trajectory algorithms are `Paradiseo` [@Dreo2021-ParadiseoModularFramework], which is implemented in C++, and `Chips-n-Salsa` [@Cicirello2020-ChipsnSalsaJavaLibrary], which is implemented in Java.
-Neither provides an implementation of the ALNS algorithm out of the box.
-Finally, the ALNS library by @Santini2019-AdaptiveLargeNeighbourhood is a problem-agnostic implementation of ALNS in C++.
-This library provides a large number of acceptance criteria [@Santini_et_al:2018], but offers no support for different operator selection schemes or stopping criteria.
 
 # Features
 
@@ -73,12 +71,14 @@ The `alns` Python package offers:
 - Diagnostic statistics collection and plotting methods that can be accessed after solving.
 
 The package can easily be installed through `pip`, and our detailed documentation is available [here](https://alns.readthedocs.io/).
-The documentation also explains how to implement several other single-trajectory neighbourhood search algorithms using `alns`.
-Further, the documentation provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, permutation flow shop problem, and the resource-constrained project scheduling problem.
+To get started using `alns`, a user must provide:
+
+- A solution state for your problem that implements an `objective()` function.
+- An initial solution using this solution state.
+- One or more destroy and repair operators tailored to your problem.
+
+We provide a [quickstart template](https://alns.readthedocs.io/en/latest/setup/template.html) in our documentation, where these elements are listed as 'TODO'.
+The documentation also provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, permutation flow shop problem, and the resource-constrained project scheduling problem.
 These implementations will help users quickly get started solving their own problems using `alns`.
-
-# A short example
-
-TODO
 
 # References

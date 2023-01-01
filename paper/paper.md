@@ -73,9 +73,9 @@ The `alns` Python package offers:
 The package can easily be installed through `pip`, and our detailed documentation is available [here](https://alns.readthedocs.io/).
 To get started using `alns`, a user must provide:
 
-- A solution state for your problem that implements an `objective()` function.
+- A solution state for their problem that implements an `objective()` function.
 - An initial solution using this solution state.
-- One or more destroy and repair operators tailored to your problem.
+- One or more destroy and repair operators tailored to the problem.
 
 We provide a [quickstart template](https://alns.readthedocs.io/en/latest/setup/template.html) in our documentation, where these elements are listed as 'TODO'.
 The documentation also provides several complete implementations of ALNS metaheuristics solving instances of the travelling salesman problem, capacitated vehicle routing problem, cutting stock problem, permutation flow shop problem, and the resource-constrained project scheduling problem.

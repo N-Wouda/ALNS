@@ -25,6 +25,7 @@ It can be installed through *pip* via
 .. note::
 
     Have a look at the :doc:`setup/template` to get started on your own ALNS metaheuristic.
+    If you are new to metaheuristics or ALNS, you might also benefit from reading :doc:`setup/introduction_to_alns`.
     To set-up an installation from source, or to run the examples listed below yourself, please have a look at the :doc:`setup/installation`.
 
 .. toctree::
@@ -32,6 +33,7 @@ It can be installed through *pip* via
    :caption: Getting started
 
    setup/installation
+   setup/introduction_to_alns
    setup/contributing
    setup/getting_help
    setup/template

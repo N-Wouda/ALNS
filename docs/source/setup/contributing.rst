@@ -15,23 +15,32 @@ Then, clone your new fork to some local environment:
 
    git clone https://github.com/<your username>/ALNS.git
 
-Follow the rest of the instructions in :ref:`running-locally` on setting up ``poetry``, and installing the required dependencies.
-This might take a few minutes.
+Now, change into the ALNS directory, and set-up the virtual environment using ``poetry``:
 
+.. code-block:: shell
+
+   cd ALNS
+
+   pip install --upgrade poetry
+   poetry install --with examples
+
+This might take a few minutes, but only needs to be done once.
 Now make sure everything runs smoothly, by executing the test suite:
 
 .. code-block:: shell
 
    poetry run pytest
 
-If you use `pre-commit <https://pre-commit.com/>`_, you can use our pre-commit configuration file to set that up too.
-Simply type:
+.. note::
 
-.. code-block:: shell
+   If you use `pre-commit <https://pre-commit.com/>`_, you can use our pre-commit configuration file to set that up too.
+   Simply type:
 
-   pre-commit install
+   .. code-block:: shell
 
-After this completes, style and typing issues are automatically checked whenever you make a new commit to your feature branch.
+      pre-commit install
+
+   After this completes, style and typing issues are automatically checked whenever you make a new commit to your feature branch.
 
 
 Committing changes

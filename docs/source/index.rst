@@ -15,7 +15,8 @@ This ``alns`` package, by contrast, offers a clear and problem-agnostic API for 
 Additionally, we provide diagnostic statistics, plotting methods, logging, and the ability to register custom callbacks at various points of the search.
 These allow researchers and practitioners to rapidly develop state-of-the-art metaheuristics in a wide range of problem domains.
 
-The ``alns`` package can be installed through *pip* via
+The ``alns`` package depends only on ``numpy`` and ``matplotlib``.
+It can be installed through *pip* via
 
 .. code-block:: shell
 

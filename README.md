@@ -23,6 +23,9 @@ The documentation is available [here][1].
 
 ### Getting started
 
+If you are new to metaheuristics or ALNS, you might benefit from reading
+the [introduction to ALNS][11] page.
+
 The `alns` library provides the ALNS algorithm and various acceptance criteria,
 operator selection schemes, and stopping criteria. To solve your own problem,
 you should provide the following:
@@ -90,3 +93,5 @@ If you are looking for help, please follow the instructions [here][7].
 [9]: https://alns.readthedocs.io/en/latest/examples/permutation_flow_shop_problem.html
 
 [10]: https://alns.readthedocs.io/en/latest/setup/template.html
+
+[11]: https://alns.readthedocs.io/en/latest/setup/introduction_to_alns.html

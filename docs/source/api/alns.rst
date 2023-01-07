@@ -5,9 +5,7 @@
 ALNS
 ====
 
-The top-level :mod:`alns` module contains two public classes: :class:`~alns.ALNS.ALNS` and :class:`~alns.State.State`.
-The first is used to run the ALNS algorithm.
-The second can be subclassed to define a solution state: all that is needed is to define a `objective()` member function that returns the solution cost.
+The top-level :mod:`alns` module exposes the :class:`~alns.ALNS.ALNS` class, which is used to run the ALNS algorithm.
 
 Finally, the :meth:`~alns.ALNS.ALNS.iterate` method on :class:`~alns.ALNS.ALNS` instances returns a :class:`~alns.Result.Result` object.
 Its properties and methods can be used to access the final solution and runtime statistics.

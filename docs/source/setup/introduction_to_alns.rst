@@ -51,7 +51,7 @@ In pseudocode, ALNS works as follows:
         **repeat** until stopping criteria is met:
             Select destroy and repair operator pair :math:`(d, r)` using operator selection scheme
             :math:`s^c \gets r(d(s))`
-            **if** candidate is accepted:
+            **if** :math:`s^c` is accepted:
                 :math:`s \gets s^c`
             **if** :math:`s^c` has a better objective value than :math:`s^*`:
                 :math:`s^* \gets s^c`

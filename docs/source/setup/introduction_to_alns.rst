@@ -16,7 +16,7 @@ Finding an *optimal* solution, however, can be very difficult since there are :m
 
 .. note::
 
-    :ref:`This example notebooks </examples/travelling_salesman_problem.ipynb>` solves a TSP instance using ALNS.
+    :ref:`This example notebook </examples/travelling_salesman_problem.ipynb>` solves a TSP instance using ALNS.
 
 Due to the explosive growth of the search space, most combinatorial problems cannot be solved optimally by testing every solution in the search space.
 For these problems, a heuristic method can help find good (but not necessarily optimal) solutions quickly.

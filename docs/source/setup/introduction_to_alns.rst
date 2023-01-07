@@ -59,10 +59,7 @@ In pseudocode, ALNS works as follows:
         **return** :math:`s^*`
 
 The ``alns`` package provides the ALNS algorithm, stopping and acceptance criteria, and various operator selection schemes for you.
-You need to provide:
-
-* An initial solution.
-* One or more destroy and repair operators tailored to your problem.
+You need to provide an initial solution, and one or more destroy and repair operators tailored to your problem.
 
 .. hint::
 

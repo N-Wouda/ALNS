@@ -34,9 +34,9 @@ It can be installed through *pip* via
 
    setup/installation
    setup/introduction_to_alns
+   setup/template
    setup/contributing
    setup/getting_help
-   setup/template
 
 .. toctree::
    :maxdepth: 1

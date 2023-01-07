@@ -13,6 +13,9 @@ You should provide the following:
   operator should copy the passed-in state; see
   :meth:`~alns.ALNS.ALNS.add_destroy_operator` for details.
 
+Typically, a good first destroy operator is *random removal*, which randomly destroys some part of the current solution.
+A good first repair operator is *greedy repair*, which repairs the partially destroyed solution in a greedy manner.
+
 .. note::
 
    The ``alns`` package assumes your problem is a minimisation problem. If you

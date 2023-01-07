@@ -22,10 +22,7 @@ ALNS is one such heuristic method.
 
     :ref:`/examples/travelling_salesman_problem.ipynb` solves a TSP instance using ALNS.
 
-ALNS
-----
-
-The adaptive large neighbourhood search (ALNS) metaheuristic is:
+Specifically, the adaptive large neighbourhood search metaheuristic is:
 
 * A large neighbourhood search (LNS) method.
   LNS methods explore large subsets of the search space in a systematic manner.
@@ -40,6 +37,22 @@ The adaptive large neighbourhood search (ALNS) metaheuristic is:
 ALNS begins with an initial solution and then iterates until a stopping criterion is met.
 In each iteration, a destroy and repair operator are selected, which transform the current solution into a candidate solution.
 This candidate solution is then evaluated by an acceptance criterion, and the operator selection scheme is updated based on the evaluation outcome.
+In pseudocode, ALNS works as follows:
+
+    .. line-block::
+
+        **Input:** an initial solution :math:`s`
+        **Output:** optimised solution :math:`s^*`
+        :math:`s^* \gets s`
+        **repeat** until stopping criteria is met:
+            Select destroy and repair operator pair :math:`(d, r)` using operator selection scheme
+            :math:`s^c \gets r(d(s))`
+            **if** candidate is accepted:
+                :math:`s \gets s^c`
+            **if** :math:`s^c` has a better objective value than :math:`s^*`:
+                :math:`s^* \gets s^c`
+            Update operator selection scheme
+        **return** :math:`s^*`
 
 The ``alns`` package provides the ALNS algorithm, stopping and acceptance criteria, and various operator selection schemes for you.
 You need to provide:
@@ -48,7 +61,8 @@ You need to provide:
 * One or more destroy and repair operators tailored to your problem.
 
 Typically, a good start for a destroy operator is *random removal*, which randomly destroys some part of the current solution.
-A good repair operator is *greedy repair*, which then repairs the partially destroyed solution in a greedy manner.
+A good repair operator is *greedy repair*, which repairs the partially destroyed solution in a greedy manner.
 
-Now that you know a little more about the ideas behind ALNS, the :doc:`quickstart code template <template>` is a great place to get started using the ``alns`` package!
+.. hint::
 
+    Now that you know a little more about the ideas behind ALNS, the :doc:`quickstart code template <template>` is a great place to get started using the ``alns`` package!

@@ -83,7 +83,7 @@ The following is a quickstart template that can help you get started:
     best = result.best_state
     print(f"Best heuristic solution objective is {best.objective()}.")
 
-.. note::
+.. hint::
 
     Have a look at the examples to get a feeling for how to implement the TODOs
     in the quickstart template!

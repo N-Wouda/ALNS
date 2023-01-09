@@ -26,7 +26,7 @@ A good first repair operator is *greedy repair*, which repairs the partially des
       \arg \max_x f(x) = \arg \min_x -f(x),
 
    that is, the solution :math:`x` that maximises :math:`f(x)` is the same
-   :math:`x` that mimimises :math:`-f(x)`. In your ALNS implementation, you
+   :math:`x` that minimises :math:`-f(x)`. In your ALNS implementation, you
    should thus implement your objective as :math:`-f(x)`.
 
 The following is a quickstart template that can help you get started:

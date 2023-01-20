@@ -2,6 +2,7 @@
 [![ALNS](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml/badge.svg)](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml)
 [![Documentation Status](https://readthedocs.org/projects/alns/badge/?version=latest)](https://alns.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/N-Wouda/ALNS/branch/master/graph/badge.svg)](https://codecov.io/gh/N-Wouda/ALNS)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.05028/status.svg)](https://doi.org/10.21105/joss.05028)
 
 ``alns`` is a general, well-documented and tested implementation of the adaptive
 large neighbourhood search (ALNS) metaheuristic in Python. ALNS is an algorithm

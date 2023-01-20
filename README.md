@@ -75,6 +75,32 @@ one!
 
 If you are looking for help, please follow the instructions [here][7].
 
+### How to cite `alns`
+
+If you use `alns` in your research, please consider citing the following paper:
+
+> Wouda, N.A., and L. Lan (2023). 
+> ALNS: a Python implementation of the adaptive large neighbourhood search metaheuristic. 
+> _Journal of Open Source Software_, 8(81): 5028. 
+> https://doi.org/10.21105/joss.05028
+
+Or, using the following BibTeX entry:
+
+```bibtex
+@article{Wouda_Lan_ALNS_2023, 
+  doi = {10.21105/joss.05028}, 
+  url = {https://doi.org/10.21105/joss.05028}, 
+  year = {2023}, 
+  publisher = {The Open Journal}, 
+  volume = {8}, 
+  number = {81}, 
+  pages = {5028}, 
+  author = {Niels A. Wouda and Leon Lan}, 
+  title = {ALNS: a Python implementation of the adaptive large neighbourhood search metaheuristic}, 
+  journal = {Journal of Open Source Software} 
+}
+```
+
 [1]: https://alns.readthedocs.io/en/latest/
 
 [2]: https://alns.readthedocs.io/en/latest/examples/travelling_salesman_problem.html

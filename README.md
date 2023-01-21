@@ -96,7 +96,7 @@ Or, using the following BibTeX entry:
   number = {81}, 
   pages = {5028}, 
   author = {Niels A. Wouda and Leon Lan}, 
-  title = {ALNS: a Python implementation of the adaptive large neighbourhood search metaheuristic}, 
+  title = {{ALNS}: a {P}ython implementation of the adaptive large neighbourhood search metaheuristic}, 
   journal = {Journal of Open Source Software} 
 }
 ```

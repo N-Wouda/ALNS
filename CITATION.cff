@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the following metdata."
+authors:
+  - family-names: "Wouda"
+    given-names: "Niels A."
+    orcid: "https://orcid.org/0000-0003-2463-0309"
+  - family-names: "Lan"
+    given-names: "Leon"
+    orcid: "https://orcid.org/0000-0001-7479-0218"
+title: "ALNS"
+version: "v5.0.4"
+date-released: "2023-01-19"
+doi: "10.5281/zenodo.7551649"
+url: "https://github.com/N-Wouda/ALNS"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Wouda"
+    given-names: "Niels A."
+    orcid: "https://orcid.org/0000-0003-2463-0309"
+  - family-names: "Lan"
+    given-names: "Leon"
+    orcid: "https://orcid.org/0000-0001-7479-0218"
+  title: "ALNS: a Python implementation of the adaptive large neighbourhood search metaheuristic"
+  journal: "Journal of Open Source Software"
+  volume: 8
+  number: 81
+  year: 2023
+  doi: "10.21105/joss.05028"
+  pages: 5028

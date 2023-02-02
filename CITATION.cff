@@ -24,7 +24,7 @@ preferred-citation:
   title: "ALNS: a Python implementation of the adaptive large neighbourhood search metaheuristic"
   journal: "Journal of Open Source Software"
   volume: 8
-  number: 81
+  issue: 81
   year: 2023
   doi: "10.21105/joss.05028"
-  pages: 5028
+  start: 5028

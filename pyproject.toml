@@ -40,6 +40,20 @@ pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
 codecov = "*"
 
+# This optional docs group is needed to build the documentation. It is not 
+# required by the package itself.
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+tomli = ">=2.0.1"
+nbsphinx = ">=0.8.9"
+ipython = ">=8.6.0"
+numpydoc = ">=1.5.0"
+sphinx_rtd_theme = ">=0.5.1"
+sphinx-autoapi = ">=2.0.1"
+docutils = "==0.16"
+
 # This optional examples group is needed to run the example notebooks, but not
 # required for the package itself.
 [tool.poetry.group.examples]

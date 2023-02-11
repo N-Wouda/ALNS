@@ -30,7 +30,7 @@ classifiers = [
 "Tracker" = "https://github.com/N-Wouda/ALNS/issues"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.7, <4.0"
 numpy = ">=1.15.2"
 matplotlib = ">=2.2.0"
 

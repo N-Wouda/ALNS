@@ -30,8 +30,8 @@ classifiers = [
 "Tracker" = "https://github.com/N-Wouda/ALNS/issues"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-numpy = ">=1.15.2"
+python = "^3.8, <4.0"
+numpy = ">=1.18.0"
 matplotlib = ">=2.2.0"
 
 [tool.poetry.dev-dependencies]
@@ -39,6 +39,20 @@ pre-commit = "^2.20.0"
 pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
 codecov = "*"
+
+# This optional docs group is needed to build the documentation. It is not 
+# required by the package itself.
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+tomli = ">=2.0.1"
+nbsphinx = ">=0.8.9"
+ipython = ">=8.6.0"
+numpydoc = ">=1.5.0"
+sphinx_rtd_theme = ">=0.5.1"
+sphinx-autoapi = ">=2.0.1"
+docutils = "==0.16"
 
 # This optional examples group is needed to run the example notebooks, but not
 # required for the package itself.

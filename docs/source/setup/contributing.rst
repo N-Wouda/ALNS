@@ -60,11 +60,5 @@ This greatly reduces the job of maintaining and releasing the software.
 - Each function, class, method, and attribute needs to be documented using docstrings.
   We conform to the `NumPy docstring standard <https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard>`_.
 - If you are adding new functionality, you need to add it to the documentation by editing (or creating) the appropriate file in ``docs/source/``.
-- Make sure your documentation changes parse correctly. Change into the top-level ``docs/`` directory and type:
-
-  .. code-block:: shell
-
-     make clean
-     make html
-
-  Check that the build output does not have *any* warnings due to your changes.
+- Make sure your documentation changes parse correctly.
+  See the documentation in the ``docs/`` directory for details on how to build the documentation locally.

@@ -33,6 +33,7 @@ classifiers = [
 python = "^3.8, <4.0"
 numpy = ">=1.18.0"
 matplotlib = ">=3.5.0"
+mabwiser = {version = "^2.7.0", optional = true}
 
 # This group is needed to develop the package itself.
 [tool.poetry.group.dev.dependencies]
@@ -66,6 +67,9 @@ cvrplib = "^0.1.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
 jupyter = "^1.0.0"
+
+[tool.poetry.extras]
+mab = ["mabwiser"]
 
 [tool.black]
 line-length = 79

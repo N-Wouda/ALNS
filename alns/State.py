@@ -3,8 +3,8 @@ from typing import Protocol
 
 class State(Protocol):
     """
-    State object, which stores a solution and whose cost can be evaluated
-    through its ``objective()`` member function.
+    Protocol for a solution state. Solutions should define an ``objective()``
+    member function for evaluation.
     """
 
     def objective(self) -> float:

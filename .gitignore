@@ -60,8 +60,9 @@ docs/_build/
 # PyBuilder
 target/
 
-# JetBrains
+# IDEs
 .idea/
+.vscode/
 
 # Virtualenv
 venv/

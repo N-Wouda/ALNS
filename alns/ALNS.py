@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Protocol, Tuple
 
 import numpy.random as rnd
 
@@ -12,10 +12,25 @@ from alns.accept import AcceptanceCriterion
 from alns.select import OperatorSelectionScheme
 from alns.stop import StoppingCriterion
 
-# TODO these should become Protocol to allow for kwargs. See also this issue:
-#  https://stackoverflow.com/q/61569324/4316405.
-_OperatorType = Callable[[State, rnd.RandomState], State]
-_CallbackType = Callable[[State, rnd.RandomState], None]
+
+class _OperatorType(Protocol):
+    __name__: str
+
+    def __call__(
+        self,
+        state: State,
+        rnd_state: rnd.RandomState,
+        **kwargs,
+    ) -> State:
+        pass
+
+
+class _CallbackType(Protocol):
+    __name__: str
+
+    def __call__(self, state: State, rnd_state: rnd.RandomState, **kwargs):
+        pass
+
 
 logger = logging.getLogger(__name__)
 

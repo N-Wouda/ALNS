@@ -1,16 +1,15 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
 
 from numpy.random import RandomState
 
 from alns.State import State
 
 
-class StoppingCriterion(ABC):
+class StoppingCriterion(Protocol):
     """
-    Base class describing a stopping criterion.
+    Protocol describing a stopping criterion.
     """
 
-    @abstractmethod
     def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
         """
         Determines whether to stop.
@@ -29,4 +28,4 @@ class StoppingCriterion(ABC):
         bool
             Whether to stop iterating (True), or not (False).
         """
-        return NotImplemented
+        pass

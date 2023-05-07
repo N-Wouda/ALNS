@@ -1,9 +1,7 @@
 from collections import deque
 
-from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 
-
-class LateAcceptanceHillClimbing(AcceptanceCriterion):
+class LateAcceptanceHillClimbing:
     """
     The Late Acceptance Hill Climbing (LAHC) criterion accepts a candidate
     solution when it is better than the current solution from a number of

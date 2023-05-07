@@ -1,16 +1,15 @@
-from abc import ABC, abstractmethod
+from typing import Protocol
 
 from numpy.random import RandomState
 
 from alns.State import State
 
 
-class AcceptanceCriterion(ABC):
+class AcceptanceCriterion(Protocol):
     """
-    Base class describing an acceptance criterion.
+    Protocol describing an acceptance criterion.
     """
 
-    @abstractmethod
     def __call__(
         self, rnd: RandomState, best: State, current: State, candidate: State
     ) -> bool:
@@ -34,4 +33,3 @@ class AcceptanceCriterion(ABC):
         bool
             Whether to accept the candidate state (True), or not (False).
         """
-        return NotImplemented

@@ -1,7 +1,4 @@
-from alns.accept.AcceptanceCriterion import AcceptanceCriterion
-
-
-class RandomWalk(AcceptanceCriterion):
+class RandomWalk:
     """
     The random walk criterion always accepts the candidate solution.
     """

@@ -2,13 +2,12 @@ import logging
 
 import numpy as np
 
-from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 from alns.accept.update import update
 
 logger = logging.getLogger(__name__)
 
 
-class SimulatedAnnealing(AcceptanceCriterion):
+class SimulatedAnnealing:
     R"""
     Simulated annealing, using an updating temperature.
 

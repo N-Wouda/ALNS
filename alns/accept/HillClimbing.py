@@ -1,7 +1,4 @@
-from alns.accept.AcceptanceCriterion import AcceptanceCriterion
-
-
-class HillClimbing(AcceptanceCriterion):
+class HillClimbing:
     """
     Hill climbing only accepts progressively better solutions, discarding those
     that result in a worse objective value.

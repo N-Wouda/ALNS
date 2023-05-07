@@ -1,7 +1,4 @@
-from alns import State
-
-
-class VarObj(State):
+class VarObj:
     """Test solution state object with variable objective."""
 
     def __init__(self, obj: float):

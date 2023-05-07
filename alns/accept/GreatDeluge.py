@@ -1,9 +1,7 @@
 from typing import Optional
 
-from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 
-
-class GreatDeluge(AcceptanceCriterion):
+class GreatDeluge:
     """
     The Great Deluge (GD) criterion accepts solutions if the candidate solution
     has a value lower than a threshold (originally called the water level [1]).

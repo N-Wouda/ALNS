@@ -1,8 +1,7 @@
-from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 from alns.accept.update import update
 
 
-class WorseAccept(AcceptanceCriterion):
+class WorseAccept:
     """
     The Worse Accept criterion accepts a candidate solution if it improves over
     the current one, or with a given probability :math:`P` regardless of the

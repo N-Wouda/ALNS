@@ -3,10 +3,9 @@ from typing import Optional
 from numpy.random import RandomState
 
 from alns.State import State
-from alns.stop.StoppingCriterion import StoppingCriterion
 
 
-class NoImprovement(StoppingCriterion):
+class NoImprovement:
     """
     Criterion that stops if the best solution has not been improved
     after a number of iterations.

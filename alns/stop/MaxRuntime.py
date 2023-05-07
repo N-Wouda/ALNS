@@ -4,10 +4,9 @@ from typing import Optional
 from numpy.random import RandomState
 
 from alns.State import State
-from alns.stop.StoppingCriterion import StoppingCriterion
 
 
-class MaxRuntime(StoppingCriterion):
+class MaxRuntime:
     """
     Criterion that stops after a specified maximum runtime.
     """

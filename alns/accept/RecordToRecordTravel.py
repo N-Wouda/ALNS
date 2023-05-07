@@ -1,12 +1,11 @@
 import logging
 
-from alns.accept.AcceptanceCriterion import AcceptanceCriterion
 from alns.accept.update import update
 
 logger = logging.getLogger(__name__)
 
 
-class RecordToRecordTravel(AcceptanceCriterion):
+class RecordToRecordTravel:
     """
     The Record-to-Record Travel (RRT) criterion accepts a candidate solution
     if the absolute gap between the candidate and the best or current solution

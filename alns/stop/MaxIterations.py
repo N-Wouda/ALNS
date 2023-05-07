@@ -1,10 +1,9 @@
 from numpy.random import RandomState
 
 from alns.State import State
-from alns.stop.StoppingCriterion import StoppingCriterion
 
 
-class MaxIterations(StoppingCriterion):
+class MaxIterations:
     """
     Criterion that stops after a maximum number of iterations.
     """

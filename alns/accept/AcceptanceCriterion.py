@@ -33,4 +33,3 @@ class AcceptanceCriterion(Protocol):
         bool
             Whether to accept the candidate state (True), or not (False).
         """
-        pass

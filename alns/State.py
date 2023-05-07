@@ -11,4 +11,3 @@ class State(Protocol):
         """
         Computes the state's associated objective value.
         """
-        pass

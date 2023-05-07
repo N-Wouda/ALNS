@@ -15,10 +15,10 @@ packages = [
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Development Status :: 5 - Production/Stable",
@@ -32,9 +32,11 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8, <4.0"
 numpy = ">=1.18.0"
-matplotlib = ">=2.2.0"
+matplotlib = ">=3.5.0"
 
-[tool.poetry.dev-dependencies]
+# This group is needed to develop the package itself.
+[tool.poetry.group.dev.dependencies]
+vrplib = "^1.0.1"
 pre-commit = "^2.20.0"
 pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"

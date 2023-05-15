@@ -16,11 +16,14 @@ class MABSelector(OperatorSelectionScheme):
     A selector that uses any multi-armed-bandit algorithm from MABWiser.
 
     This selector is a wrapper around the many multi-armed bandit algorithms
-    available in the [MABWiser](https://github.com/fidelity/mabwiser) library.
-    Since ALNS operator selection can be framed as a multi-armed-bandit
-    problem, this wrapper allows you to use a variety of existing
-    multi-armed-bandit algorithms as operator selectors instead of having to
-    reimplement them.
+    available in the `MABWiser <https://github.com/fidelity/mabwiser>`_
+    library. Since ALNS operator selection can be framed as a
+    multi-armed-bandit problem, this wrapper allows you to use a variety of
+    existing multi-armed-bandit algorithms as operator selectors instead of
+    having to reimplement them.
+
+    Note that the supplied ``MAB`` object must be generated with the static
+    method ``make_arms``.
 
     Parameters
     ----------
@@ -31,7 +34,8 @@ class MABSelector(OperatorSelectionScheme):
         rejected (idx 3).
     mab
         A mabwiser MAB object that will be used to select the
-        (destroy, repair) operator pairs.
+        (destroy, repair) operator pairs. Them arms of the ``mab`` object must
+        be generated with the static method ``make_arms``.
     num_destroy
         Number of destroy operators.
     num_repair
@@ -63,7 +67,7 @@ class MABSelector(OperatorSelectionScheme):
         Generates a list of arms for the MAB passed to MABSelector.
 
         Any MABs passed to MABSelector must be generated with this function,
-        and with the same `num_destroy`, `num_repair`, and `op_coupling`
+        and with the same ``num_destroy``, ``num_repair``, and ``op_coupling``
         parameters.
         """
         # the set of valid operator pairs is equal to the cartesian product
@@ -102,7 +106,7 @@ class MABSelector(OperatorSelectionScheme):
         if mab.arms != self.make_arms(num_destroy, num_repair, op_coupling):
             raise ValueError(
                 "Arms in MAB passed to MABSelector are incorrect. Make sure"
-                + "to generate arms with `MABSelector.make_arms`"
+                + "to generate arms with ``MABSelector.make_arms``"
             )
 
         self._mab = mab
@@ -188,7 +192,7 @@ class MABSelector(OperatorSelectionScheme):
     def update(self, cand, d_idx, r_idx, outcome):
         """
         Updates the underlying MAB algorithm given the reward of the chosen
-        destroy and repair operator combination `(d_idx, r_idx)`.
+        destroy and repair operator combination ``(d_idx, r_idx)``.
         """
         if not self._primed:
             self._mab.fit(

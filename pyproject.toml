@@ -36,7 +36,6 @@ matplotlib = ">=3.5.0"
 
 # This group is needed to develop the package itself.
 [tool.poetry.group.dev.dependencies]
-vrplib = "^1.0.1"
 pre-commit = "^2.20.0"
 pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
@@ -62,7 +61,7 @@ docutils = "==0.16"
 optional = true
 
 [tool.poetry.group.examples.dependencies]
-cvrplib = "^0.1.1"
+vrplib = "^1.0.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
 jupyter = "^1.0.0"

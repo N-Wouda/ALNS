@@ -70,6 +70,13 @@ class MABSelector(OperatorSelectionScheme):
         and with the same ``num_destroy``, ``num_repair``, and ``op_coupling``
         parameters.
         """
+        if num_destroy < 1 or num_repair < 1:
+            raise ValueError(
+                "num_destroy and num_repair must be greater than 0."
+            )
+        if op_coupling is not None and op_coupling.sum() == 0:
+            raise ValueError("op_coupling must have at least one True entry.")
+
         # the set of valid operator pairs is equal to the cartesian product
         # of destroy and repair operators, except we leave out any pairs
         # disallowed by op_coupling

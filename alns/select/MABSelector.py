@@ -11,6 +11,37 @@ from alns.State import State
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 
+def ops2arm(destroy_idx: int, repair_idx: int) -> str:
+    """
+    Converts a tuple of destroy and repair operator indices to an arm
+    string that can be passed to self._mab.
+
+    Examples
+    --------
+    >>> ops2arm(0, 1)
+    "0_1"
+    >>> ops2arm(12, 3)
+    "12_3"
+    """
+    return f"{destroy_idx}_{repair_idx}"
+
+
+def arm2ops(arm: str) -> Tuple[int, int]:
+    """
+    Converts an arm string returned from self._mab to a tuple of destroy
+    and repair operator indices.
+
+    Examples
+    --------
+    >>> arm2ops("0_1")
+    (0, 1)
+    >>> arm2ops("12_3")
+    (12, 3)
+    """
+    [destroy, repair] = arm.split("_")
+    return int(destroy), int(repair)
+
+
 class MABSelector(OperatorSelectionScheme):
     """
     A selector that uses any multi-armed-bandit algorithm from MABWiser.
@@ -143,37 +174,6 @@ class MABSelector(OperatorSelectionScheme):
     def mab(self) -> MAB:
         return self._mab
 
-    @staticmethod
-    def _operators_to_arm(destroy_idx: int, repair_idx: int) -> str:
-        """
-        Converts a tuple of destroy and repair operator indices to an arm
-        string that can be passed to self._mab.
-
-        Examples
-        --------
-        >>> MABSelector._operators_to_arm(0, 1)
-        "0_1"
-        >>> MABSelector._operators_to_arm(12, 3)
-        "12_3"
-        """
-        return f"{destroy_idx}_{repair_idx}"
-
-    @staticmethod
-    def _arm_to_operators(arm: str) -> Tuple[int, int]:
-        """
-        Converts an arm string returned from self._mab to a tuple of destroy
-        and repair operator indices.
-
-        Examples
-        --------
-        >>> MABSelector._arm_to_operators("0_1")
-        (0, 1)
-        >>> MABSelector._arm_to_operators("12_3")
-        (12, 3)
-        """
-        [destroy, repair] = arm.split("_")
-        return int(destroy), int(repair)
-
     def __call__(
         self, rnd_state: RandomState, best: State, curr: State
     ) -> Tuple[int, int]:
@@ -195,7 +195,7 @@ class MABSelector(OperatorSelectionScheme):
             prediction = self._mab.predict(
                 contexts=self._context_extractor(curr)
             )
-            return self._arm_to_operators(prediction)
+            return arm2ops(prediction)
 
     def update(self, cand, d_idx, r_idx, outcome):
         """
@@ -204,14 +204,14 @@ class MABSelector(OperatorSelectionScheme):
         """
         if not self._primed:
             self._mab.fit(
-                [self._operators_to_arm(d_idx, r_idx)],
+                [ops2arm(d_idx, r_idx)],
                 [self._scores[outcome]],
                 contexts=self._context_extractor(cand),
             )
             self._primed = True
         else:
             self._mab.partial_fit(
-                [self._operators_to_arm(d_idx, r_idx)],
+                [ops2arm(d_idx, r_idx)],
                 [self._scores[outcome]],
                 contexts=self._context_extractor(cand),
             )

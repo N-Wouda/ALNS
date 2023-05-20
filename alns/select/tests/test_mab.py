@@ -6,6 +6,7 @@ from numpy.testing import assert_equal, assert_raises
 from pytest import mark
 
 from alns.select import MABSelector
+from alns.select.MABSelector import arm2ops, ops2arm
 
 
 def make_dummy_mab(num_destroy, num_repair, op_coupling=None) -> MAB:
@@ -30,9 +31,7 @@ def make_bad_mab(num_destroy, num_repair, op_coupling=None) -> MAB:
 )
 def test_arm_conversion(destroy_idx, repair_idx):
     expected = (destroy_idx, repair_idx)
-    actual = MABSelector._arm_to_operators(
-        MABSelector._operators_to_arm(destroy_idx, repair_idx)
-    )
+    actual = arm2ops(ops2arm(destroy_idx, repair_idx))
 
     assert_equal(actual, expected)
 
@@ -68,8 +67,8 @@ def test_make_arms(num_destroy, num_repair, op_coupling):
     assert_equal(len(arms), num_destroy * num_repair - op_coupling_sum)
 
     for arm in arms:
-        operators = MABSelector._arm_to_operators(arm)
-        output = MABSelector._operators_to_arm(*operators)
+        operators = arm2ops(arm)
+        output = ops2arm(*operators)
         assert_equal(output, arm)
 
 

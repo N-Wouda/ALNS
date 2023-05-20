@@ -18,8 +18,9 @@ class MABSelector(OperatorSelectionScheme):
     This selector is a wrapper around the many multi-armed bandit algorithms
     available in the `MABWiser <https://github.com/fidelity/mabwiser>`_
     library. Since ALNS operator selection can be framed as a
-    multi-armed-bandit problem, this wrapper allows you to use a variety of
-    existing multi-armed-bandit algorithms as operator selectors instead of
+    multi-armed-bandit problem (where each [destroy, repair] operator pair is
+    a bandit arm), this wrapper allows you to use a variety of existing
+    multi-armed-bandit algorithms as operator selectors instead of
     having to reimplement them.
 
     Note that the supplied ``MAB`` object must be generated with the static
@@ -33,8 +34,8 @@ class MABSelector(OperatorSelectionScheme):
         the current solution (idx 1), the solution is accepted (idx 2), or
         rejected (idx 3).
     mab
-        A mabwiser MAB object that will be used to select the
-        (destroy, repair) operator pairs. Them arms of the ``mab`` object must
+        A MABWiser MAB object that will be used to select the
+        (destroy, repair) operator pairs. The arms of the ``mab`` object must
         be generated with the static method ``make_arms``.
     num_destroy
         Number of destroy operators.
@@ -45,8 +46,8 @@ class MABSelector(OperatorSelectionScheme):
         repair operators. Entry (i, j) is True if destroy operator i can be
         used together with repair operator j, and False otherwise.
     context_extractor
-        Optional function that takes a State object and returns a context
-        vector for that state that can be passed to a contextual mabwiser
+        Optional function that takes a ALNS State object and returns a context
+        vector for that state that can be passed to a contextual MABWiser
         bandit. If the MAB algorithm supports it, this context will be used to
         help predict the next (destroy, repair) combination.
 
@@ -64,7 +65,7 @@ class MABSelector(OperatorSelectionScheme):
         op_coupling: Optional[np.ndarray] = None,
     ) -> List[str]:
         """
-        Generates a list of arms for the MAB passed to MABSelector.
+        Generates a list of arms as strings for the MAB passed to MABSelector.
 
         Any MABs passed to MABSelector must be generated with this function,
         and with the same ``num_destroy``, ``num_repair``, and ``op_coupling``

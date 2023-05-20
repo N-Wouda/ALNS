@@ -1,15 +1,3 @@
-# ALNS with Mabwiser
-
-The mabwiser integration isn't fully documented yet, but you can get started by looking at the example in `examples/tsp_mab.py`. The only difference from the provided `examples/travelling_salesman_problem.ipynb` is the following lines
-```
-# USE A MAB ALGORITHM AS A SELECTOR
-#select = RouletteWheel([3, 2, 1, 0.5], 0.8, 3, 1)
-select = MABSelector(MAB(arms=[""], learning_policy=LearningPolicy.EpsilonGreedy(0.15)), [3, 2, 1, 0.5], 3, 1, random_state)
-```
-Which use the new mabwiser-based selector that is part of this fork. Note that the `arms` argument to MAB in this context is unimportant, as they will be replace internally. The main important arguments are `learning_policy` and potentially `neighborhood_policy`. Other than that, the arguments are similar to other ALNS selectors (they take a score array, number of destroy operators, number of repair operators, and a random state).
-
----
-
 [![PyPI version](https://badge.fury.io/py/alns.svg)](https://badge.fury.io/py/alns)
 [![ALNS](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml/badge.svg)](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml)
 [![Documentation Status](https://readthedocs.org/projects/alns/badge/?version=latest)](https://alns.readthedocs.io/en/latest/?badge=latest)

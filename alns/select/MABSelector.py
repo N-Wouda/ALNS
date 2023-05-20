@@ -3,7 +3,7 @@ from typing import Callable, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from mabwiser.mab import MAB
+from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
 from mabwiser.utils import Num
 from numpy.random import RandomState
 
@@ -89,49 +89,21 @@ class MABSelector(OperatorSelectionScheme):
            Int. J. Artif. Intell. Tools, 30(4), 2150021:1–2150021:19.
     """
 
-    @staticmethod
-    def make_arms(
-        num_destroy: int,
-        num_repair: int,
-        op_coupling: Optional[np.ndarray] = None,
-    ) -> List[str]:
-        """
-        Generates a list of arms as strings for the MAB passed to MABSelector.
-
-        Any MABs passed to MABSelector must be generated with this function,
-        and with the same ``num_destroy``, ``num_repair``, and ``op_coupling``
-        parameters.
-        """
-        if num_destroy < 1 or num_repair < 1:
-            raise ValueError(
-                "num_destroy and num_repair must be greater than 0."
-            )
-        if op_coupling is not None and op_coupling.sum() == 0:
-            raise ValueError("op_coupling must have at least one True entry.")
-
-        # the set of valid operator pairs is equal to the cartesian product
-        # of destroy and repair operators, except we leave out any pairs
-        # disallowed by op_coupling
-        return [
-            f"{d_idx}_{r_idx}"
-            for d_idx, r_idx in itertools.product(
-                range(num_destroy), range(num_repair)
-            )
-            if op_coupling is None or op_coupling[d_idx, r_idx]
-        ]
-
     def __init__(
         self,
         scores: List[float],
-        mab: MAB,
         num_destroy: int,
         num_repair: int,
+        learning_policy: LearningPolicy,
+        neighborhood_policy: Optional[NeighborhoodPolicy] = None,
+        seed: Optional[int] = None,
         op_coupling: Optional[np.ndarray] = None,
         context_extractor: Optional[
             Callable[
                 [State], Union[List[Num], np.ndarray, pd.Series, pd.DataFrame]
             ]
         ] = None,
+        **kwargs,
     ):
         super().__init__(num_destroy, num_repair, op_coupling)
 
@@ -142,13 +114,26 @@ class MABSelector(OperatorSelectionScheme):
             # More than four is OK because we only use the first four.
             raise ValueError(f"Expected four scores, found {len(scores)}")
 
-        if mab.arms != self.make_arms(num_destroy, num_repair, op_coupling):
-            raise ValueError(
-                "Arms in MAB passed to MABSelector are incorrect. Make sure"
-                + "to generate arms with ``MABSelector.make_arms``"
-            )
+        # forward the seed argument if not null
+        if seed is not None:
+            kwargs["seed"] = seed
 
-        self._mab = mab
+        # the set of valid operator pairs (arms) is equal to the cartesian
+        # product of destroy and repair operators, except we leave out any
+        # pairs disallowed by op_coupling
+        arms = [
+            f"{d_idx}_{r_idx}"
+            for d_idx, r_idx in itertools.product(
+                range(num_destroy), range(num_repair)
+            )
+            if op_coupling is None or op_coupling[d_idx, r_idx]
+        ]
+        self._mab = MAB(
+            arms,
+            learning_policy,
+            neighborhood_policy,
+            **kwargs,
+        )
         self._scores = scores
 
         def extract_context(state):

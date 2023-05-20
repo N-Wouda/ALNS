@@ -3,12 +3,17 @@ from typing import Callable, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
-from mabwiser.utils import Num
 from numpy.random import RandomState
 
 from alns.State import State
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
+
+MABWISER_AVAILABLE = True
+try:
+    from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
+    from mabwiser.utils import Num
+except ModuleNotFoundError:
+    MABWISER_AVAILABLE = False
 
 
 def ops2arm(destroy_idx: int, repair_idx: int) -> str:
@@ -88,6 +93,9 @@ class MABSelector(OperatorSelectionScheme):
            MABWiser: Parallelizable Contextual Multi-armed Bandits.
            Int. J. Artif. Intell. Tools, 30(4), 2150021:1–2150021:19.
     """
+
+    if not MABWISER_AVAILABLE:
+        raise ImportError("MABSelector requires the MABWiser library. ")
 
     def __init__(
         self,

@@ -33,7 +33,10 @@ classifiers = [
 python = "^3.8, <4.0"
 numpy = ">=1.18.0"
 matplotlib = ">=3.5.0"
-mabwiser = "^2.7.0"
+mabwiser = { version = ">=2.7.0", optional = true }
+
+[tool.poetry.extras]
+mabwiser= ["mabwiser"]  # optional integration with MABWiser
 
 # This group is needed to develop the package itself.
 [tool.poetry.group.dev.dependencies]

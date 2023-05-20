@@ -150,8 +150,6 @@ class MABSelector(OperatorSelectionScheme):
 
         self._mab = mab
         self._scores = scores
-        self._primed = False
-        self._op_coupling = op_coupling
 
         def extract_context(state):
             if context_extractor is None:
@@ -181,37 +179,26 @@ class MABSelector(OperatorSelectionScheme):
         Returns the (destroy, repair) operator pair from the underlying MAB
         strategy
         """
-        if not self._primed:
-            # Default: return the first allowed operator pair
-            if self._op_coupling is None:
-                return 0, 0
-            else:
-                first_non_zero = np.argmax(self._op_coupling)
-                as_indices = np.unravel_index(
-                    first_non_zero, self._op_coupling.shape
-                )
-                return as_indices
-        else:
+        try:
             prediction = self._mab.predict(
                 contexts=self._context_extractor(curr)
             )
             return arm2ops(prediction)
+        except Exception:
+            # This can happen when the MAB object has not yet been fit on any
+            # observations. In that case we return any feasible operator index
+            # pair as a first observation.
+            allowed = np.argwhere(self._op_coupling)
+            idx = rnd_state.randint(len(allowed))
+            return (allowed[idx][0], allowed[idx][1])
 
     def update(self, cand, d_idx, r_idx, outcome):
         """
         Updates the underlying MAB algorithm given the reward of the chosen
         destroy and repair operator combination ``(d_idx, r_idx)``.
         """
-        if not self._primed:
-            self._mab.fit(
-                [ops2arm(d_idx, r_idx)],
-                [self._scores[outcome]],
-                contexts=self._context_extractor(cand),
-            )
-            self._primed = True
-        else:
-            self._mab.partial_fit(
-                [ops2arm(d_idx, r_idx)],
-                [self._scores[outcome]],
-                contexts=self._context_extractor(cand),
-            )
+        self._mab.partial_fit(
+            [ops2arm(d_idx, r_idx)],
+            [self._scores[outcome]],
+            contexts=self._context_extractor(cand),
+        )

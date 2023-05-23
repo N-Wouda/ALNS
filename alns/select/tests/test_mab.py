@@ -1,11 +1,14 @@
 from typing import List
 
+import numpy.random as rnd
 from mabwiser.mab import LearningPolicy, NeighborhoodPolicy
 from numpy.testing import assert_equal, assert_raises
 from pytest import mark
 
+from alns.Outcome import Outcome
 from alns.select import MABSelector
 from alns.select.MABSelector import arm2ops, ops2arm
+from alns.tests.states import Zero
 
 
 @mark.parametrize(
@@ -74,5 +77,44 @@ def test_raises_invalid_arguments(
         MABSelector(scores, num_destroy, num_repair, learning_policy)
 
 
-# TODO:
-# tests that check the predictions of the mab
+def test_call_with_only_one_operator_pair():
+    # Only one operator pair, so the algorithm should select (0, 0).
+    select = MABSelector(
+        [2, 1, 1, 0], 1, 1, LearningPolicy.EpsilonGreedy(0.15)
+    )
+    state = rnd.RandomState()
+
+    selected = select(state, Zero(), Zero())
+    assert_equal(selected, (0, 0))
+
+
+def test_mab_epsilon_greedy():
+    state = rnd.RandomState()
+
+    # epsilon=0 is equivalent to greedy selection
+    select = MABSelector([2, 1, 1, 0], 2, 1, LearningPolicy.EpsilonGreedy(0.0))
+
+    select.update(Zero(), 0, 0, outcome=Outcome.BETTER)
+    selected = select(state, Zero(), Zero())
+    for _ in range(10):
+        selected = select(state, Zero(), Zero())
+        assert_equal(selected, (0, 0))
+
+    select.update(Zero(), 1, 0, outcome=Outcome.BEST)
+    for _ in range(10):
+        selected = select(state, Zero(), Zero())
+        assert_equal(selected, (1, 0))
+
+
+@mark.parametrize("alpha", [0.25, 0.5])
+def test_mab_ucb1(alpha):
+    state = rnd.RandomState()
+    select = MABSelector([2, 1, 1, 0], 2, 1, LearningPolicy.UCB1(alpha))
+
+    select.update(Zero(), 0, 0, outcome=Outcome.BEST)
+    mab_select = select(state, Zero(), Zero())
+    assert_equal(mab_select, (0, 0))
+
+    select.update(Zero(), 0, 0, outcome=Outcome.REJECT)
+    mab_select = select(state, Zero(), Zero())
+    assert_equal(mab_select, (0, 0))

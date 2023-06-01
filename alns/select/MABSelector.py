@@ -1,5 +1,5 @@
 import itertools
-from typing import Callable, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
 import numpy as np
 from numpy.random import RandomState
@@ -9,9 +9,7 @@ from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 MABWISER_AVAILABLE = True
 try:
-    import pandas as pd
     from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
-    from mabwiser.utils import Num
 except ModuleNotFoundError:
     MABWISER_AVAILABLE = False
 
@@ -103,12 +101,6 @@ class MABSelector(OperatorSelectionScheme):
         neighborhood_policy: Optional["NeighborhoodPolicy"] = None,
         seed: Optional[int] = None,
         op_coupling: Optional[np.ndarray] = None,
-        context_extractor: Optional[
-            Callable[
-                [State],
-                Union[List["Num"], np.ndarray, "pd.Series", "pd.DataFrame"],
-            ]
-        ] = None,
         **kwargs,
     ):
         if not MABWISER_AVAILABLE:
@@ -146,15 +138,16 @@ class MABSelector(OperatorSelectionScheme):
         self._scores = scores
 
         def extract_context(state):
-            if context_extractor is None:
+            if self._mab.is_contextual is False:
                 return None
             else:
-                context = context_extractor(state)
-                if isinstance(context, list):
-                    # if the output is a list, wrap it so it's 2D. Otherwise,
-                    # it's an np array or dataframe, which can be left alone.
-                    context = [context]
-                return context
+                try:
+                    return np.atleast_2d(state.get_context())
+                except AttributeError:
+                    raise ValueError(
+                        "Contextual MAB requires a `get_context` function on"
+                        "the state object"
+                    )
 
         self._context_extractor = extract_context
 

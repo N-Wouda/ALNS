@@ -58,6 +58,7 @@ numpydoc = ">=1.5.0"
 sphinx_rtd_theme = ">=0.5.1"
 sphinx-autoapi = ">=2.0.1"
 docutils = "==0.16"
+mabwiser = ">=2.7.0"
 
 # This optional examples group is needed to run the example notebooks, but not
 # required for the package itself.
@@ -69,6 +70,7 @@ vrplib = "^1.0.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
 jupyter = "^1.0.0"
+mabwiser = ">=2.7.0"
 
 [tool.black]
 line-length = 79

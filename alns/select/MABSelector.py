@@ -4,7 +4,8 @@ from typing import List, Optional, Tuple
 import numpy as np
 from numpy.random import RandomState
 
-from alns.State import State
+from alns.Outcome import Outcome
+from alns.State import ContextualState
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 MABWISER_AVAILABLE = True
@@ -137,7 +138,7 @@ class MABSelector(OperatorSelectionScheme):
         )
         self._scores = scores
 
-        def extract_context(state):
+        def extract_context(state: ContextualState):
             if self._mab.is_contextual is False:
                 return None
             else:
@@ -159,8 +160,11 @@ class MABSelector(OperatorSelectionScheme):
     def mab(self) -> "MAB":
         return self._mab
 
-    def __call__(
-        self, rnd_state: RandomState, best: State, curr: State
+    def __call__(  # type: ignore[override]
+        self,
+        rnd_state: RandomState,
+        best: ContextualState,
+        curr: ContextualState,
     ) -> Tuple[int, int]:
         """
         Returns the (destroy, repair) operator pair from the underlying MAB
@@ -179,7 +183,13 @@ class MABSelector(OperatorSelectionScheme):
             idx = rnd_state.randint(len(allowed))
             return (allowed[idx][0], allowed[idx][1])
 
-    def update(self, cand, d_idx, r_idx, outcome):
+    def update(  # type: ignore[override]
+        self,
+        cand: ContextualState,
+        d_idx: int,
+        r_idx: int,
+        outcome: Outcome,
+    ):
         """
         Updates the underlying MAB algorithm given the reward of the chosen
         destroy and repair operator combination ``(d_idx, r_idx)``.

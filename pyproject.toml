@@ -44,6 +44,7 @@ pre-commit = "^2.20.0"
 pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
 codecov = "*"
+mabwiser = ">=2.7.0"
 
 # This optional docs group is needed to build the documentation. It is not 
 # required by the package itself.

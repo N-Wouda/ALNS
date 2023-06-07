@@ -8,7 +8,7 @@ from pytest import mark
 from alns.Outcome import Outcome
 from alns.select import MABSelector
 from alns.select.MABSelector import arm2ops, ops2arm
-from alns.tests.states import Zero
+from alns.tests.states import Zero, ZeroWithOneContext, ZeroWithZeroContext
 
 
 @mark.parametrize(
@@ -117,4 +117,41 @@ def test_mab_ucb1(alpha):
 
     select.update(Zero(), 0, 0, outcome=Outcome.REJECT)
     mab_select = select(state, Zero(), Zero())
+    assert_equal(mab_select, (0, 0))
+
+
+def test_contextual_mab_requires_context():
+    select = MABSelector(
+        [2, 1, 1, 0],
+        2,
+        1,
+        LearningPolicy.LinGreedy(0),
+    )
+    # error: "Zero" state has no get_context method
+    with assert_raises(ValueError):
+        select.update(Zero(), 0, 0, outcome=Outcome.BEST)
+
+
+def text_contextual_mab_uses_context():
+    state = rnd.RandomState()
+    select = MABSelector(
+        [2, 1, 1, 0],
+        2,
+        1,
+        # epsilon=0 is equivalent to greedy
+        LearningPolicy.LinGreedy(0),
+    )
+
+    select.update(ZeroWithZeroContext(), 0, 0, outcome=Outcome.REJECT)
+    select.update(ZeroWithZeroContext(), 0, 0, outcome=Outcome.REJECT)
+    select.update(ZeroWithZeroContext(), 1, 0, outcome=Outcome.BEST)
+
+    select.update(ZeroWithOneContext(), 1, 0, outcome=Outcome.REJECT)
+    select.update(ZeroWithOneContext(), 1, 0, outcome=Outcome.REJECT)
+    select.update(ZeroWithOneContext(), 0, 0, outcome=Outcome.BEST)
+
+    mab_select = select(state, ZeroWithZeroContext(), ZeroWithZeroContext())
+    assert_equal(mab_select, (1, 0))
+
+    mab_select = select(state, ZeroWithZeroContext(), ZeroWithZeroContext())
     assert_equal(mab_select, (0, 0))

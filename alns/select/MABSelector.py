@@ -147,7 +147,7 @@ class MABSelector(OperatorSelectionScheme):
                 except AttributeError:
                     raise ValueError(
                         "Contextual MAB requires a `get_context` function on"
-                        "the state object"
+                        " the state object"
                     )
 
         self._context_extractor = extract_context
@@ -170,12 +170,12 @@ class MABSelector(OperatorSelectionScheme):
         Returns the (destroy, repair) operator pair from the underlying MAB
         strategy
         """
-        try:
+        if self._mab._is_initial_fit:
             prediction = self._mab.predict(
                 contexts=self._context_extractor(curr)
             )
             return arm2ops(prediction)
-        except Exception:
+        else:
             # This can happen when the MAB object has not yet been fit on any
             # observations. In that case we return any feasible operator index
             # pair as a first observation.

@@ -129,7 +129,7 @@ def test_contextual_mab_requires_context():
         LearningPolicy.LinGreedy(0),
     )
     # error: "Zero" state has no get_context method
-    with assert_raises(ValueError):
+    with assert_raises(AttributeError):
         select.update(Zero(), 0, 0, outcome=Outcome.BEST)
 
 

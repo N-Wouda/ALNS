@@ -84,8 +84,9 @@ def test_call_with_only_one_operator_pair():
     )
     state = rnd.RandomState()
 
-    selected = select(state, Zero(), Zero())
-    assert_equal(selected, (0, 0))
+    for _ in range(10):
+        selected = select(state, Zero(), Zero())
+        assert_equal(selected, (0, 0))
 
 
 def test_mab_epsilon_greedy():

@@ -1,4 +1,3 @@
-import itertools
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -15,37 +14,6 @@ except ModuleNotFoundError:
     MABWISER_AVAILABLE = False
 
 
-def ops2arm(destroy_idx: int, repair_idx: int) -> str:
-    """
-    Converts a tuple of destroy and repair operator indices to an arm
-    string that can be passed to self._mab.
-
-    Examples
-    --------
-    >>> ops2arm(0, 1)
-    "0_1"
-    >>> ops2arm(12, 3)
-    "12_3"
-    """
-    return f"{destroy_idx}_{repair_idx}"
-
-
-def arm2ops(arm: str) -> Tuple[int, int]:
-    """
-    Converts an arm string returned from self._mab to a tuple of destroy
-    and repair operator indices.
-
-    Examples
-    --------
-    >>> arm2ops("0_1")
-    (0, 1)
-    >>> arm2ops("12_3")
-    (12, 3)
-    """
-    [destroy, repair] = arm.split("_")
-    return int(destroy), int(repair)
-
-
 class MABSelector(OperatorSelectionScheme):
     """
     A selector that uses any multi-armed-bandit algorithm from MABWiser.
@@ -58,8 +26,9 @@ class MABSelector(OperatorSelectionScheme):
     multi-armed-bandit algorithms as operator selectors instead of
     having to reimplement them.
 
-    Note that the supplied ``MAB`` object must be generated with the static
-    method ``make_arms``.
+    Note that if the provided learning policy is a contextual bandit
+    algorithm, your state class must provide a `get_context` function that
+    returns a context vector for the current state.
 
     Parameters
     ----------
@@ -68,23 +37,23 @@ class MABSelector(OperatorSelectionScheme):
         candidate solution results in a new global best (idx 0), is better than
         the current solution (idx 1), the solution is accepted (idx 2), or
         rejected (idx 3).
-    mab
-        A MABWiser MAB object that will be used to select the
-        (destroy, repair) operator pairs. The arms of the ``mab`` object must
-        be generated with the static method ``make_arms``.
     num_destroy
         Number of destroy operators.
     num_repair
         Number of repair operators.
+    learning_policy
+        A MABWiser learning policy that acts as an operator selector. See the
+        MABWiser documentation for a list of available learning policies.
+    neighborhood_policy
+        The neighborhood policy that MABWiser should use. Only available for
+        contextual learning policies. See the MABWiser documentation for a
+        list of available neighborhood policies.
+    seed
+        A seed that will be passed to the underlying MABWiser object.
     op_coupling
         Optional boolean matrix that indicates coupling between destroy and
         repair operators. Entry (i, j) is True if destroy operator i can be
         used together with repair operator j, and False otherwise.
-    context_extractor
-        Optional function that takes a ALNS State object and returns a context
-        vector for that state that can be passed to a contextual MABWiser
-        bandit. If the MAB algorithm supports it, this context will be used to
-        help predict the next (destroy, repair) combination.
 
     References
     ----------
@@ -125,10 +94,9 @@ class MABSelector(OperatorSelectionScheme):
         # pairs disallowed by op_coupling
         arms = [
             f"{d_idx}_{r_idx}"
-            for d_idx, r_idx in itertools.product(
-                range(num_destroy), range(num_repair)
-            )
-            if op_coupling is None or op_coupling[d_idx, r_idx]
+            for d_idx in range(num_destroy)
+            for r_idx in range(num_repair)
+            if self._op_coupling[d_idx, r_idx]
         ]
         self._mab = MAB(
             arms,
@@ -137,20 +105,6 @@ class MABSelector(OperatorSelectionScheme):
             **kwargs,
         )
         self._scores = scores
-
-        def extract_context(state: ContextualState):
-            if self._mab.is_contextual is False:
-                return None
-            else:
-                try:
-                    return np.atleast_2d(state.get_context())
-                except AttributeError:
-                    raise ValueError(
-                        "Contextual MAB requires a `get_context` function on"
-                        " the state object"
-                    )
-
-        self._context_extractor = extract_context
 
     @property
     def scores(self) -> List[float]:
@@ -171,9 +125,11 @@ class MABSelector(OperatorSelectionScheme):
         strategy
         """
         if self._mab._is_initial_fit:
-            prediction = self._mab.predict(
-                contexts=self._context_extractor(curr)
+            has_context = self._mab.is_contextual
+            context = (
+                np.atleast_2d(curr.get_context()) if has_context else None
             )
+            prediction = self._mab.predict(contexts=context)
             return arm2ops(prediction)
         else:
             # This can happen when the MAB object has not yet been fit on any
@@ -194,8 +150,42 @@ class MABSelector(OperatorSelectionScheme):
         Updates the underlying MAB algorithm given the reward of the chosen
         destroy and repair operator combination ``(d_idx, r_idx)``.
         """
+        has_context = self._mab.is_contextual
+        context = np.atleast_2d(cand.get_context()) if has_context else None
+
         self._mab.partial_fit(
             [ops2arm(d_idx, r_idx)],
             [self._scores[outcome]],
-            contexts=self._context_extractor(cand),
+            contexts=context,
         )
+
+
+def ops2arm(destroy_idx: int, repair_idx: int) -> str:
+    """
+    Converts a tuple of destroy and repair operator indices to an arm
+    string that can be passed to self._mab.
+
+    Examples
+    --------
+    >>> ops2arm(0, 1)
+    "0_1"
+    >>> ops2arm(12, 3)
+    "12_3"
+    """
+    return f"{destroy_idx}_{repair_idx}"
+
+
+def arm2ops(arm: str) -> Tuple[int, int]:
+    """
+    Converts an arm string returned from self._mab to a tuple of destroy
+    and repair operator indices.
+
+    Examples
+    --------
+    >>> arm2ops("0_1")
+    (0, 1)
+    >>> arm2ops("12_3")
+    (12, 3)
+    """
+    [destroy, repair] = arm.split("_")
+    return int(destroy), int(repair)

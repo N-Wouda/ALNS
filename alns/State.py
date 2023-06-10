@@ -15,19 +15,13 @@ class State(Protocol):
         """
 
 
-class ContextualState(Protocol):
+class ContextualState(State, Protocol):
     """
     Protocol for a solution state that also provides context. Solutions should
-    define an ``objective()`` function as well as a ``get_context()``
-    function.
+    define ``objective()`` and ``get_context()`` methods.
     """
-
-    def objective(self) -> float:
-        """
-        Computes the state's associated objective value.
-        """
 
     def get_context(self) -> np.ndarray:
         """
-        Computes a context vector for the current state
+        Computes a context vector for the current state.
         """

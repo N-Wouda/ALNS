@@ -63,7 +63,7 @@ class AlphaUCB(OperatorSelectionScheme):
     ----------
     .. [1] Hendel, G. 2022. Adaptive large neighborhood search for mixed
            integer programming. *Mathematical Programming Computation* 14:
-           185 – 221.
+           185 - 221.
     """
 
     def __init__(

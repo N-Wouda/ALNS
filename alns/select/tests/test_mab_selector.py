@@ -2,7 +2,7 @@ from typing import List
 
 import numpy.random as rnd
 from mabwiser.mab import LearningPolicy, NeighborhoodPolicy
-from numpy.testing import assert_equal, assert_raises
+from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
 from alns.Outcome import Outcome
@@ -29,25 +29,16 @@ def test_arm_conversion(destroy_idx, repair_idx):
 
 
 def test_does_not_raise_on_valid_mab():
-    MABSelector([0, 0, 0, 0], 2, 1, LearningPolicy.EpsilonGreedy(0.15))
+    policy = LearningPolicy.EpsilonGreedy(0.15)
+    select = MABSelector([5, 0, 3, 0], 2, 1, policy)
+    assert_equal(select.scores, [5, 0, 3, 0])
+    assert_(len(select.mab.arms), 2)
+
+    MABSelector([0, 0, 0, 0], 2, 1, policy, NeighborhoodPolicy.Radius(5))
     MABSelector(
-        [0, 0, 0, 0],
-        2,
-        1,
-        LearningPolicy.EpsilonGreedy(0.15),
-        NeighborhoodPolicy.Radius(5),
+        [1, 0, 0, 0], 2, 1, policy, NeighborhoodPolicy.Radius(5), 1234567
     )
-    MABSelector(
-        [0, 0, 0, 0],
-        2,
-        1,
-        LearningPolicy.EpsilonGreedy(0.15),
-        NeighborhoodPolicy.Radius(5),
-        1234567,
-    )
-    MABSelector(
-        [0, 0, 0, 0], 2, 1, LearningPolicy.EpsilonGreedy(0.15), seed=1234567
-    )
+    MABSelector([2, 1, 0, 0], 2, 1, policy, seed=1234567)
 
 
 @mark.parametrize(

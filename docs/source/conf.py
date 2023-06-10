@@ -64,6 +64,7 @@ intersphinx_mapping = {
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
+    "mabwiser": ("https://fidelity.github.io/mabwiser/", None),
 }
 intersphinx_disabled_domains = ["std"]
 

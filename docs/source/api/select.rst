@@ -17,7 +17,9 @@ All operator selection schemes inherit from :class:`~alns.select.OperatorSelecti
    :members:
 
 .. automodule:: alns.select.MABSelector
-   :members:
+
+   .. autoclass:: MABSelector
+      :members:
 
 .. automodule:: alns.select.RandomSelect
    :members:

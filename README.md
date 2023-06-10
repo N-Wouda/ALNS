@@ -15,9 +15,14 @@ operator selection scheme is updated based on the evaluation outcome.
 
 `alns` depends only on `numpy` and `matplotlib`. It may be installed in the
 usual way as
-
 ```
 pip install alns
+```
+Additionally, to enable more advanced operator selection schemes using 
+multi-armed bandit algorithms, `alns` may be installed with the optional 
+[MABWiser][12] dependency:
+```
+pip install alns[mabwiser]
 ```
 
 The documentation is available [here][1].
@@ -122,3 +127,5 @@ Or, using the following BibTeX entry:
 [10]: https://alns.readthedocs.io/en/latest/setup/template.html
 
 [11]: https://alns.readthedocs.io/en/latest/setup/introduction_to_alns.html
+
+[12]: https://github.com/fidelity/mabwiser

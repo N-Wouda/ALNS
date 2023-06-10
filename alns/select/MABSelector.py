@@ -7,9 +7,10 @@ from alns.Outcome import Outcome
 from alns.State import ContextualState
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
-MABWISER_AVAILABLE = True
 try:
     from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
+
+    MABWISER_AVAILABLE = True
 except ModuleNotFoundError:
     MABWISER_AVAILABLE = False
 
@@ -17,6 +18,11 @@ except ModuleNotFoundError:
 class MABSelector(OperatorSelectionScheme):
     """
     A selector that uses any multi-armed-bandit algorithm from MABWiser.
+
+    .. warning::
+
+       ALNS does not install MABWiser by default. You can install it as an
+       extra dependency via ``pip install alns[mabwiser]``.
 
     This selector is a wrapper around the many multi-armed bandit algorithms
     available in the `MABWiser <https://github.com/fidelity/mabwiser>`_
@@ -26,9 +32,12 @@ class MABSelector(OperatorSelectionScheme):
     multi-armed-bandit algorithms as operator selectors instead of
     having to reimplement them.
 
-    Note that if the provided learning policy is a contextual bandit
-    algorithm, your state class must provide a `get_context` function that
-    returns a context vector for the current state.
+    .. note::
+
+       If the provided learning policy is a contextual bandit algorithm, your
+       state class must implement a ``get_context`` method that returns a
+       context vector for the current state. See the
+       :class:`~alns.State.ContextualState` protocol for details.
 
     Parameters
     ----------
@@ -54,12 +63,15 @@ class MABSelector(OperatorSelectionScheme):
         Optional boolean matrix that indicates coupling between destroy and
         repair operators. Entry (i, j) is True if destroy operator i can be
         used together with repair operator j, and False otherwise.
+    kwargs
+        Any additional arguments. These will be passed to the underlying MAB
+        object.
 
     References
     ----------
     .. [1] Emily Strong, Bernard Kleynhans, & Serdar Kadioglu (2021).
            MABWiser: Parallelizable Contextual Multi-armed Bandits.
-           Int. J. Artif. Intell. Tools, 30(4), 2150021:1–2150021:19.
+           Int. J. Artif. Intell. Tools, 30(4), 2150021: 1 - 19.
     """
 
     def __init__(
@@ -74,7 +86,11 @@ class MABSelector(OperatorSelectionScheme):
         **kwargs,
     ):
         if not MABWISER_AVAILABLE:
-            raise ImportError("MABSelector requires the MABWiser library. ")
+            msg = """
+            The MABSelector requires the MABWiser dependency to be installed.
+            You can install it using `pip install alns[mabwiser]`.
+            """
+            raise ModuleNotFoundError(msg)
 
         super().__init__(num_destroy, num_repair, op_coupling)
 
@@ -85,26 +101,19 @@ class MABSelector(OperatorSelectionScheme):
             # More than four is OK because we only use the first four.
             raise ValueError(f"Expected four scores, found {len(scores)}")
 
-        # forward the seed argument if not null
+        self._scores = scores
+
         if seed is not None:
             kwargs["seed"] = seed
 
-        # the set of valid operator pairs (arms) is equal to the cartesian
-        # product of destroy and repair operators, except we leave out any
-        # pairs disallowed by op_coupling
         arms = [
             f"{d_idx}_{r_idx}"
             for d_idx in range(num_destroy)
             for r_idx in range(num_repair)
             if self._op_coupling[d_idx, r_idx]
         ]
-        self._mab = MAB(
-            arms,
-            learning_policy,
-            neighborhood_policy,
-            **kwargs,
-        )
-        self._scores = scores
+
+        self._mab = MAB(arms, learning_policy, neighborhood_policy, **kwargs)
 
     @property
     def scores(self) -> List[float]:
@@ -125,11 +134,9 @@ class MABSelector(OperatorSelectionScheme):
         strategy
         """
         if self._mab._is_initial_fit:
-            has_context = self._mab.is_contextual
-            context = (
-                np.atleast_2d(curr.get_context()) if has_context else None
-            )
-            prediction = self._mab.predict(contexts=context)
+            has_ctx = self._mab.is_contextual
+            ctx = np.atleast_2d(curr.get_context()) if has_ctx else None
+            prediction = self._mab.predict(contexts=ctx)
             return arm2ops(prediction)
         else:
             # This can happen when the MAB object has not yet been fit on any
@@ -137,7 +144,7 @@ class MABSelector(OperatorSelectionScheme):
             # pair as a first observation.
             allowed = np.argwhere(self._op_coupling)
             idx = rnd_state.randint(len(allowed))
-            return (allowed[idx][0], allowed[idx][1])
+            return allowed[idx][0], allowed[idx][1]
 
     def update(  # type: ignore[override]
         self,
@@ -150,20 +157,19 @@ class MABSelector(OperatorSelectionScheme):
         Updates the underlying MAB algorithm given the reward of the chosen
         destroy and repair operator combination ``(d_idx, r_idx)``.
         """
-        has_context = self._mab.is_contextual
-        context = np.atleast_2d(cand.get_context()) if has_context else None
-
+        has_ctx = self._mab.is_contextual
+        ctx = np.atleast_2d(cand.get_context()) if has_ctx else None
         self._mab.partial_fit(
             [ops2arm(d_idx, r_idx)],
             [self._scores[outcome]],
-            contexts=context,
+            contexts=ctx,
         )
 
 
-def ops2arm(destroy_idx: int, repair_idx: int) -> str:
+def ops2arm(d_idx: int, r_idx: int) -> str:
     """
-    Converts a tuple of destroy and repair operator indices to an arm
-    string that can be passed to self._mab.
+    Converts the given destroy and repair operator indices to an arm string
+    that can be passed to the MAB instance.
 
     Examples
     --------
@@ -172,12 +178,12 @@ def ops2arm(destroy_idx: int, repair_idx: int) -> str:
     >>> ops2arm(12, 3)
     "12_3"
     """
-    return f"{destroy_idx}_{repair_idx}"
+    return f"{d_idx}_{r_idx}"
 
 
 def arm2ops(arm: str) -> Tuple[int, int]:
     """
-    Converts an arm string returned from self._mab to a tuple of destroy
+    Converts an arm string returned by the MAB instance into a tuple of destroy
     and repair operator indices.
 
     Examples
@@ -187,5 +193,5 @@ def arm2ops(arm: str) -> Tuple[int, int]:
     >>> arm2ops("12_3")
     (12, 3)
     """
-    [destroy, repair] = arm.split("_")
-    return int(destroy), int(repair)
+    d_idx, r_idx = map(int, arm.split("_"))
+    return d_idx, r_idx

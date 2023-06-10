@@ -78,7 +78,11 @@ class MABSelector(OperatorSelectionScheme):
         **kwargs,
     ):
         if not MABWISER_AVAILABLE:
-            raise ImportError("MABSelector requires the MABWiser library. ")
+            msg = """
+            The MABSelector requires the MABWiser dependency to be installed.
+            You can install it using `pip install alns[mabwiser]`.
+            """
+            raise ModuleNotFoundError(msg)
 
         super().__init__(num_destroy, num_repair, op_coupling)
 

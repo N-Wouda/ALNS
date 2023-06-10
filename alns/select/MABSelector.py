@@ -19,6 +19,11 @@ class MABSelector(OperatorSelectionScheme):
     """
     A selector that uses any multi-armed-bandit algorithm from MABWiser.
 
+    .. warning::
+
+       ALNS does not install MABWiser by default. You can install it as an
+       extra dependency via ``pip install alns[mabwiser]``.
+
     This selector is a wrapper around the many multi-armed bandit algorithms
     available in the `MABWiser <https://github.com/fidelity/mabwiser>`_
     library. Since ALNS operator selection can be framed as a
@@ -27,9 +32,12 @@ class MABSelector(OperatorSelectionScheme):
     multi-armed-bandit algorithms as operator selectors instead of
     having to reimplement them.
 
-    Note that if the provided learning policy is a contextual bandit
-    algorithm, your state class must provide a `get_context` function that
-    returns a context vector for the current state.
+    .. note::
+
+       If the provided learning policy is a contextual bandit algorithm, your
+       state class must implement a ``get_context`` method that returns a
+       context vector for the current state. See the
+       :class:`~alns.State.ContextualState` protocol for details.
 
     Parameters
     ----------
@@ -63,7 +71,7 @@ class MABSelector(OperatorSelectionScheme):
     ----------
     .. [1] Emily Strong, Bernard Kleynhans, & Serdar Kadioglu (2021).
            MABWiser: Parallelizable Contextual Multi-armed Bandits.
-           Int. J. Artif. Intell. Tools, 30(4), 2150021: 1-19.
+           Int. J. Artif. Intell. Tools, 30(4), 2150021: 1 - 19.
     """
 
     def __init__(

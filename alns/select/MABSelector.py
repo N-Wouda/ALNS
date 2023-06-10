@@ -7,9 +7,10 @@ from alns.Outcome import Outcome
 from alns.State import ContextualState
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
-MABWISER_AVAILABLE = True
 try:
     from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
+
+    MABWISER_AVAILABLE = True
 except ModuleNotFoundError:
     MABWISER_AVAILABLE = False
 
@@ -54,12 +55,15 @@ class MABSelector(OperatorSelectionScheme):
         Optional boolean matrix that indicates coupling between destroy and
         repair operators. Entry (i, j) is True if destroy operator i can be
         used together with repair operator j, and False otherwise.
+    kwargs
+        Any additional arguments. These will be passed to the underlying MAB
+        object.
 
     References
     ----------
     .. [1] Emily Strong, Bernard Kleynhans, & Serdar Kadioglu (2021).
            MABWiser: Parallelizable Contextual Multi-armed Bandits.
-           Int. J. Artif. Intell. Tools, 30(4), 2150021:1–2150021:19.
+           Int. J. Artif. Intell. Tools, 30(4), 2150021: 1-19.
     """
 
     def __init__(
@@ -85,26 +89,24 @@ class MABSelector(OperatorSelectionScheme):
             # More than four is OK because we only use the first four.
             raise ValueError(f"Expected four scores, found {len(scores)}")
 
-        # forward the seed argument if not null
+        self._scores = scores
+
         if seed is not None:
             kwargs["seed"] = seed
 
-        # the set of valid operator pairs (arms) is equal to the cartesian
-        # product of destroy and repair operators, except we leave out any
-        # pairs disallowed by op_coupling
         arms = [
             f"{d_idx}_{r_idx}"
             for d_idx in range(num_destroy)
             for r_idx in range(num_repair)
             if self._op_coupling[d_idx, r_idx]
         ]
+
         self._mab = MAB(
             arms,
             learning_policy,
             neighborhood_policy,
             **kwargs,
         )
-        self._scores = scores
 
     @property
     def scores(self) -> List[float]:
@@ -126,10 +128,8 @@ class MABSelector(OperatorSelectionScheme):
         """
         if self._mab._is_initial_fit:
             has_context = self._mab.is_contextual
-            context = (
-                np.atleast_2d(curr.get_context()) if has_context else None
-            )
-            prediction = self._mab.predict(contexts=context)
+            ctx = np.atleast_2d(curr.get_context()) if has_context else None
+            prediction = self._mab.predict(contexts=ctx)
             return arm2ops(prediction)
         else:
             # This can happen when the MAB object has not yet been fit on any
@@ -137,7 +137,7 @@ class MABSelector(OperatorSelectionScheme):
             # pair as a first observation.
             allowed = np.argwhere(self._op_coupling)
             idx = rnd_state.randint(len(allowed))
-            return (allowed[idx][0], allowed[idx][1])
+            return allowed[idx][0], allowed[idx][1]
 
     def update(  # type: ignore[override]
         self,
@@ -151,12 +151,11 @@ class MABSelector(OperatorSelectionScheme):
         destroy and repair operator combination ``(d_idx, r_idx)``.
         """
         has_context = self._mab.is_contextual
-        context = np.atleast_2d(cand.get_context()) if has_context else None
-
+        ctx = np.atleast_2d(cand.get_context()) if has_context else None
         self._mab.partial_fit(
             [ops2arm(d_idx, r_idx)],
             [self._scores[outcome]],
-            contexts=context,
+            contexts=ctx,
         )
 
 

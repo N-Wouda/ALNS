@@ -23,5 +23,5 @@ class ContextualState(State, Protocol):
 
     def get_context(self) -> np.ndarray:
         """
-        Computes a context vector for the current state
+        Computes a context vector for the current state.
         """

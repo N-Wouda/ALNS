@@ -101,12 +101,7 @@ class MABSelector(OperatorSelectionScheme):
             if self._op_coupling[d_idx, r_idx]
         ]
 
-        self._mab = MAB(
-            arms,
-            learning_policy,
-            neighborhood_policy,
-            **kwargs,
-        )
+        self._mab = MAB(arms, learning_policy, neighborhood_policy, **kwargs)
 
     @property
     def scores(self) -> List[float]:
@@ -127,8 +122,8 @@ class MABSelector(OperatorSelectionScheme):
         strategy
         """
         if self._mab._is_initial_fit:
-            has_context = self._mab.is_contextual
-            ctx = np.atleast_2d(curr.get_context()) if has_context else None
+            has_ctx = self._mab.is_contextual
+            ctx = np.atleast_2d(curr.get_context()) if has_ctx else None
             prediction = self._mab.predict(contexts=ctx)
             return arm2ops(prediction)
         else:
@@ -150,8 +145,8 @@ class MABSelector(OperatorSelectionScheme):
         Updates the underlying MAB algorithm given the reward of the chosen
         destroy and repair operator combination ``(d_idx, r_idx)``.
         """
-        has_context = self._mab.is_contextual
-        ctx = np.atleast_2d(cand.get_context()) if has_context else None
+        has_ctx = self._mab.is_contextual
+        ctx = np.atleast_2d(cand.get_context()) if has_ctx else None
         self._mab.partial_fit(
             [ops2arm(d_idx, r_idx)],
             [self._scores[outcome]],
@@ -159,10 +154,10 @@ class MABSelector(OperatorSelectionScheme):
         )
 
 
-def ops2arm(destroy_idx: int, repair_idx: int) -> str:
+def ops2arm(d_idx: int, r_idx: int) -> str:
     """
-    Converts a tuple of destroy and repair operator indices to an arm
-    string that can be passed to self._mab.
+    Converts the given destroy and repair operator indices to an arm string
+    that can be passed to the MAB instance.
 
     Examples
     --------
@@ -171,12 +166,12 @@ def ops2arm(destroy_idx: int, repair_idx: int) -> str:
     >>> ops2arm(12, 3)
     "12_3"
     """
-    return f"{destroy_idx}_{repair_idx}"
+    return f"{d_idx}_{r_idx}"
 
 
 def arm2ops(arm: str) -> Tuple[int, int]:
     """
-    Converts an arm string returned from self._mab to a tuple of destroy
+    Converts an arm string returned by the MAB instance into a tuple of destroy
     and repair operator indices.
 
     Examples
@@ -186,5 +181,5 @@ def arm2ops(arm: str) -> Tuple[int, int]:
     >>> arm2ops("12_3")
     (12, 3)
     """
-    [destroy, repair] = arm.split("_")
-    return int(destroy), int(repair)
+    d_idx, r_idx = map(int, arm.split("_"))
+    return d_idx, r_idx

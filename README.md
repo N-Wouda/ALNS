@@ -13,7 +13,9 @@ selected, which transform the current solution into a candidate solution. This
 candidate solution is then evaluated by an acceptance criterion, and the
 operator selection scheme is updated based on the evaluation outcome.
 
-`alns` depends only on `numpy` and `matplotlib`. It may be installed in the
+### Installing `alns`
+
+The `alns` package depends on `numpy` and `matplotlib`. It may be installed in the
 usual way as
 ```
 pip install alns
@@ -25,12 +27,10 @@ multi-armed bandit algorithms, `alns` may be installed with the optional
 pip install alns[mabwiser]
 ```
 
-The documentation is available [here][1].
-
 ### Getting started
 
-If you are new to metaheuristics or ALNS, you might benefit from reading
-the [introduction to ALNS][11] page.
+The documentation is available [here][1]. If you are new to metaheuristics or 
+ALNS, you might benefit from reading the [introduction to ALNS][11] page.
 
 The `alns` library provides the ALNS algorithm and various acceptance criteria,
 operator selection schemes, and stopping criteria. To solve your own problem,

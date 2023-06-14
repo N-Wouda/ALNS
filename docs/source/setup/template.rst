@@ -5,7 +5,7 @@ The ``alns`` library provides the :class:`~alns.ALNS` algorithm and various
 acceptance criteria in :mod:`alns.accept`, operator selection schemes in
 :mod:`alns.select`, and stopping criteria in :mod:`alns.stop`.
 
-You should provide the following:
+You should minimally provide the following:
 
 * A solution state for your problem that implements an ``objective()`` function.
 * An initial solution.
@@ -47,6 +47,12 @@ The following is a quickstart template that can help you get started:
         def objective(self) -> float:
             # TODO implement the objective function
             pass
+
+        def get_context(self):
+            # TODO implement a method returning a context vector. This is only
+            #  needed for some context-aware bandit selectors from MABWiser;
+            #  if you do not use those, this default is already sufficient!
+            return None
 
 
     def initial_state() -> ProblemState:

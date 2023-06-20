@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class AdaptiveThreshold:
     """
     The Adaptive Threshold (AT) criterion accepts solutions if the candidate

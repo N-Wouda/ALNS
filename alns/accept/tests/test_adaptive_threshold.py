@@ -36,7 +36,7 @@ def test_heta(heta):
     assert_equal(adaptive_threshold.heta, heta)
 
 
-@mark.parametrize("gamma", np.arange(2, 11, 0))
+@mark.parametrize("gamma", np.arange(2, 11, -1))
 def test_gamma(gamma):
     adaptive_threshold = AdaptiveThreshold(0.5, gamma)
     assert_equal(adaptive_threshold.gamma, gamma)

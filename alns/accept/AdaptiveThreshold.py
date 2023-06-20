@@ -36,7 +36,7 @@ class AdaptiveThreshold:
     """
 
     def __init__(self, heta: float, gamma: float):
-        if (heta > 1 or heta < 0) or (0 > gamma):
+        if (heta > 1 or heta < 0) or (0 >= gamma):
             raise ValueError("heta must be between 0 and 1, and gamma must be greater than 0.")
 
         self._heta = heta
@@ -60,10 +60,10 @@ class AdaptiveThreshold:
         self._solutions_received = np.append(self._solutions_received, candidate.objective())
         if len(self._solutions_received) <= self._gamma:
             best_solution = min(self._solutions_received)
-            avg_solution = sum(self._solutions_received) / len(self._solutions_received)
+            avg_solution = sum(self._solutions_received) / self._solutions_received.size
         else:
             self._solutions_received = np.delete(self._solutions_received, 0)
             best_solution = min(self._solutions_received)
-            avg_solution = sum(self._solutions_received) / self._gamma
+            avg_solution = sum(self._solutions_received) / self._solutions_received.size
         res = candidate.objective() <= best_solution + self._heta * (avg_solution - best_solution)
         return res

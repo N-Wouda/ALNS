@@ -2,14 +2,6 @@ from statistics import mean
 from typing import List
 
 
-class MockCandidate:
-    def __init__(self, objective):
-        self._objective = objective
-
-    def objective(self):
-        return self._objective
-
-
 class AdaptiveThreshold:
     """
     The Adaptive Threshold (AT) criterion accepts solutions

@@ -72,6 +72,29 @@ def test_accepts_equal_threshold():
     assert_(result)
 
 
+def test_accepts_over_gamma_candidates():
+    adaptive_threshold = AdaptiveThreshold(0.2, 3)
+    adaptive_threshold(MockCandidate(7100))
+    adaptive_threshold(MockCandidate(7200))
+    adaptive_threshold(MockCandidate(7200))
+    result = adaptive_threshold(MockCandidate(7000))
+
+    # The threshold is set at 7000 + 0.2 * (7133.33 - 7000) = 7013.33
+    assert_(result)
+
+
+def test_rejects_over_gamma_candidates():
+    adaptive_threshold = AdaptiveThreshold(0.2, 3)
+    adaptive_threshold(MockCandidate(7100))
+    adaptive_threshold(MockCandidate(7200))
+    adaptive_threshold(MockCandidate(7200))
+    adaptive_threshold(MockCandidate(7000))
+    result = adaptive_threshold(MockCandidate(7100))
+
+    # The threshold is set at 7000 + 0.2 * (7100 - 7000) = 7020
+    assert_(not result)
+
+
 def test_evaluate_consecutive_solutions():
     """
     Test if AT correctly accepts and rejects consecutive solutions.

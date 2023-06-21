@@ -1,5 +1,4 @@
-import numpy as np
-from numpy.testing import assert_, assert_equal, assert_raises
+from numpy.testing import assert_, assert_raises
 from pytest import mark
 
 from alns.accept.AdaptiveThreshold import AdaptiveThreshold
@@ -14,36 +13,24 @@ class MockCandidate:
 
 
 @mark.parametrize(
-    "heta, gamma",
+    "eta, gamma",
     [
-        (1.2, 3),  # heta cannot be < 0 or > 1
+        (1.2, 3),  # eta cannot be < 0 or > 1
         (0.5, -2),  # gamma cannot be < 0
     ],
 )
-def test_raise_invalid_parameters(heta, gamma):
+def test_raise_invalid_parameters(eta, gamma):
     with assert_raises(ValueError):
-        AdaptiveThreshold(heta, gamma)
+        AdaptiveThreshold(eta=eta, gamma=gamma)
 
 
-@mark.parametrize("heta, gamma", [(1, 3), (0.4, 4)])
-def test_no_raise_valid_parameters(heta, gamma):
-    AdaptiveThreshold(heta, gamma)
-
-
-@mark.parametrize("heta", np.arange(0, 1, -1))
-def test_heta(heta):
-    adaptive_threshold = AdaptiveThreshold(heta, 3)
-    assert_equal(adaptive_threshold.heta, heta)
-
-
-@mark.parametrize("gamma", np.arange(2, 11, -1))
-def test_gamma(gamma):
-    adaptive_threshold = AdaptiveThreshold(0.5, gamma)
-    assert_equal(adaptive_threshold.gamma, gamma)
+@mark.parametrize("eta, gamma", [(1, 3), (0.4, 4)])
+def test_no_raise_valid_parameters(eta, gamma):
+    AdaptiveThreshold(eta=eta, gamma=gamma)
 
 
 def test_accepts_below_threshold():
-    adaptive_threshold = AdaptiveThreshold(0.5, 4)
+    adaptive_threshold = AdaptiveThreshold(eta=0.5, gamma=4)
     adaptive_threshold(MockCandidate(7100))
     adaptive_threshold(MockCandidate(7300))
     result = adaptive_threshold(MockCandidate(7125))
@@ -53,7 +40,7 @@ def test_accepts_below_threshold():
 
 
 def test_rejects_above_threshold():
-    adaptive_threshold = AdaptiveThreshold(0.5, 4)
+    adaptive_threshold = AdaptiveThreshold(eta=0.5, gamma=4)
     adaptive_threshold(MockCandidate(7100))
     adaptive_threshold(MockCandidate(7300))
     result = adaptive_threshold(MockCandidate(7225))
@@ -63,7 +50,7 @@ def test_rejects_above_threshold():
 
 
 def test_accepts_equal_threshold():
-    adaptive_threshold = AdaptiveThreshold(0.5, 4)
+    adaptive_threshold = AdaptiveThreshold(eta=0.5, gamma=4)
     adaptive_threshold(MockCandidate(7100))
     adaptive_threshold(MockCandidate(7200))
     result = adaptive_threshold(MockCandidate(7120))
@@ -73,7 +60,7 @@ def test_accepts_equal_threshold():
 
 
 def test_accepts_over_gamma_candidates():
-    adaptive_threshold = AdaptiveThreshold(0.2, 3)
+    adaptive_threshold = AdaptiveThreshold(eta=0.2, gamma=3)
     adaptive_threshold(MockCandidate(7100))
     adaptive_threshold(MockCandidate(7200))
     adaptive_threshold(MockCandidate(7200))
@@ -84,7 +71,7 @@ def test_accepts_over_gamma_candidates():
 
 
 def test_rejects_over_gamma_candidates():
-    adaptive_threshold = AdaptiveThreshold(0.2, 3)
+    adaptive_threshold = AdaptiveThreshold(eta=0.2, gamma=3)
     adaptive_threshold(MockCandidate(7100))
     adaptive_threshold(MockCandidate(7200))
     adaptive_threshold(MockCandidate(7200))
@@ -99,7 +86,7 @@ def test_evaluate_consecutive_solutions():
     """
     Test if AT correctly accepts and rejects consecutive solutions.
     """
-    adaptive_threshold = AdaptiveThreshold(0.5, 4)
+    adaptive_threshold = AdaptiveThreshold(eta=0.5, gamma=4)
 
     result = adaptive_threshold(MockCandidate(7100))
     # The threshold is set at 7100, hence the solution is accepted
@@ -112,3 +99,17 @@ def test_evaluate_consecutive_solutions():
     result = adaptive_threshold(MockCandidate(7120))
     # The threshold is set at 7120, hence the solution is accepted
     assert_(result)
+
+
+def test_history():
+    """
+    Test if AT correctly stores the history of the thresholds correctly.
+    """
+    adaptive_threshold = AdaptiveThreshold(eta=0.5, gamma=4)
+
+    adaptive_threshold(MockCandidate(7100))
+    adaptive_threshold(MockCandidate(7200))
+    adaptive_threshold(MockCandidate(7120))
+    adaptive_threshold(MockCandidate(7100))
+    adaptive_threshold(MockCandidate(7200))
+    assert_(adaptive_threshold._history.__eq__([7200, 7120, 7100, 7200]))

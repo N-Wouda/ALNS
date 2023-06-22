@@ -50,8 +50,8 @@ class AdaptiveThreshold:
            294 (3): 1108 - 1119.
     """
 
-    def __init__(self, eta: float, gamma: float):
-        if (eta > 1 or eta < 0) or (0 >= gamma):
+    def __init__(self, eta: float, gamma: int):
+        if (eta > 1 or eta < 0) or (0 > gamma):
             raise ValueError(
                 "eta must be between 0 and 1, "
                 "and gamma must be greater than 0."
@@ -63,17 +63,17 @@ class AdaptiveThreshold:
 
     @property
     def eta(self) -> float:
-        return self.eta
+        return self._eta
 
     @property
     def gamma(self) -> int:
-        return self.gamma
+        return self._gamma
 
     @property
     def history(self) -> List[float]:
-        return self.history
+        return self._history
 
-    def __call__(self, candidate) -> bool:
+    def __call__(self, rnd, best, current, candidate) -> bool:
         self._history.append(candidate.objective())
         if len(self._history) > self._gamma:
             self._history = self._history[1:]

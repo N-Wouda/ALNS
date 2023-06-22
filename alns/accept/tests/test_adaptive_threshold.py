@@ -1,4 +1,3 @@
-import numpy as np
 import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
@@ -10,7 +9,8 @@ from alns.tests.states import One, Two, VarObj, Zero
 @mark.parametrize(
     "eta, gamma",
     [
-        (-1, 3),  # eta cannot be < 0 or > 1
+        (-1, 3),  # eta cannot be < 0
+        (2, 3),  # eta cannot be > 1
         (0.5, -2),  # gamma cannot be < 0
     ],
 )
@@ -24,13 +24,13 @@ def test_no_raise_valid_parameters(eta, gamma):
     AdaptiveThreshold(eta=eta, gamma=gamma)
 
 
-@mark.parametrize("eta", np.arange(0, 1, 0.1))
+@mark.parametrize("eta", [0, 0.01, 0.5, 0.99, 1])
 def test_eta(eta):
     adaptive_threshold = AdaptiveThreshold(eta, 3)
-    assert_equal(adaptive_threshold._eta, eta)
+    assert_equal(adaptive_threshold.eta, eta)
 
 
-@mark.parametrize("gamma", np.arange(0, 10, 0.1))
+@mark.parametrize("gamma", range(1, 10))
 def test_gamma(gamma):
     adaptive_threshold = AdaptiveThreshold(0.5, gamma)
     assert_equal(adaptive_threshold.gamma, gamma)
@@ -119,4 +119,4 @@ def test_history():
     adaptive_threshold(rnd.RandomState(), One(), One(), VarObj(7120))
     adaptive_threshold(rnd.RandomState(), One(), One(), VarObj(7100))
     adaptive_threshold(rnd.RandomState(), One(), One(), VarObj(7200))
-    assert_(adaptive_threshold._history.__eq__([7200, 7120, 7100, 7200]))
+    assert_equal(adaptive_threshold.history, [7200, 7120, 7100, 7200])

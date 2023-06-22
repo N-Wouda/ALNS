@@ -1,5 +1,6 @@
+import collections
 from statistics import mean
-from typing import List
+from typing import Deque, List
 
 
 class AdaptiveThreshold:
@@ -51,15 +52,15 @@ class AdaptiveThreshold:
     """
 
     def __init__(self, eta: float, gamma: int):
-        if (eta > 1 or eta < 0) or (0 > gamma):
-            raise ValueError(
-                "eta must be between 0 and 1, "
-                "and gamma must be greater than 0."
-            )
+        if not (0 <= eta <= 1):
+            raise ValueError("eta must be in [0, 1].")
+
+        if gamma <= 0:
+            raise ValueError("gamma must be positive.")
 
         self._eta = eta
         self._gamma = gamma
-        self._history: List[float] = []
+        self._history: Deque[float] = collections.deque(maxlen=gamma)
 
     @property
     def eta(self) -> float:
@@ -71,13 +72,12 @@ class AdaptiveThreshold:
 
     @property
     def history(self) -> List[float]:
-        return self._history
+        return list(self._history)
 
     def __call__(self, rnd, best, current, candidate) -> bool:
         self._history.append(candidate.objective())
-        if len(self._history) > self._gamma:
-            self._history = self._history[1:]
         best_solution = min(self._history)
         avg_solution = mean(self._history)
         threshold = best_solution + self._eta * (avg_solution - best_solution)
+        print(self._history)
         return candidate.objective() <= threshold

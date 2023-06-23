@@ -79,5 +79,4 @@ class AdaptiveThreshold:
         best_solution = min(self._history)
         avg_solution = mean(self._history)
         threshold = best_solution + self._eta * (avg_solution - best_solution)
-        print(self._history)
         return candidate.objective() <= threshold

@@ -13,6 +13,9 @@ All acceptance criteria implement :class:`~alns.accept.AcceptanceCriterion.Accep
 .. automodule:: alns.accept.AcceptanceCriterion
    :members:
 
+.. automodule:: alns.accept.AdaptiveThreshold
+   :members:
+
 .. automodule:: alns.accept.GreatDeluge
    :members:
 

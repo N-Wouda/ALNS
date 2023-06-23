@@ -1,54 +1,41 @@
-import collections
+from collections import deque
 from statistics import mean
 from typing import Deque, List
 
 
 class AdaptiveThreshold:
     """
-    The Adaptive Threshold (AT) criterion accepts solutions
-    if the candidate solution has a value lower than an
-    adaptive threshold. The adaptive threshold is computed as:
+    The Adaptive Threshold (AT) criterion of [1]. This criterion accepts a
+    candidate solution if it is better than an adaptive threshold value. The
+    adaptive threshold is computed as:
 
-    ''adaptive_threshold =  best_solution +
-    eta_parameter * (average_solution - best_solution)''
+    .. math::
 
-    where
-    ``best_solution`` is the best solution received so far,
-    ``average_solution`` is the average of the last
-    ``gamma_parameter`` solutions received, and
-    ``eta_parameter`` is a parameter between 0 and 1,
-    the greater the value of
-    ``eta_parameter``, the more likely it is that a solution
-    will be accepted.
+       f(s^*) + \\eta \\left(
+          \\sum_{i = 1}^\\gamma \\frac{f(s^i)}{\\gamma} - f(s^*)
+       \\right)
 
-    Each time a new solution is received,
-    the threshold is updated. The average solution
-    and best solution are taken by the last "gamma_parameter"
-    solutions received. If the number of solutions received
-    is less than"gamma_parameter" then the threshold
-    is updated with the average of all the solutions
-    received so far.
-
-    The implementation is based on the description of AT in [1].
+    where :math:`s^*` is the best solution observed in the last :math:`\\gamma`
+    iterations, :math:`f(\\cdot)` indicates the objective function,
+    :math:`\\eta \\in [0, 1]` and :math:`\\gamma \\in \\mathbb{N}` are
+    parameters, and each :math:`s^i` is a recently observed solution. The
+    recently observed solutions are stored in a ``history`` attributed of size
+    :math:`\\gamma`.
 
     Parameters
     ----------
     eta: float
-        Used to update/tune the threshold,
-        the greater the value of ``eta_parameter``,
-        the more likely it is that a solution will be accepted.
+        Used to determine the threshold value. Larger values of :math:`\\eta`
+        result in more accepted candidate solutions. Must be in [0, 1].
     gamma: int
-        Used to update the threshold, the number of solutions
-        received to compute the average & best solution.
+        History size. Must be positive.
 
     References
     ----------
-    .. [1] Vinícius R. Máximo, Mariá C.V. Nascimento 2021.
-           "A hybrid adaptive iterated local search with
-           diversification control to the capacitated
-           vehicle routing problem."
-           *European Journal of Operational Research*
-           294 (3): 1108 - 1119.
+    .. [1] Máximo, V.R. and M.C.V. Nascimento. 2021. A hybrid adaptive iterated
+           local search with diversification control to the capacitated vehicle
+           routing problem, *European Journal of Operational Research* 294 (3):
+           1108 - 1119.
     """
 
     def __init__(self, eta: float, gamma: int):
@@ -60,7 +47,7 @@ class AdaptiveThreshold:
 
         self._eta = eta
         self._gamma = gamma
-        self._history: Deque[float] = collections.deque(maxlen=gamma)
+        self._history: Deque[float] = deque(maxlen=gamma)
 
     @property
     def eta(self) -> float:
@@ -76,7 +63,8 @@ class AdaptiveThreshold:
 
     def __call__(self, rnd, best, current, candidate) -> bool:
         self._history.append(candidate.objective())
-        best_solution = min(self._history)
-        avg_solution = mean(self._history)
-        threshold = best_solution + self._eta * (avg_solution - best_solution)
+        recent_best = min(self._history)
+        recent_avg = mean(self._history)
+
+        threshold = recent_best + self._eta * (recent_avg - recent_best)
         return candidate.objective() <= threshold

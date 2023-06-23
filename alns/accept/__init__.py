@@ -1,4 +1,5 @@
 from .AcceptanceCriterion import AcceptanceCriterion
+from .AdaptiveThreshold import AdaptiveThreshold
 from .GreatDeluge import GreatDeluge
 from .HillClimbing import HillClimbing
 from .LateAcceptanceHillClimbing import LateAcceptanceHillClimbing

@@ -20,7 +20,7 @@ class AdaptiveThreshold:
     :math:`\\eta \\in [0, 1]` and :math:`\\gamma \\in \\mathbb{N}` are
     parameters, and each :math:`s^i` is a recently observed solution. The
     recently observed solutions are stored in a ``history`` attributed of size
-    :math:`\\gamma`.
+    at most :math:`\\gamma`.
 
     Parameters
     ----------

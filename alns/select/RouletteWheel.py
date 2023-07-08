@@ -3,8 +3,8 @@ from typing import List, Optional, Tuple
 import numpy as np
 from numpy.random import RandomState
 
-from alns.State import State
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
+from alns.State import State
 
 
 class RouletteWheel(OperatorSelectionScheme):

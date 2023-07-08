@@ -52,7 +52,7 @@ class SimulatedAnnealing:
     ----------
     .. [1] Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
            criteria for the adaptive large neighbourhood search metaheuristic.
-           *Journal of Heuristics* (2018) 24 (5): 783–815.
+           *Journal of Heuristics* (2018) 24 (5): 783-815.
     .. [2] Kirkpatrick, S., Gerlatt, C. D. Jr., and Vecchi, M. P. Optimization
            by Simulated Annealing. *IBM Research Report* RC 9355, 1982.
     """

@@ -76,10 +76,16 @@ mabwiser = ">=2.7.0"
 [tool.black]
 line-length = 79
 
-[tool.isort]
-case_sensitive = true
-line_length = 79
-profile = "black"
+[tool.ruff]
+line-length = 79
+select = ["E", "F", "I", "NPY", "RET", "RSE", "RUF", "SLF", "SIM", "TCH"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # unused imports
+
+[tool.ruff.isort]
+# case-sensitive = true
+known-first-party = ["alns"]
 
 [tool.mypy]
 ignore_missing_imports = true

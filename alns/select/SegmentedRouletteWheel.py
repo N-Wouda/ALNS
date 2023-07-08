@@ -3,8 +3,8 @@ from typing import List, Optional
 
 import numpy as np
 
-from alns.State import State
 from alns.select.RouletteWheel import RouletteWheel
+from alns.State import State
 
 logger = logging.getLogger(__name__)
 

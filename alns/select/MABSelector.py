@@ -4,8 +4,8 @@ import numpy as np
 from numpy.random import RandomState
 
 from alns.Outcome import Outcome
-from alns.State import ContextualState
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
+from alns.State import ContextualState
 
 try:
     from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
@@ -133,18 +133,17 @@ class MABSelector(OperatorSelectionScheme):
         Returns the (destroy, repair) operator pair from the underlying MAB
         strategy
         """
-        if self._mab._is_initial_fit:
-            has_ctx = self._mab.is_contextual
-            ctx = np.atleast_2d(curr.get_context()) if has_ctx else None
-            prediction = self._mab.predict(contexts=ctx)
-            return arm2ops(prediction)
-        else:
-            # This can happen when the MAB object has not yet been fit on any
-            # observations. In that case we return any feasible operator index
-            # pair as a first observation.
+        if not self._mab._is_initial_fit:  # noqa: SLF001
+            # The MAB object has not yet been fit. In that case we return any
+            # feasible operator index pair as a first observation.
             allowed = np.argwhere(self._op_coupling)
             idx = rnd_state.randint(len(allowed))
             return allowed[idx][0], allowed[idx][1]
+
+        has_ctx = self._mab.is_contextual
+        ctx = np.atleast_2d(curr.get_context()) if has_ctx else None
+        prediction = self._mab.predict(contexts=ctx)
+        return arm2ops(prediction)
 
     def update(  # type: ignore[override]
         self,

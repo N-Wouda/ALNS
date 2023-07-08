@@ -41,7 +41,7 @@ class NonLinearGreatDeluge(GreatDeluge):
            IEEE conference intelligent systems* (2008) Vol. 1: 8-11.
     .. [3] Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
            criteria for the adaptive large neighbourhood search metaheuristic.
-           *Journal of Heuristics* (2018) 24 (5): 783–815.
+           *Journal of Heuristics* (2018) 24 (5): 783-815.
     """
 
     def __init__(self, alpha: float, beta: float, gamma: float, delta: float):

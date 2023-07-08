@@ -4,12 +4,12 @@ from typing import Dict, List, Optional, Protocol, Tuple
 
 import numpy.random as rnd
 
+from alns.accept import AcceptanceCriterion
 from alns.Outcome import Outcome
 from alns.Result import Result
+from alns.select import OperatorSelectionScheme
 from alns.State import State
 from alns.Statistics import Statistics
-from alns.accept import AcceptanceCriterion
-from alns.select import OperatorSelectionScheme
 from alns.stop import StoppingCriterion
 
 
@@ -198,7 +198,7 @@ class ALNS:
 
         .. [2] S. Røpke and D. Pisinger (2006). A unified heuristic for a large
                class of vehicle routing problems with backhauls. *European
-               Journal of Operational Research*, 171: 750–775.
+               Journal of Operational Research*, 171: 750-775.
         """
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing destroy or repair operators.")

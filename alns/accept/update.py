@@ -27,7 +27,8 @@ def update(current: float, step: float, method: str) -> float:
 
     if method == "linear":
         return current - step
-    elif method == "exponential":
+
+    if method == "exponential":
         return current * step
 
     raise ValueError("Method `{0}' not understood.".format(method))

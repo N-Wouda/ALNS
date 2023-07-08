@@ -131,7 +131,7 @@ class MABSelector(OperatorSelectionScheme):
     ) -> Tuple[int, int]:
         """
         Returns the (destroy, repair) operator pair from the underlying MAB
-        strategy
+        strategy.
         """
         if not self._mab._is_initial_fit:  # noqa: SLF001
             # The MAB object has not yet been fit. In that case we return any

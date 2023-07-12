@@ -84,7 +84,7 @@ select = ["E", "F", "I", "NPY", "RET", "RSE", "RUF", "SLF", "SIM", "TCH"]
 "__init__.py" = ["F401"]  # unused imports
 
 [tool.ruff.isort]
-# case-sensitive = true
+case-sensitive = true
 known-first-party = ["alns"]
 
 [tool.mypy]

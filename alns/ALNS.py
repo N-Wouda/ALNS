@@ -4,12 +4,12 @@ from typing import Dict, List, Optional, Protocol, Tuple
 
 import numpy.random as rnd
 
-from alns.accept import AcceptanceCriterion
 from alns.Outcome import Outcome
 from alns.Result import Result
-from alns.select import OperatorSelectionScheme
 from alns.State import State
 from alns.Statistics import Statistics
+from alns.accept import AcceptanceCriterion
+from alns.select import OperatorSelectionScheme
 from alns.stop import StoppingCriterion
 
 

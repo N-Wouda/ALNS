@@ -4,8 +4,8 @@ import numpy as np
 from numpy.random import RandomState
 
 from alns.Outcome import Outcome
-from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 from alns.State import ContextualState
+from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 try:
     from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy

@@ -35,4 +35,3 @@ You can copy-paste the output of `import alns; alns.show_versions()` to achieve 
 #### Expected Output
 
 A clear and concise description of what you expected to happen.
-

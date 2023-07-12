@@ -48,7 +48,7 @@ class RecordToRecordTravel:
     ----------
     .. [1] Santini, A., Ropke, S. & Hvattum, L.M. A comparison of acceptance
            criteria for the adaptive large neighbourhood search metaheuristic.
-           *Journal of Heuristics* (2018) 24 (5): 783–815.
+           *Journal of Heuristics* (2018) 24 (5): 783-815.
     .. [2] Dueck, G. New optimization heuristics: The great deluge algorithm
            and the record-to-record travel. *Journal of Computational Physics*
            (1993) 104 (1): 86-92.

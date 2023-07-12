@@ -198,7 +198,7 @@ class ALNS:
 
         .. [2] S. Røpke and D. Pisinger (2006). A unified heuristic for a large
                class of vehicle routing problems with backhauls. *European
-               Journal of Operational Research*, 171: 750–775.
+               Journal of Operational Research*, 171: 750-775.
         """
         if len(self.destroy_operators) == 0 or len(self.repair_operators) == 0:
             raise ValueError("Missing destroy or repair operators.")

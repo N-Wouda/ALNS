@@ -8,7 +8,7 @@ from alns.State import ContextualState
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
 
 try:
-    from mabwiser.mab import MAB, LearningPolicy, NeighborhoodPolicy
+    from mabwiser.mab import MAB, LearningPolicyType, NeighborhoodPolicyType
 
     MABWISER_AVAILABLE = True
 except ModuleNotFoundError:
@@ -79,8 +79,8 @@ class MABSelector(OperatorSelectionScheme):
         scores: List[float],
         num_destroy: int,
         num_repair: int,
-        learning_policy: "LearningPolicy",
-        neighborhood_policy: Optional["NeighborhoodPolicy"] = None,
+        learning_policy: LearningPolicyType,
+        neighborhood_policy: Optional[NeighborhoodPolicyType] = None,
         seed: Optional[int] = None,
         op_coupling: Optional[np.ndarray] = None,
         **kwargs,

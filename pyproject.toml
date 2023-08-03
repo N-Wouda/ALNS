@@ -33,7 +33,7 @@ classifiers = [
 python = "^3.8, <4.0"
 numpy = ">=1.18.0"
 matplotlib = ">=3.5.0"
-mabwiser = { version = ">=2.7.0", optional = true }
+mabwiser = { version = ">=2.7.1", optional = true }
 
 [tool.poetry.extras]
 mabwiser = ["mabwiser"]  # optional integration with MABWiser
@@ -44,7 +44,7 @@ pre-commit = "^2.20.0"
 pytest = ">=6.0.0"
 pytest-cov = ">=2.6.1"
 codecov = "*"
-mabwiser = ">=2.7.0"
+mabwiser = ">=2.7.1"
 
 # This optional docs group is needed to build the documentation. It is not 
 # required by the package itself.
@@ -59,7 +59,7 @@ numpydoc = ">=1.5.0"
 sphinx_rtd_theme = ">=0.5.1"
 sphinx-autoapi = ">=2.0.1"
 docutils = "==0.16"
-mabwiser = ">=2.7.0"
+mabwiser = ">=2.7.1"
 
 # This optional examples group is needed to run the example notebooks, but not
 # required for the package itself.
@@ -71,7 +71,7 @@ vrplib = "^1.0.1"
 networkx = ">=2.4.0"
 tsplib95 = ">=0.7.0"
 jupyter = "^1.0.0"
-mabwiser = ">=2.7.0"
+mabwiser = ">=2.7.1"
 
 [tool.black]
 line-length = 79

@@ -1,4 +1,4 @@
-![ALNS logo](docs/source/assets/images/alns.svg)
+![ALNS logo](docs/source/assets/images/logo.svg)
 
 [![PyPI version](https://badge.fury.io/py/alns.svg)](https://badge.fury.io/py/alns)
 [![ALNS](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml/badge.svg)](https://github.com/N-Wouda/ALNS/actions/workflows/alns.yaml)

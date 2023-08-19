@@ -1,6 +1,5 @@
 .. figure:: assets/images/logo.svg
-   :alt: PyVRP logo
-   :figwidth: 100%
+   :alt: ALNS logo
 
 
 ``alns`` is a general, well-documented and tested implementation of the adaptive large neighbourhood search (ALNS) metaheuristic in Python.

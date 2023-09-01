@@ -5,6 +5,6 @@ from .GreatDeluge import GreatDeluge
 from .HillClimbing import HillClimbing
 from .LateAcceptanceHillClimbing import LateAcceptanceHillClimbing
 from .NonLinearGreatDeluge import NonLinearGreatDeluge
+from .RandomAccept import RandomAccept
 from .RecordToRecordTravel import RecordToRecordTravel
 from .SimulatedAnnealing import SimulatedAnnealing
-from .WorseAccept import WorseAccept

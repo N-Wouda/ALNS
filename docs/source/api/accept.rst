@@ -31,11 +31,11 @@ All acceptance criteria implement :class:`~alns.accept.AcceptanceCriterion.Accep
 .. automodule:: alns.accept.LateAcceptanceHillClimbing
    :members:
 
+.. automodule:: alns.accept.RandomAccept
+   :members:
+
 .. automodule:: alns.accept.RecordToRecordTravel
    :members:
 
 .. automodule:: alns.accept.SimulatedAnnealing
-   :members:
-
-.. automodule:: alns.accept.WorseAccept
    :members:

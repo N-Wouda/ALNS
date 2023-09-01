@@ -16,6 +16,9 @@ All acceptance criteria implement :class:`~alns.accept.AcceptanceCriterion.Accep
 .. automodule:: alns.accept.AdaptiveThreshold
    :members:
 
+.. automodule:: alns.accept.AlwaysAccept
+   :members:
+
 .. automodule:: alns.accept.GreatDeluge
    :members:
 
@@ -26,9 +29,6 @@ All acceptance criteria implement :class:`~alns.accept.AcceptanceCriterion.Accep
    :members:
 
 .. automodule:: alns.accept.LateAcceptanceHillClimbing
-   :members:
-
-.. automodule:: alns.accept.RandomWalk
    :members:
 
 .. automodule:: alns.accept.RecordToRecordTravel

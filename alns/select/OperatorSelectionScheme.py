@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 
 import numpy as np
-from numpy.random import RandomState
+from numpy.random import Generator
 
 from alns.Outcome import Outcome
 from alns.State import State
@@ -56,7 +56,7 @@ class OperatorSelectionScheme(ABC):
 
     @abstractmethod
     def __call__(
-        self, rnd: RandomState, best: State, curr: State
+        self, rng: Generator, best: State, curr: State
     ) -> Tuple[int, int]:
         """
         Determine which destroy and repair operator pair to apply in this
@@ -64,8 +64,8 @@ class OperatorSelectionScheme(ABC):
 
         Parameters
         ----------
-        rnd_state
-            Random state object, to be used for random number generation.
+        rng
+            Random number generator object.
         best
             The best solution state observed so far.
         current

@@ -73,7 +73,7 @@ def test_call_with_only_one_operator_pair():
     select = MABSelector(
         [2, 1, 1, 0], 1, 1, LearningPolicy.EpsilonGreedy(0.15)
     )
-    state = rnd.RandomState()
+    state = rnd.default_rng()
 
     for _ in range(10):
         selected = select(state, Zero(), Zero())
@@ -81,7 +81,7 @@ def test_call_with_only_one_operator_pair():
 
 
 def test_mab_epsilon_greedy():
-    state = rnd.RandomState()
+    state = rnd.default_rng()
 
     # epsilon=0 is equivalent to greedy selection
     select = MABSelector([2, 1, 1, 0], 2, 1, LearningPolicy.EpsilonGreedy(0.0))
@@ -100,7 +100,7 @@ def test_mab_epsilon_greedy():
 
 @mark.parametrize("alpha", [0.25, 0.5])
 def test_mab_ucb1(alpha):
-    state = rnd.RandomState()
+    state = rnd.default_rng()
     select = MABSelector([2, 1, 1, 0], 2, 1, LearningPolicy.UCB1(alpha))
 
     select.update(Zero(), 0, 0, outcome=Outcome.BEST)
@@ -125,7 +125,7 @@ def test_contextual_mab_requires_context():
 
 
 def text_contextual_mab_uses_context():
-    state = rnd.RandomState()
+    state = rnd.default_rng()
     select = MABSelector(
         [2, 1, 1, 0],
         2,

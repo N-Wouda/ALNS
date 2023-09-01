@@ -23,7 +23,7 @@ def get_alns_instance(
     """
     Test helper method.
     """
-    alns = ALNS(rnd.RandomState(seed))
+    alns = ALNS(rnd.default_rng(seed))
 
     if repair_operators is not None:
         for idx, repair_operator in enumerate(repair_operators):
@@ -72,13 +72,13 @@ def test_on_best_is_called():
     Tests if the callback is invoked when a new global best is found.
     """
     alns = get_alns_instance(
-        [lambda state, rnd_state: Zero()], [lambda state, rnd_state: Zero()]
+        [lambda state, rng: Zero()], [lambda state, rng: Zero()]
     )
 
     # Called when a new global best is found. In this case, that happens once:
     # in the only iteration below. We change the objective, and test whether
     # that is indeed the solution that is returned
-    def callback(state, rnd_state):
+    def callback(state, rng):
         state.obj = 1
 
     alns.on_best(callback)
@@ -304,14 +304,14 @@ def test_trivial_example():
     assert_equal(result.best_state.objective(), 0)
 
 
-@mark.parametrize("seed,desired", [(0, 0.01171), (1, 0.00011), (2, 0.01025)])
+@mark.parametrize("seed,desired", [(0, 0.00995), (1, 0.02648), (2, 0.00981)])
 def test_fixed_seed_outcomes(seed: int, desired: float):
     """
     Tests if fixing a seed results in deterministic outcomes even when using a
     'random' acceptance criterion (here SA).
     """
     alns = get_alns_instance(
-        [lambda state, rnd: VarObj(rnd.random_sample())],
+        [lambda state, rnd: VarObj(rnd.random())],
         [lambda state, rnd: None],
         seed,
     )

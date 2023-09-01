@@ -10,7 +10,7 @@ def test_accepts_better():
     Tests if the random walk method accepts a better solution.
     """
     random_walk = RandomWalk()
-    assert_(random_walk(rnd.RandomState(), One(), One(), Zero()))
+    assert_(random_walk(rnd.default_rng(), One(), One(), Zero()))
 
 
 def test_accepts_worse():
@@ -18,7 +18,7 @@ def test_accepts_worse():
     Tests if the random walk method accepts a worse solution.
     """
     random_walk = RandomWalk()
-    assert_(random_walk(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(random_walk(rnd.default_rng(), Zero(), Zero(), One()))
 
 
 def test_accepts_equal():
@@ -27,4 +27,4 @@ def test_accepts_equal():
     same objective value.
     """
     random_walk = RandomWalk()
-    assert_(random_walk(rnd.RandomState(), Zero(), Zero(), Zero()))
+    assert_(random_walk(rnd.default_rng(), Zero(), Zero(), Zero()))

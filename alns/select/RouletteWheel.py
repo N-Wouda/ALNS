@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
-from numpy.random import RandomState
+from numpy.random import Generator
 
 from alns.State import State
 from alns.select.OperatorSelectionScheme import OperatorSelectionScheme
@@ -102,7 +102,7 @@ class RouletteWheel(OperatorSelectionScheme):
         return self._decay
 
     def __call__(
-        self, rnd_state: RandomState, best: State, curr: State
+        self, rng: Generator, best: State, curr: State
     ) -> Tuple[int, int]:
         """
         Selects a destroy and repair operator pair to apply in this iteration.
@@ -112,8 +112,8 @@ class RouletteWheel(OperatorSelectionScheme):
 
         Parameters
         ----------
-        rnd_state
-            Random state object, to be used for random number generation.
+        rng
+            Random number generator.
         best
             The best solution state observed so far.
         current
@@ -127,7 +127,7 @@ class RouletteWheel(OperatorSelectionScheme):
 
         def select(op_weights):
             probs = op_weights / np.sum(op_weights)
-            return rnd_state.choice(range(len(op_weights)), p=probs)
+            return rng.choice(range(len(op_weights)), p=probs)
 
         d_idx = select(self._d_weights)
         coupled_r_idcs = np.flatnonzero(self.op_coupling[d_idx])

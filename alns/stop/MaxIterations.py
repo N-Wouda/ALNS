@@ -1,4 +1,4 @@
-from numpy.random import RandomState
+from numpy.random import Generator
 
 from alns.State import State
 
@@ -19,7 +19,7 @@ class MaxIterations:
     def max_iterations(self) -> int:
         return self._max_iterations
 
-    def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
+    def __call__(self, rng: Generator, best: State, current: State) -> bool:
         self._current_iteration += 1
 
         return self._current_iteration > self.max_iterations

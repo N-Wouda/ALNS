@@ -7,7 +7,7 @@ from alns.tests.states import Zero
 
 
 def test_op_coupling():
-    rnd_state = rnd.RandomState(1)
+    rng = rnd.default_rng(1)
 
     # For i in {1..5}, each destroy operator i is coupled with repair operator
     # i. So only (i, i) pairs can be selected.
@@ -15,18 +15,18 @@ def test_op_coupling():
     select = RandomSelect(5, 5, op_coupling)
 
     for _ in range(1_000):
-        d_idx, r_idx = select(rnd_state, Zero(), Zero())
+        d_idx, r_idx = select(rng, Zero(), Zero())
         assert_(d_idx == r_idx)
 
 
 def test_uniform_selection():
-    rnd_state = rnd.RandomState(1)
+    rng = rnd.default_rng(1)
     histogram = np.zeros((2, 2))
 
     select = RandomSelect(2, 2)
 
     for _ in range(10_000):
-        d_idx, r_idx = select(rnd_state, Zero(), Zero())
+        d_idx, r_idx = select(rng, Zero(), Zero())
         histogram[d_idx, r_idx] += 1
 
     # There are four operator pair combinations, so each pair should have a
@@ -37,7 +37,7 @@ def test_uniform_selection():
 
 
 def test_uniform_selection_op_coupling():
-    rnd_state = rnd.RandomState(1)
+    rng = rnd.default_rng(1)
     histogram = np.zeros((2, 2))
 
     op_coupling = np.eye(2)
@@ -46,7 +46,7 @@ def test_uniform_selection_op_coupling():
     select = RandomSelect(2, 2, op_coupling)
 
     for _ in range(10_000):
-        d_idx, r_idx = select(rnd_state, Zero(), Zero())
+        d_idx, r_idx = select(rng, Zero(), Zero())
         histogram[d_idx, r_idx] += 1
 
     # There are three OK operator pair combinations, so each such pair should
@@ -63,8 +63,8 @@ def test_uniform_selection_op_coupling():
 
 
 def test_single_operators():
-    rnd_state = rnd.RandomState(1)
+    rng = rnd.default_rng(1)
     select = RandomSelect(1, 1)
 
     # Only one (destroy, repair) operator pair, so should return (0, 0).
-    assert_(select(rnd_state, Zero(), Zero()) == (0, 0))
+    assert_(select(rng, Zero(), Zero()) == (0, 0))

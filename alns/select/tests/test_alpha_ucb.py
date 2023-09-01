@@ -58,7 +58,7 @@ def test_raises_invalid_arguments(
 def test_call_with_only_one_operator_pair():
     # Only one operator pair, so the algorithm should select (0, 0).
     select = AlphaUCB([2, 1, 1, 0], 0.5, 1, 1)
-    state = rnd.RandomState()
+    state = rnd.default_rng()
 
     selected = select(state, Zero(), Zero())
     assert_equal(selected, (0, 0))
@@ -66,7 +66,7 @@ def test_call_with_only_one_operator_pair():
 
 def test_update_with_two_operator_pairs():
     select = AlphaUCB([2, 1, 1, 0], 0.5, 2, 1)
-    state = rnd.RandomState()
+    state = rnd.default_rng()
 
     # Avg. reward for (0, 0) after this is 2, for (1, 0) is still 1 (default).
     select.update(Zero(), 0, 0, outcome=Outcome.BEST)

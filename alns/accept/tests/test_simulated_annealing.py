@@ -99,7 +99,7 @@ def test_end_temperature(end: float):
 def test_accepts_better():
     for _ in range(1, 100):
         simulated_annealing = SimulatedAnnealing(2, 1, 1)
-        assert_(simulated_annealing(rnd.RandomState(), One(), Zero(), Zero()))
+        assert_(simulated_annealing(rnd.default_rng(), One(), Zero(), Zero()))
 
 
 def test_accepts_equal():
@@ -108,7 +108,7 @@ def test_accepts_equal():
     for _ in range(100):
         # This results in an acceptance probability of exp{0}, that is, one.
         # Thus, the candidate state should always be accepted.
-        assert_(simulated_annealing(rnd.RandomState(), One(), One(), One()))
+        assert_(simulated_annealing(rnd.default_rng(), One(), One(), One()))
 
 
 def test_linear_random_solutions():
@@ -118,7 +118,7 @@ def test_linear_random_solutions():
     """
     simulated_annealing = SimulatedAnnealing(2, 1, 1, "linear")
 
-    state = rnd.RandomState(0)
+    state = rnd.default_rng(0)
 
     # Using the above seed, the first two random numbers are 0.55 and .72,
     # respectively. The acceptance probability is 0.61 first, so the first
@@ -136,7 +136,7 @@ def test_exponential_random_solutions():
     """
     simulated_annealing = SimulatedAnnealing(2, 1, 0.5, "exponential")
 
-    state = rnd.RandomState(0)
+    state = rnd.default_rng(0)
 
     assert_(simulated_annealing(state, Zero(), Zero(), One()))
     assert_(not simulated_annealing(state, Zero(), Zero(), One()))

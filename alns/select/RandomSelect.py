@@ -9,12 +9,12 @@ class RandomSelect(OperatorSelectionScheme):
     pairs respect the operator coupling matrix.
     """
 
-    def __call__(self, rnd, best, curr):
+    def __call__(self, rng, best, curr):
         """
         Selects a (destroy, repair) operator pair with uniform probability.
         """
         allowed = np.argwhere(self._op_coupling)
-        idx = rnd.randint(len(allowed))
+        idx = rng.integers(len(allowed))
 
         return tuple(allowed[idx])
 

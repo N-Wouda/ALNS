@@ -125,7 +125,7 @@ class MABSelector(OperatorSelectionScheme):
 
     def __call__(  # type: ignore[override]
         self,
-        rnd_state: RandomState,
+        rng: RandomState,
         best: ContextualState,
         curr: ContextualState,
     ) -> Tuple[int, int]:
@@ -137,7 +137,7 @@ class MABSelector(OperatorSelectionScheme):
             # The MAB object has not yet been fit. In that case we return any
             # feasible operator index pair as a first observation.
             allowed = np.argwhere(self._op_coupling)
-            idx = rnd_state.randint(len(allowed))
+            idx = rng.integers(len(allowed))
             return allowed[idx][0], allowed[idx][1]
 
         has_ctx = self._mab.is_contextual

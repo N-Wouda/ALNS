@@ -7,8 +7,8 @@ class MovingAverageThreshold:
     """
     The Moving Average Threshold (MAT) criterion of [1]. This criterion accepts
     a candidate solution if it is better than a threshold value that is based
-    on the moving average of the objective values of past candidate solutions.
-    The threshold is computed as:
+    on the moving average of the objective values of recently observed
+    candidate solutions. The threshold is computed as:
 
     .. math::
 

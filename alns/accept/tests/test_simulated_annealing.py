@@ -116,6 +116,7 @@ def test_linear_random_solutions():
     Checks if the linear ``accept`` method correctly decides in two known cases
     for a fixed seed.
     """
+    # TODO
     simulated_annealing = SimulatedAnnealing(2, 1, 1, "linear")
 
     state = rnd.default_rng(0)
@@ -134,6 +135,7 @@ def test_exponential_random_solutions():
     cases for a fixed seed. This is the exponential equivalent to the linear
     random solutions test above.
     """
+    # TODO
     simulated_annealing = SimulatedAnnealing(2, 1, 0.5, "exponential")
 
     state = rnd.default_rng(0)

@@ -22,7 +22,7 @@ class MaxRuntime:
     def max_runtime(self) -> float:
         return self._max_runtime
 
-    def __call__(self, rnd: Generator, best: State, current: State) -> bool:
+    def __call__(self, rng: Generator, best: State, current: State) -> bool:
         if self._start_runtime is None:
             self._start_runtime = time.perf_counter()
 

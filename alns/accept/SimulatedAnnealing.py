@@ -98,7 +98,7 @@ class SimulatedAnnealing:
     def method(self) -> str:
         return self._method
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         probability = np.exp(
             (current.objective() - candidate.objective()) / self._temperature
         )
@@ -110,7 +110,7 @@ class SimulatedAnnealing:
             update(self._temperature, self.step, self.method),
         )
 
-        return probability >= rnd.random()
+        return probability >= rng.random()
 
     @classmethod
     def autofit(

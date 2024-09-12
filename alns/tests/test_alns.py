@@ -91,19 +91,19 @@ def test_on_best_is_called():
 
 def test_other_callbacks_are_called():
     alns = get_alns_instance(
-        [lambda state, rnd: state],
-        [lambda state, rnd: VarObj(rnd.random())],
+        [lambda state, rng: state],
+        [lambda state, rng: VarObj(rng.random())],
         seed=1,
     )
 
     registry = dict(on_better=False, on_accept=False, on_reject=False)
 
-    def mock_callback(state, rnd, key):
+    def mock_callback(state, rng, key):
         registry[key] = True
 
-    alns.on_better(lambda state, rnd: mock_callback(state, rnd, "on_better"))
-    alns.on_accept(lambda state, rnd: mock_callback(state, rnd, "on_accept"))
-    alns.on_reject(lambda state, rnd: mock_callback(state, rnd, "on_reject"))
+    alns.on_better(lambda state, rng: mock_callback(state, rng, "on_better"))
+    alns.on_accept(lambda state, rng: mock_callback(state, rng, "on_accept"))
+    alns.on_reject(lambda state, rng: mock_callback(state, rng, "on_reject"))
 
     select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
     accept = SimulatedAnnealing(1_000, 1, 0.05)
@@ -125,7 +125,7 @@ def test_add_destroy_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_destroy_operator(lambda state, rnd: state, name=str(count))
+        alns.add_destroy_operator(lambda state, rng: state, name=str(count))
         assert_equal(len(alns.destroy_operators), count)
 
 
@@ -156,7 +156,7 @@ def test_add_repair_operator():
     alns = ALNS()
 
     for count in [1, 2]:
-        alns.add_repair_operator(lambda state, rnd: state, name=str(count))
+        alns.add_repair_operator(lambda state, rng: state, name=str(count))
         assert_equal(len(alns.repair_operators), count)
 
 
@@ -186,7 +186,7 @@ def test_raises_missing_destroy_operator():
     """
     Tests if the algorithm raises when no destroy operators have been set.
     """
-    alns = get_alns_instance(repair_operators=[lambda state, rnd: None])
+    alns = get_alns_instance(repair_operators=[lambda state, rng: None])
 
     # Pretend we have a destroy operator for the selection scheme, so that
     # does not raise an error.
@@ -200,7 +200,7 @@ def test_raises_missing_repair_operator():
     """
     Tests if the algorithm raises when no repair operators have been set.
     """
-    alns = get_alns_instance(destroy_operators=[lambda state, rnd: None])
+    alns = get_alns_instance(destroy_operators=[lambda state, rng: None])
 
     # Pretend we have a destroy operator for the selection scheme, so that
     # does not raise an error.
@@ -216,7 +216,7 @@ def test_zero_max_iterations():
     stopping criterion is zero max iterations.
     """
     alns = get_alns_instance(
-        [lambda state, rnd: None], [lambda state, rnd: None]
+        [lambda state, rng: None], [lambda state, rng: None]
     )
 
     initial_solution = One()
@@ -235,7 +235,7 @@ def test_zero_max_runtime():
     stopping criterion is zero max runtime.
     """
     alns = get_alns_instance(
-        [lambda state, rnd: None], [lambda state, rnd: None]
+        [lambda state, rng: None], [lambda state, rng: None]
     )
 
     initial_solution = One()
@@ -249,11 +249,11 @@ def test_zero_max_runtime():
 
 
 def test_iterate_kwargs_are_correctly_passed_to_operators():
-    def test_operator(state, rnd, item):
+    def test_operator(state, rng, item):
         assert_(item is orig_item)
         return state
 
-    alns = get_alns_instance([lambda state, rnd, item: state], [test_operator])
+    alns = get_alns_instance([lambda state, rng, item: state], [test_operator])
 
     init_sol = One()
     select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
@@ -270,12 +270,12 @@ def test_bugfix_pass_kwargs_to_on_best():
     passed to iterate().
     """
 
-    def test_operator(state, rnd, item):
+    def test_operator(state, rng, item):
         assert_(item is orig_item)
         return Zero()  # better, so on_best is triggered
 
-    alns = get_alns_instance([lambda state, rnd, item: state], [test_operator])
-    alns.on_best(lambda state, rnd, item: state)
+    alns = get_alns_instance([lambda state, rng, item: state], [test_operator])
+    alns.on_best(lambda state, rng, item: state)
 
     init_sol = One()
     select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
@@ -295,7 +295,7 @@ def test_trivial_example():
     solution is one, and any other operator returns zero.
     """
     alns = get_alns_instance(
-        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+        [lambda state, rng: Zero()], [lambda state, rng: Zero()]
     )
 
     select = RouletteWheel([1, 1, 1, 1], 0.5, 1, 1)
@@ -311,8 +311,8 @@ def test_fixed_seed_outcomes(seed: int, desired: float):
     'random' acceptance criterion (here SA).
     """
     alns = get_alns_instance(
-        [lambda state, rnd: VarObj(rnd.random())],
-        [lambda state, rnd: None],
+        [lambda state, rng: VarObj(rng.random())],
+        [lambda state, rng: None],
         seed,
     )
 
@@ -329,7 +329,7 @@ def test_nonnegative_max_iterations(max_iterations):
     Test that the result statistics have size equal to max iterations (+1).
     """
     alns = get_alns_instance(
-        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+        [lambda state, rng: Zero()], [lambda state, rng: Zero()]
     )
 
     initial_solution = One()
@@ -352,7 +352,7 @@ def test_nonnegative_max_runtime(max_runtime):
     Test that the result runtime statistics match the stopping criterion.
     """
     alns = get_alns_instance(
-        [lambda state, rnd: Zero()], [lambda state, rnd: Zero()]
+        [lambda state, rng: Zero()], [lambda state, rng: Zero()]
     )
 
     initial_solution = One()

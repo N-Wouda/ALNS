@@ -101,7 +101,7 @@ class AlphaUCB(OperatorSelectionScheme):
     def alpha(self) -> float:
         return self._alpha
 
-    def __call__(self, rnd, best, curr):
+    def __call__(self, rng, best, curr):
         """
         Returns the (destroy, repair) operator pair that maximises the average
         reward and exploration bonus.

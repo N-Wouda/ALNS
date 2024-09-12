@@ -72,12 +72,12 @@ class RandomAccept:
     def method(self) -> str:
         return self._method
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         # Always accept better
         res = candidate.objective() < current.objective()
 
         if not res:  # maybe accept worse
-            res = rnd.random() < self._prob
+            res = rng.random() < self._prob
 
         self._prob = max(
             self.end_prob, update(self._prob, self.step, self.method)

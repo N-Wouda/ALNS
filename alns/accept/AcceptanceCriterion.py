@@ -11,7 +11,7 @@ class AcceptanceCriterion(Protocol):
     """
 
     def __call__(
-        self, rnd: Generator, best: State, current: State, candidate: State
+        self, rng: Generator, best: State, current: State, candidate: State
     ) -> bool:
         """
         Determines whether to accept the proposed, candidate solution based on

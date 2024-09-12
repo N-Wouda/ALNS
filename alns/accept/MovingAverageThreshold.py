@@ -62,7 +62,7 @@ class MovingAverageThreshold:
     def history(self) -> List[float]:
         return list(self._history)
 
-    def __call__(self, rnd, best, current, candidate) -> bool:
+    def __call__(self, rng, best, current, candidate) -> bool:
         self._history.append(candidate.objective())
         recent_best = min(self._history)
         recent_avg = mean(self._history)

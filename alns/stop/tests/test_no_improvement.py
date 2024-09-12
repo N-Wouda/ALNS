@@ -29,10 +29,10 @@ def test_zero_max_iterations():
     Test if setting max_iterations to zero always stops.
     """
     stop = NoImprovement(0)
-    rnd = default_rng()
+    rng = default_rng()
 
-    assert_(stop(rnd, One(), Zero()))
-    assert_(stop(rnd, Zero(), Zero()))
+    assert_(stop(rng, One(), Zero()))
+    assert_(stop(rng, Zero(), Zero()))
 
 
 def test_one_max_iterations():
@@ -41,11 +41,11 @@ def test_one_max_iterations():
     best solution has been found.
     """
     stop = NoImprovement(1)
-    rnd = default_rng()
+    rng = default_rng()
 
-    assert_(not stop(rnd, One(), Zero()))
-    assert_(not stop(rnd, Zero(), Zero()))
-    assert_(stop(rnd, Zero(), Zero()))
+    assert_(not stop(rng, One(), Zero()))
+    assert_(not stop(rng, Zero(), Zero()))
+    assert_(stop(rng, Zero(), Zero()))
 
 
 @pytest.mark.parametrize("n", [10, 100, 1000])
@@ -56,13 +56,13 @@ def test_n_max_iterations_non_improving(n):
     the criterion should stop.
     """
     stop = NoImprovement(n)
-    rnd = default_rng()
+    rng = default_rng()
 
     for _ in range(n):
-        assert_(not stop(rnd, Zero(), Zero()))
+        assert_(not stop(rng, Zero(), Zero()))
 
     for _ in range(n):
-        assert_(stop(rnd, Zero(), Zero()))
+        assert_(stop(rng, Zero(), Zero()))
 
 
 @pytest.mark.parametrize("n, k", [(10, 2), (100, 20), (1000, 200)])
@@ -74,13 +74,13 @@ def test_n_max_iterations_with_single_improvement(n, k):
     the criterion should stop.
     """
     stop = NoImprovement(n)
-    rnd = default_rng()
+    rng = default_rng()
 
     for _ in range(k):
-        assert_(not stop(rnd, One(), Zero()))
+        assert_(not stop(rng, One(), Zero()))
 
     for _ in range(n):
-        assert_(not stop(rnd, Zero(), Zero()))
+        assert_(not stop(rng, Zero(), Zero()))
 
     for _ in range(n):
-        assert_(stop(rnd, Zero(), Zero()))
+        assert_(stop(rng, Zero(), Zero()))

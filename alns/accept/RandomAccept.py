@@ -1,11 +1,11 @@
 from alns.accept.update import update
 
 
-class WorseAccept:
+class RandomAccept:
     """
-    The Worse Accept criterion accepts a candidate solution if it improves over
-    the current one, or with a given probability :math:`P` regardless of the
-    cost. :math:`P` is updated in each iteration as:
+    The Random Accept criterion accepts a candidate solution if it improves
+    over the current one, or with a given probability :math:`P` regardless of
+    the cost. :math:`P` is updated in each iteration as:
 
     .. math::
 

@@ -13,13 +13,10 @@ All acceptance criteria implement :class:`~alns.accept.AcceptanceCriterion.Accep
 .. automodule:: alns.accept.AcceptanceCriterion
    :members:
 
-.. automodule:: alns.accept.AdaptiveThreshold
+.. automodule:: alns.accept.AlwaysAccept
    :members:
 
 .. automodule:: alns.accept.GreatDeluge
-   :members:
-
-.. automodule:: alns.accept.NonLinearGreatDeluge
    :members:
 
 .. automodule:: alns.accept.HillClimbing
@@ -28,14 +25,17 @@ All acceptance criteria implement :class:`~alns.accept.AcceptanceCriterion.Accep
 .. automodule:: alns.accept.LateAcceptanceHillClimbing
    :members:
 
-.. automodule:: alns.accept.RandomWalk
+.. automodule:: alns.accept.MovingAverageThreshold
+   :members:
+
+.. automodule:: alns.accept.NonLinearGreatDeluge
+   :members:
+
+.. automodule:: alns.accept.RandomAccept
    :members:
 
 .. automodule:: alns.accept.RecordToRecordTravel
    :members:
 
 .. automodule:: alns.accept.SimulatedAnnealing
-   :members:
-
-.. automodule:: alns.accept.WorseAccept
    :members:

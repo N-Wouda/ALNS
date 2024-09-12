@@ -4,7 +4,7 @@ import numpy.random as rnd
 from numpy.testing import assert_, assert_equal, assert_raises
 from pytest import mark
 
-from alns.accept import WorseAccept
+from alns.accept import RandomAccept
 from alns.tests.states import One, Two, Zero
 
 
@@ -22,7 +22,7 @@ from alns.tests.states import One, Two, Zero
 )
 def test_raises_invalid_parameters(start, end, step, method):
     with assert_raises(ValueError):
-        WorseAccept(start, end, step, method)
+        RandomAccept(start, end, step, method)
 
 
 @mark.parametrize(
@@ -36,7 +36,7 @@ def test_raises_invalid_parameters(start, end, step, method):
     ],
 )
 def test_no_raise_valid_parameters(start, end, step, method):
-    WorseAccept(start, end, step, method)
+    RandomAccept(start, end, step, method)
 
 
 @mark.parametrize(
@@ -53,80 +53,82 @@ def test_properties(start, end, step, method):
     """
     Tests if the properties are correctly set.
     """
-    worse_accept = WorseAccept(start, end, step, method)
+    random_accept = RandomAccept(start, end, step, method)
 
-    assert_equal(worse_accept.start_prob, start)
-    assert_equal(worse_accept.end_prob, end)
-    assert_equal(worse_accept.step, step)
-    assert_equal(worse_accept.method, method)
+    assert_equal(random_accept.start_prob, start)
+    assert_equal(random_accept.end_prob, end)
+    assert_equal(random_accept.step, step)
+    assert_equal(random_accept.method, method)
 
 
 def test_zero_prob_accepts_better():
     """
-    Tests if WA with a zero start probability accepts better solutions.
+    Tests if random accept with a zero start probability accepts better
+    solutions.
     """
     rnd_vals = [1]
-    rng = Mock(spec_set=rnd.Generator, random=lambda: rnd_vals.pop(0))
-    worse_accept = WorseAccept(0, 0, 0.1)
+    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
+    random_accept = RandomAccept(0, 0, 0.1)
 
-    assert_(worse_accept(rng, Zero(), One(), Zero()))
-    assert_(worse_accept(rng, Zero(), Two(), Zero()))
+    assert_(random_accept(rng, Zero(), One(), Zero()))
+    assert_(random_accept(rng, Zero(), Two(), Zero()))
 
 
 def test_zero_prob_never_accept_worse():
     """
-    Tests if WA with a zero start probability does not accept worse solutions.
+    Tests if random accept with a zero start probability does not accept worse
+    solutions.
     """
-    worse_accept = WorseAccept(0, 0, 0, "linear")
+    random_accept = RandomAccept(0, 0, 0, "linear")
 
-    assert_(not worse_accept(rnd.default_rng(), Zero(), One(), One()))
-    assert_(not worse_accept(rnd.default_rng(), Zero(), Zero(), One()))
+    assert_(not random_accept(rnd.RandomState(), Zero(), One(), One()))
+    assert_(not random_accept(rnd.RandomState(), Zero(), Zero(), One()))
 
 
 def test_one_prob_always_accept():
     """
-    Tests if WA with a fixed probability of 1 leads to always accepting
-    solutions.
+    Tests if random accept with a fixed probability of 1 leads to always
+    accepting solutions.
     """
-    worse_accept = WorseAccept(1, 0, 0, "linear")
+    random_accept = RandomAccept(1, 0, 0, "linear")
 
     for _ in range(100):
-        assert_(worse_accept(rnd.default_rng(), Zero(), Zero(), One()))
+        assert_(random_accept(rnd.RandomState(), Zero(), Zero(), One()))
 
 
 def test_linear_consecutive_solutions():
     """
-    Test if WA with linear updating method correctly accepts and rejects
-    consecutive solutions.
+    Test if random accept with linear updating method correctly accepts and
+    rejects consecutive solutions.
     """
     rnd_vals = [0.9, 0.8, 0.7, 0.6, 0.5, 1]
-    rng = Mock(spec_set=rnd.Generator, random=lambda: rnd_vals.pop(0))
-    worse_accept = WorseAccept(1, 0, 0.1, "linear")
+    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
+    random_accept = RandomAccept(1, 0, 0.1, "linear")
 
     # For the first five, the probability is, resp., 1, 0.9, 0.8, 0.7, 0.6
     # The random draw is, resp., 0.9, 0.8, 0.7, 0.6, 0.5 so the worsening
     # solution is still accepted.
     for _ in range(5):
-        assert_(worse_accept(rng, Zero(), Zero(), One()))
+        assert_(random_accept(rng, Zero(), Zero(), One()))
 
     # The probability is now 0.5 and the draw is 1, so reject.
-    assert_(not worse_accept(rng, Zero(), Zero(), One()))
+    assert_(not random_accept(rng, Zero(), Zero(), One()))
 
 
 def test_exponential_consecutive_solutions():
     """
-    Test if WA with exponential updating method correctly accepts and rejects
-    consecutive solutions.
+    Test if random accept with exponential updating method correctly accepts
+    and rejects consecutive solutions.
     """
     rnd_vals = [0.5, 0.25, 0.125, 1]
-    rng = Mock(spec_set=rnd.Generator, random=lambda: rnd_vals.pop(0))
-    worse_accept = WorseAccept(1, 0, 0.5, "exponential")
+    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
+    random_accept = RandomAccept(1, 0, 0.5, "exponential")
 
     # For the first three, the probability is, resp., 1, 0.5, 0.25
     # The random draw is, resp., 0.5, 0.25, 0.125, so the worsening
     # solution is still accepted.
     for _ in range(3):
-        assert_(worse_accept(rng, Zero(), Zero(), One()))
+        assert_(random_accept(rng, Zero(), Zero(), One()))
 
     # The probability is now 0.5 and the draw is 1, so reject.
-    assert_(not worse_accept(rng, Zero(), Zero(), One()))
+    assert_(not random_accept(rng, Zero(), Zero(), One()))

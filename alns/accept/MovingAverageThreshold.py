@@ -3,11 +3,12 @@ from statistics import mean
 from typing import Deque, List
 
 
-class AdaptiveThreshold:
+class MovingAverageThreshold:
     """
-    The Adaptive Threshold (AT) criterion of [1]. This criterion accepts a
-    candidate solution if it is better than an adaptive threshold value. The
-    adaptive threshold is computed as:
+    The Moving Average Threshold (MAT) criterion of [1]. This criterion accepts
+    a candidate solution if it is better than a threshold value that is based
+    on the moving average of the objective values of recently observed
+    candidate solutions. The threshold is computed as:
 
     .. math::
 

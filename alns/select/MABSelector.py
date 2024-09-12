@@ -1,7 +1,7 @@
 from typing import List, Optional, Tuple
 
 import numpy as np
-from numpy.random import RandomState
+from numpy.random import Generator
 
 from alns.Outcome import Outcome
 from alns.State import ContextualState
@@ -125,7 +125,7 @@ class MABSelector(OperatorSelectionScheme):
 
     def __call__(  # type: ignore[override]
         self,
-        rng: RandomState,
+        rng: Generator,
         best: ContextualState,
         curr: ContextualState,
     ) -> Tuple[int, int]:

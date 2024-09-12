@@ -1,7 +1,7 @@
 import time
 
 import pytest
-from numpy.random import RandomState
+from numpy.random import default_rng
 from numpy.testing import assert_, assert_equal, assert_raises
 
 from alns.stop import MaxRuntime
@@ -49,7 +49,7 @@ def test_max_runtime(max_runtime):
 @pytest.mark.parametrize("max_runtime", [0.01, 0.05, 0.10])
 def test_before_max_runtime(max_runtime):
     stop = MaxRuntime(max_runtime)
-    rnd = RandomState()
+    rnd = default_rng()
     for _ in range(100):
         assert_(not stop(rnd, Zero(), Zero()))
 
@@ -57,7 +57,7 @@ def test_before_max_runtime(max_runtime):
 @pytest.mark.parametrize("max_runtime", [0.01, 0.05, 0.10])
 def test_after_max_runtime(max_runtime):
     stop = MaxRuntime(max_runtime)
-    rnd = RandomState()
+    rnd = default_rng()
     stop(rnd, Zero(), Zero())  # Trigger the first time measurement
     sleep(max_runtime)
 

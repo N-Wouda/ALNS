@@ -48,6 +48,7 @@ mabwiser = ">=2.7.1"
 
 # This optional docs group is needed to build the documentation. It is not 
 # required by the package itself.
+ipykernel = "^6.29.5"
 [tool.poetry.group.docs]
 optional = true
 

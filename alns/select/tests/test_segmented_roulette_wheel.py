@@ -54,7 +54,7 @@ def test_does_not_raise_valid_decay(decay: float):
     ],
 )
 def test_update(scores: List[float], decay: float, expected: List[float]):
-    rng = np.random.RandomState(1)
+    rng = np.random.default_rng(1)
     select = SegmentedRouletteWheel(scores, decay, 1, 1, 1)
 
     # TODO other weights?

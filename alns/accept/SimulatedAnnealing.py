@@ -110,12 +110,7 @@ class SimulatedAnnealing:
             update(self._temperature, self.step, self.method),
         )
 
-        # TODO deprecate RandomState in favour of Generator - which uses
-        #  random(), rather than random_sample().
-        try:
-            return probability >= rnd.random()
-        except AttributeError:
-            return probability >= rnd.random_sample()
+        return probability >= rnd.random()
 
     @classmethod
     def autofit(

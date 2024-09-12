@@ -39,49 +39,49 @@ def test_gamma(gamma):
 
 def test_accepts_below_threshold():
     moving_average = MovingAverageThreshold(eta=0.5, gamma=4)
-    moving_average(rnd.RandomState(), One(), One(), One())
-    moving_average(rnd.RandomState(), One(), One(), Zero())
+    moving_average(rnd.default_rng(), One(), One(), One())
+    moving_average(rnd.default_rng(), One(), One(), Zero())
 
     # The threshold is set at 0 + 0.5 * (0.5 - 0) = 0.25
-    assert_(moving_average(rnd.RandomState(), One(), One(), Zero()))
+    assert_(moving_average(rnd.default_rng(), One(), One(), Zero()))
 
 
 def test_rejects_above_threshold():
     moving_average = MovingAverageThreshold(eta=0.5, gamma=4)
-    moving_average(rnd.RandomState(), One(), One(), Two())
-    moving_average(rnd.RandomState(), One(), One(), Zero())
+    moving_average(rnd.default_rng(), One(), One(), Two())
+    moving_average(rnd.default_rng(), One(), One(), Zero())
 
     # The threshold is set at 0 + 0.5 * (1 - 0) = 0.5
-    assert_(not moving_average(rnd.RandomState(), One(), One(), One()))
+    assert_(not moving_average(rnd.default_rng(), One(), One(), One()))
 
 
 def test_accepts_equal_threshold():
     moving_average = MovingAverageThreshold(eta=0.5, gamma=4)
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7100))
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7200))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7100))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7200))
 
     # The threshold is set at 7100 + 0.5 * (7140 - 7100) = 7120
-    assert_(moving_average(rnd.RandomState(), One(), One(), VarObj(7120)))
+    assert_(moving_average(rnd.default_rng(), One(), One(), VarObj(7120)))
 
 
 def test_accepts_over_gamma_candidates():
     moving_average = MovingAverageThreshold(eta=0.2, gamma=3)
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7100))
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7200))
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7200))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7100))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7200))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7200))
 
     # The threshold is set at 7000 + 0.2 * (7133.33 - 7000) = 7013.33
-    assert_(moving_average(rnd.RandomState(), One(), One(), VarObj(7000)))
+    assert_(moving_average(rnd.default_rng(), One(), One(), VarObj(7000)))
 
 
 def test_rejects_over_gamma_candidates():
     moving_average = MovingAverageThreshold(eta=0.2, gamma=3)
 
     for value in [7100, 7200, 7200, 7000]:
-        moving_average(rnd.RandomState(), One(), One(), VarObj(value))
+        moving_average(rnd.default_rng(), One(), One(), VarObj(value))
 
     # The threshold is set at 7000 + 0.2 * (7100 - 7000) = 7020
-    result = moving_average(rnd.RandomState(), One(), One(), VarObj(7100))
+    result = moving_average(rnd.default_rng(), One(), One(), VarObj(7100))
     assert_(not result)
 
 
@@ -92,14 +92,14 @@ def test_evaluate_consecutive_solutions():
     moving_average = MovingAverageThreshold(eta=0.5, gamma=4)
 
     # The threshold is set at 7100, hence the solution is accepted.
-    assert_(moving_average(rnd.RandomState(), One(), One(), VarObj(7100)))
+    assert_(moving_average(rnd.default_rng(), One(), One(), VarObj(7100)))
 
     # The threshold is set at 7125, hence the solution is accepted.
-    result = moving_average(rnd.RandomState(), One(), One(), VarObj(7200))
+    result = moving_average(rnd.default_rng(), One(), One(), VarObj(7200))
     assert_(not result)
 
     # The threshold is set at 7120, hence the solution is accepted.
-    assert_(moving_average(rnd.RandomState(), One(), One(), VarObj(7120)))
+    assert_(moving_average(rnd.default_rng(), One(), One(), VarObj(7120)))
 
 
 def test_history():
@@ -108,17 +108,17 @@ def test_history():
     """
     moving_average = MovingAverageThreshold(eta=0.5, gamma=4)
 
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7100))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7100))
     assert_equal(moving_average.history, [7100])
 
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7200))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7200))
     assert_equal(moving_average.history, [7100, 7200])
 
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7120))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7120))
     assert_equal(moving_average.history, [7100, 7200, 7120])
 
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7100))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7100))
     assert_equal(moving_average.history, [7100, 7200, 7120, 7100])
 
-    moving_average(rnd.RandomState(), One(), One(), VarObj(7200))
+    moving_average(rnd.default_rng(), One(), One(), VarObj(7200))
     assert_equal(moving_average.history, [7200, 7120, 7100, 7200])

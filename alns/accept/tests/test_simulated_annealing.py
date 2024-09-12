@@ -116,15 +116,14 @@ def test_linear_random_solutions():
     Checks if the linear ``accept`` method correctly decides in two known cases
     for a fixed seed.
     """
-    # TODO
     simulated_annealing = SimulatedAnnealing(2, 1, 1, "linear")
 
-    state = rnd.default_rng(0)
+    state = rnd.default_rng(1)
 
-    # Using the above seed, the first two random numbers are 0.55 and .72,
+    # Using the above seed, the first two random numbers are 0.51 and 0.95,
     # respectively. The acceptance probability is 0.61 first, so the first
-    # should be accepted (0.61 > 0.55). Thereafter, it drops to 0.37, so the
-    # second should not (0.37 < 0.72).
+    # should be accepted (0.61 > 0.51). Thereafter, it drops to 0.37, so the
+    # second should not (0.37 < 0.95).
     assert_(simulated_annealing(state, Zero(), Zero(), One()))
     assert_(not simulated_annealing(state, Zero(), Zero(), One()))
 
@@ -135,36 +134,12 @@ def test_exponential_random_solutions():
     cases for a fixed seed. This is the exponential equivalent to the linear
     random solutions test above.
     """
-    # TODO
     simulated_annealing = SimulatedAnnealing(2, 1, 0.5, "exponential")
 
-    state = rnd.default_rng(0)
+    state = rnd.default_rng(1)
 
     assert_(simulated_annealing(state, Zero(), Zero(), One()))
     assert_(not simulated_annealing(state, Zero(), Zero(), One()))
-
-
-def test_accepts_generator_and_random_state():
-    """
-    Tests if SimulatedAnnealing works with both Generator and RandomState
-    randomness classes.
-
-    See also https://numpy.org/doc/1.18/reference/random/index.html#quick-start
-    """
-
-    class Old:  # old RandomState interface mock
-        def random_sample(self):  # pylint: disable=no-self-use
-            return 0.5
-
-    simulated_annealing = SimulatedAnnealing(2, 1, 1)
-    assert_(simulated_annealing(Old(), One(), One(), Zero()))
-
-    class New:  # new Generator interface mock
-        def random(self):  # pylint: disable=no-self-use
-            return 0.5
-
-    simulated_annealing = SimulatedAnnealing(2, 1, 1)
-    assert_(simulated_annealing(New(), One(), One(), Zero()))
 
 
 @mark.parametrize(

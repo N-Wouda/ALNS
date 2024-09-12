@@ -22,14 +22,14 @@ class _OperatorType(Protocol):
         rng: rnd.Generator,
         **kwargs,
     ) -> State:
-        pass  # pragma: no cover
+        ...
 
 
 class _CallbackType(Protocol):
     __name__: str
 
     def __call__(self, state: State, rng: rnd.Generator, **kwargs):
-        pass  # pragma: no cover
+        ...
 
 
 logger = logging.getLogger(__name__)

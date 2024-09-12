@@ -1,5 +1,5 @@
 import pytest
-from numpy.random import RandomState
+from numpy.random import default_rng
 from numpy.testing import assert_, assert_equal, assert_raises
 
 from alns.stop import NoImprovement
@@ -29,7 +29,7 @@ def test_zero_max_iterations():
     Test if setting max_iterations to zero always stops.
     """
     stop = NoImprovement(0)
-    rnd = RandomState()
+    rnd = default_rng()
 
     assert_(stop(rnd, One(), Zero()))
     assert_(stop(rnd, Zero(), Zero()))
@@ -41,7 +41,7 @@ def test_one_max_iterations():
     best solution has been found.
     """
     stop = NoImprovement(1)
-    rnd = RandomState()
+    rnd = default_rng()
 
     assert_(not stop(rnd, One(), Zero()))
     assert_(not stop(rnd, Zero(), Zero()))
@@ -56,7 +56,7 @@ def test_n_max_iterations_non_improving(n):
     the criterion should stop.
     """
     stop = NoImprovement(n)
-    rnd = RandomState()
+    rnd = default_rng()
 
     for _ in range(n):
         assert_(not stop(rnd, Zero(), Zero()))
@@ -74,7 +74,7 @@ def test_n_max_iterations_with_single_improvement(n, k):
     the criterion should stop.
     """
     stop = NoImprovement(n)
-    rnd = RandomState()
+    rnd = default_rng()
 
     for _ in range(k):
         assert_(not stop(rnd, One(), Zero()))

@@ -67,7 +67,7 @@ def test_zero_prob_accepts_better():
     solutions.
     """
     rnd_vals = [1]
-    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
+    rng = Mock(spec_set=rnd.Generator, random=lambda: rnd_vals.pop(0))
     random_accept = RandomAccept(0, 0, 0.1)
 
     assert_(random_accept(rng, Zero(), One(), Zero()))
@@ -81,8 +81,8 @@ def test_zero_prob_never_accept_worse():
     """
     random_accept = RandomAccept(0, 0, 0, "linear")
 
-    assert_(not random_accept(rnd.RandomState(), Zero(), One(), One()))
-    assert_(not random_accept(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(not random_accept(rnd.default_rng(), Zero(), One(), One()))
+    assert_(not random_accept(rnd.default_rng(), Zero(), Zero(), One()))
 
 
 def test_one_prob_always_accept():
@@ -93,7 +93,7 @@ def test_one_prob_always_accept():
     random_accept = RandomAccept(1, 0, 0, "linear")
 
     for _ in range(100):
-        assert_(random_accept(rnd.RandomState(), Zero(), Zero(), One()))
+        assert_(random_accept(rnd.default_rng(), Zero(), Zero(), One()))
 
 
 def test_linear_consecutive_solutions():
@@ -102,7 +102,7 @@ def test_linear_consecutive_solutions():
     rejects consecutive solutions.
     """
     rnd_vals = [0.9, 0.8, 0.7, 0.6, 0.5, 1]
-    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
+    rng = Mock(spec_set=rnd.Generator, random=lambda: rnd_vals.pop(0))
     random_accept = RandomAccept(1, 0, 0.1, "linear")
 
     # For the first five, the probability is, resp., 1, 0.9, 0.8, 0.7, 0.6
@@ -121,7 +121,7 @@ def test_exponential_consecutive_solutions():
     and rejects consecutive solutions.
     """
     rnd_vals = [0.5, 0.25, 0.125, 1]
-    rng = Mock(spec_set=rnd.RandomState, random=lambda: rnd_vals.pop(0))
+    rng = Mock(spec_set=rnd.Generator, random=lambda: rnd_vals.pop(0))
     random_accept = RandomAccept(1, 0, 0.5, "exponential")
 
     # For the first three, the probability is, resp., 1, 0.5, 0.25

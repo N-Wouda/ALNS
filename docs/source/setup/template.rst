@@ -60,13 +60,13 @@ The following is a quickstart template that can help you get started:
         pass
 
 
-    def destroy(current: ProblemState, rnd_state: rnd.RandomState) -> ProblemState:
+    def destroy(current: ProblemState, rng: rnd.Generator) -> ProblemState:
         # TODO implement how to destroy the current state, and return the destroyed
         #  state. Make sure to (deep)copy the current state before modifying!
         pass
 
 
-    def repair(destroyed: ProblemState, rnd_state: rnd.RandomState) -> ProblemState:
+    def repair(destroyed: ProblemState, rng: rnd.Generator) -> ProblemState:
         # TODO implement how to repair a destroyed state, and return it
         pass
 
@@ -76,7 +76,7 @@ The following is a quickstart template that can help you get started:
     print(f"Initial solution objective is {init_sol.objective()}.")
 
     # Create ALNS and add one or more destroy and repair operators
-    alns = ALNS(rnd.RandomState(seed=42))
+    alns = ALNS(rnd.default_rng(seed=42))
     alns.add_destroy_operator(destroy)
     alns.add_repair_operator(repair)
 

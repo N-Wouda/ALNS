@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from numpy.random import RandomState
+from numpy.random import Generator
 
 from alns.State import State
 
@@ -11,7 +11,7 @@ class AcceptanceCriterion(Protocol):
     """
 
     def __call__(
-        self, rnd: RandomState, best: State, current: State, candidate: State
+        self, rng: Generator, best: State, current: State, candidate: State
     ) -> bool:
         """
         Determines whether to accept the proposed, candidate solution based on
@@ -19,7 +19,7 @@ class AcceptanceCriterion(Protocol):
 
         Parameters
         ----------
-        rnd
+        rng
             May be used to draw random numbers from.
         best
             The best solution state observed so far.
@@ -33,3 +33,4 @@ class AcceptanceCriterion(Protocol):
         bool
             Whether to accept the candidate state (True), or not (False).
         """
+        ...  # pragma: no cover

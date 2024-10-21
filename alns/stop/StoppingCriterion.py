@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from numpy.random import RandomState
+from numpy.random import Generator
 
 from alns.State import State
 
@@ -10,13 +10,13 @@ class StoppingCriterion(Protocol):
     Protocol describing a stopping criterion.
     """
 
-    def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
+    def __call__(self, rng: Generator, best: State, current: State) -> bool:
         """
         Determines whether to stop.
 
         Parameters
         ----------
-        rnd
+        rng
             May be used to draw random numbers from.
         best
             The best solution state observed so far.
@@ -28,3 +28,4 @@ class StoppingCriterion(Protocol):
         bool
             Whether to stop iterating (True), or not (False).
         """
+        ...  # pragma: no cover

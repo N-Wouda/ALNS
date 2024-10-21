@@ -59,7 +59,7 @@ class LateAcceptanceHillClimbing:
     def better_history(self):
         return self._better_history
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         if not self._history:
             self._history.append(current.objective())
             return candidate.objective() < current.objective()

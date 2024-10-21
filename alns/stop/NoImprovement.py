@@ -1,6 +1,6 @@
 from typing import Optional
 
-from numpy.random import RandomState
+from numpy.random import Generator
 
 from alns.State import State
 
@@ -28,7 +28,7 @@ class NoImprovement:
     def max_iterations(self) -> int:
         return self._max_iterations
 
-    def __call__(self, rnd: RandomState, best: State, current: State) -> bool:
+    def __call__(self, rng: Generator, best: State, current: State) -> bool:
         if self._target is None or best.objective() < self._target:
             self._target = best.objective()
             self._counter = 0

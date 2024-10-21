@@ -98,7 +98,7 @@ class SimulatedAnnealing:
     def method(self) -> str:
         return self._method
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         probability = np.exp(
             (current.objective() - candidate.objective()) / self._temperature
         )
@@ -110,12 +110,7 @@ class SimulatedAnnealing:
             update(self._temperature, self.step, self.method),
         )
 
-        # TODO deprecate RandomState in favour of Generator - which uses
-        #  random(), rather than random_sample().
-        try:
-            return probability >= rnd.random()
-        except AttributeError:
-            return probability >= rnd.random_sample()
+        return probability >= rng.random()
 
     @classmethod
     def autofit(

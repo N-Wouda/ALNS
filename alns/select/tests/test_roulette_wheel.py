@@ -82,12 +82,12 @@ def test_select_coupled_operators(op_coupling):
     Test if the indices of the selected operators correspond to the
     ones that are given by the operator coupling.
     """
-    rnd_state = rnd.RandomState()
+    rng = rnd.default_rng()
     n_destroy, n_repair = op_coupling.shape
     select = RouletteWheel(
         [0, 0, 0, 0], 0, n_destroy, n_repair, op_coupling=op_coupling
     )
-    d_idx, r_idx = select(rnd_state, Zero(), Zero())
+    d_idx, r_idx = select(rng, Zero(), Zero())
 
     assert_((d_idx, r_idx) in np.argwhere(op_coupling == 1))
 

@@ -73,42 +73,42 @@ def test_call_with_only_one_operator_pair():
     select = MABSelector(
         [2, 1, 1, 0], 1, 1, LearningPolicy.EpsilonGreedy(0.15)
     )
-    state = rnd.RandomState()
+    rng = rnd.default_rng()
 
     for _ in range(10):
-        selected = select(state, Zero(), Zero())
+        selected = select(rng, Zero(), Zero())
         assert_equal(selected, (0, 0))
 
 
 def test_mab_epsilon_greedy():
-    state = rnd.RandomState()
+    rng = rnd.default_rng()
 
     # epsilon=0 is equivalent to greedy selection
     select = MABSelector([2, 1, 1, 0], 2, 1, LearningPolicy.EpsilonGreedy(0.0))
 
     select.update(Zero(), 0, 0, outcome=Outcome.BETTER)
-    selected = select(state, Zero(), Zero())
+    selected = select(rng, Zero(), Zero())
     for _ in range(10):
-        selected = select(state, Zero(), Zero())
+        selected = select(rng, Zero(), Zero())
         assert_equal(selected, (0, 0))
 
     select.update(Zero(), 1, 0, outcome=Outcome.BEST)
     for _ in range(10):
-        selected = select(state, Zero(), Zero())
+        selected = select(rng, Zero(), Zero())
         assert_equal(selected, (1, 0))
 
 
 @mark.parametrize("alpha", [0.25, 0.5])
 def test_mab_ucb1(alpha):
-    state = rnd.RandomState()
+    rng = rnd.default_rng()
     select = MABSelector([2, 1, 1, 0], 2, 1, LearningPolicy.UCB1(alpha))
 
     select.update(Zero(), 0, 0, outcome=Outcome.BEST)
-    mab_select = select(state, Zero(), Zero())
+    mab_select = select(rng, Zero(), Zero())
     assert_equal(mab_select, (0, 0))
 
     select.update(Zero(), 0, 0, outcome=Outcome.REJECT)
-    mab_select = select(state, Zero(), Zero())
+    mab_select = select(rng, Zero(), Zero())
     assert_equal(mab_select, (0, 0))
 
 
@@ -125,7 +125,7 @@ def test_contextual_mab_requires_context():
 
 
 def text_contextual_mab_uses_context():
-    state = rnd.RandomState()
+    rng = rnd.default_rng()
     select = MABSelector(
         [2, 1, 1, 0],
         2,
@@ -142,8 +142,8 @@ def text_contextual_mab_uses_context():
     select.update(ZeroWithOneContext(), 1, 0, outcome=Outcome.REJECT)
     select.update(ZeroWithOneContext(), 0, 0, outcome=Outcome.BEST)
 
-    mab_select = select(state, ZeroWithZeroContext(), ZeroWithZeroContext())
+    mab_select = select(rng, ZeroWithZeroContext(), ZeroWithZeroContext())
     assert_equal(mab_select, (1, 0))
 
-    mab_select = select(state, ZeroWithZeroContext(), ZeroWithZeroContext())
+    mab_select = select(rng, ZeroWithZeroContext(), ZeroWithZeroContext())
     assert_equal(mab_select, (0, 0))

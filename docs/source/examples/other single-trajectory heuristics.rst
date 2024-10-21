@@ -23,12 +23,12 @@ At a high level, one could thus implement the following:
    from alns import ALNS, State
 
 
-   def perturb(sol: State, rnd_state) -> State:
+   def perturb(sol: State, rng) -> State:
        <perturb sol>
        return <perturbed solution>
 
 
-   def local_search(sol: State, rnd_state) -> State:
+   def local_search(sol: State, rng) -> State:
        <perform local search around sol>
        return <improved solution>
 
@@ -67,14 +67,14 @@ Then, a high-level implementation could look like:
        k: int
 
 
-   def perturb(sol: State, rnd_state, neighbourhood: Neighbourhood) -> State:
+   def perturb(sol: State, rng, neighbourhood: Neighbourhood) -> State:
        <perturb sol, possibly using neighbourhood k>
        return <perturbed solution>
 
 
    def local_search(
        sol: State,
-       rnd_state,
+       rng,
        neighbourhood: Neighbourhood
    ) -> State:
        <perform local search around sol using neighbourhood k>
@@ -90,7 +90,7 @@ Then, a high-level implementation could look like:
        return <improved solution>
 
 
-   def on_best(sol: State, rnd_state, neighbourhood: Neighbourhood):
+   def on_best(sol: State, rng, neighbourhood: Neighbourhood):
        # New best solution: start again from first neighbourhood.
        neighbourhood.k = 1
 
@@ -123,12 +123,12 @@ At a high level, one could thus implement the following:
    from alns import ALNS, State
 
 
-   def destroy(sol: State, rnd_state) -> State:
+   def destroy(sol: State, rng) -> State:
        <destroy sol to some fixed degree of destruction (possibly completely)>
        return <destroyed solution>
 
 
-   def greedy_randomised_repair(sol: State, rnd_state) -> State:
+   def greedy_randomised_repair(sol: State, rng) -> State:
        <do greedy randomised repair around sol>
        return <improved solution>
 

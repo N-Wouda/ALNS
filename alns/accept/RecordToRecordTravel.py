@@ -101,7 +101,7 @@ class RecordToRecordTravel:
     def method(self) -> str:
         return self._method
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         # From [2] p. 87 (RRT; best), and [3] p. 162 (TA; current).
         baseline = best if self._cmp_best else current
         res = candidate.objective() - baseline.objective() <= self._threshold

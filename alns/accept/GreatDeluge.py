@@ -50,7 +50,7 @@ class GreatDeluge:
     def beta(self):
         return self._beta
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         if self._threshold is None:
             self._threshold = self.alpha * best.objective()
 

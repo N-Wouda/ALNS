@@ -13,6 +13,7 @@ class State(Protocol):
         """
         Computes the state's associated objective value.
         """
+        ...  # pragma: no cover
 
 
 class ContextualState(State, Protocol):
@@ -25,3 +26,4 @@ class ContextualState(State, Protocol):
         """
         Computes a context vector for the current state.
         """
+        ...  # pragma: no cover

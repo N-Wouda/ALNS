@@ -19,17 +19,17 @@ class _OperatorType(Protocol):
     def __call__(
         self,
         state: State,
-        rnd_state: rnd.RandomState,
+        rng: rnd.Generator,
         **kwargs,
     ) -> State:
-        pass  # pragma: no cover
+        ...  # pragma: no cover
 
 
 class _CallbackType(Protocol):
     __name__: str
 
-    def __call__(self, state: State, rnd_state: rnd.RandomState, **kwargs):
-        pass  # pragma: no cover
+    def __call__(self, state: State, rng: rnd.Generator, **kwargs):
+        ...  # pragma: no cover
 
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ class ALNS:
         callback functions (registered via :meth:`~alns.ALNS.ALNS.on_best`,
         :meth:`~alns.ALNS.ALNS.on_better`, :meth:`~alns.ALNS.ALNS.on_accept`,
         or :meth:`~alns.ALNS.ALNS.on_reject`) should take a candidate
-        :class:`~alns.State.State` and :class:`~numpy.random.RandomState` as
+        :class:`~alns.State.State` and :class:`~numpy.random.Generator` as
         arguments. Unlike the operators, no solution should be returned: if
         desired, the given candidate solution should be modified in-place
         instead. Note that this solution is **not** evaluated again (so a
@@ -55,11 +55,11 @@ class ALNS:
 
     Parameters
     ----------
-    rnd_state
-        Optional random state to use for random number generation. When
-        passed, this state is used for operator selection and general
-        computations requiring random numbers. It is also passed to the
-        destroy and repair operators, as a second argument.
+    rng
+        Optional random number generator (RNG). When passed, this generator
+        is used for operator selection and general computations requiring
+        random numbers. It is also passed to the destroy and repair operators,
+        as a second argument.
 
     References
     ----------
@@ -68,8 +68,8 @@ class ALNS:
            - 420). Springer.
     """
 
-    def __init__(self, rnd_state: rnd.RandomState = rnd.RandomState()):
-        self._rnd_state = rnd_state
+    def __init__(self, rng: rnd.Generator = rnd.default_rng()):
+        self._rng = rng
 
         self._d_ops: Dict[str, _OperatorType] = {}
         self._r_ops: Dict[str, _OperatorType] = {}
@@ -121,7 +121,7 @@ class ALNS:
         op
             An operator that, when applied to the current state, returns a new
             state reflecting its implemented destroy action. Its second
-            argument is the random state passed to the ALNS instance.
+            argument is the RNG passed to the ALNS instance.
         name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
@@ -140,7 +140,7 @@ class ALNS:
         op
             An operator that, when applied to the destroyed state, returns a
             new state reflecting its implemented repair action. Its second
-            argument is the random state passed to the ALNS instance.
+            argument is the RNG passed to the ALNS instance.
         name
             Optional name argument, naming the operator. When not passed, the
             function name is used instead.
@@ -212,16 +212,16 @@ class ALNS:
         stats.collect_objective(init_obj)
         stats.collect_runtime(time.perf_counter())
 
-        while not stop(self._rnd_state, best, curr):
-            d_idx, r_idx = op_select(self._rnd_state, best, curr)
+        while not stop(self._rng, best, curr):
+            d_idx, r_idx = op_select(self._rng, best, curr)
 
             d_name, d_operator = self.destroy_operators[d_idx]
             r_name, r_operator = self.repair_operators[r_idx]
 
             logger.debug(f"Selected operators {d_name} and {r_name}.")
 
-            destroyed = d_operator(curr, self._rnd_state, **kwargs)
-            cand = r_operator(destroyed, self._rnd_state, **kwargs)
+            destroyed = d_operator(curr, self._rng, **kwargs)
+            cand = r_operator(destroyed, self._rng, **kwargs)
 
             best, curr, outcome = self._eval_cand(
                 accept, best, curr, cand, **kwargs
@@ -295,7 +295,7 @@ class ALNS:
         func = self._on_outcome.get(outcome)
 
         if callable(func):
-            func(cand, self._rnd_state, **kwargs)
+            func(cand, self._rng, **kwargs)
 
         if outcome == Outcome.BEST:
             return cand, cand, outcome
@@ -317,7 +317,7 @@ class ALNS:
         """
         outcome = Outcome.REJECT
 
-        if accept(self._rnd_state, best, curr, cand):  # accept candidate
+        if accept(self._rng, best, curr, cand):  # accept candidate
             outcome = Outcome.ACCEPT
 
             if cand.objective() < curr.objective():

@@ -10,7 +10,7 @@ def test_accepts_better():
     Tests if the always accept method accepts a better solution.
     """
     always_accept = AlwaysAccept()
-    assert_(always_accept(rnd.RandomState(), One(), One(), Zero()))
+    assert_(always_accept(rnd.default_rng(), One(), One(), Zero()))
 
 
 def test_accepts_worse():
@@ -18,7 +18,7 @@ def test_accepts_worse():
     Tests if the always accept method accepts a worse solution.
     """
     always_accept = AlwaysAccept()
-    assert_(always_accept(rnd.RandomState(), Zero(), Zero(), One()))
+    assert_(always_accept(rnd.default_rng(), Zero(), Zero(), One()))
 
 
 def test_accepts_equal():
@@ -27,4 +27,4 @@ def test_accepts_equal():
     same objective value.
     """
     always_accept = AlwaysAccept()
-    assert_(always_accept(rnd.RandomState(), Zero(), Zero(), Zero()))
+    assert_(always_accept(rnd.default_rng(), Zero(), Zero(), Zero()))

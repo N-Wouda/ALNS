@@ -4,5 +4,5 @@ class HillClimbing:
     that result in a worse objective value.
     """
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         return candidate.objective() <= current.objective()

@@ -61,7 +61,7 @@ class NonLinearGreatDeluge(GreatDeluge):
     def delta(self):
         return self._delta
 
-    def __call__(self, rnd, best, current, candidate):
+    def __call__(self, rng, best, current, candidate):
         if self._threshold is None:
             if best.objective() == 0:
                 raise ValueError("Initial solution cannot have zero value.")

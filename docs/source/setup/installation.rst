@@ -44,7 +44,7 @@ This goes like so:
 .. code-block::
 
    cd ALNS
-   poetry install --with examples
+   poetry install --with examples --all-extras
 
 This might take a few minutes to resolve, but only needs to be done once.
 After setting everything up, simply open the jupyter notebooks:

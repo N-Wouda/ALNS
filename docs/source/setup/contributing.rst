@@ -22,7 +22,7 @@ Now, change into the ALNS directory, and set-up the virtual environment using ``
    cd ALNS
 
    pip install --upgrade poetry
-   poetry install --with examples
+   poetry install --with examples --all-extras
 
 This might take a few minutes, but only needs to be done once.
 Now make sure everything runs smoothly, by executing the test suite:

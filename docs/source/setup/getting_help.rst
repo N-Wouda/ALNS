@@ -4,6 +4,12 @@ Getting help
 Conversations about development and issues take place in the `GitHub repository <https://github.com/N-Wouda/ALNS/>`_.
 Feel free to open a new issue if you have something to discuss.
 
+.. note::
+
+   Please do not e-mail us with questions, modelling issues, or code examples.
+   Those are much easier to discuss via GitHub than over e-mail.
+
+
 Submitting a bug report
 -----------------------
 
@@ -25,3 +31,10 @@ To limit the amount of time needed to triage your problem, please do the followi
   .. code-block:: shell
 
      python -c 'import alns; alns.show_versions()'
+
+
+Submitting a feature request
+----------------------------
+
+Please first browse the existing issues and discussions in the GitHub repository to see if your feature has already been requested.
+If it has not, please open a new issue in the repository, using the "Feature request" template.

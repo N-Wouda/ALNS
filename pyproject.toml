@@ -30,8 +30,12 @@ classifiers = [
 "Tracker" = "https://github.com/N-Wouda/ALNS/issues"
 
 [tool.poetry.dependencies]
-python = "^3.8, <4.0"
-numpy = ">=1.18.0"
+python = "^3.9, <4.0"
+numpy = [
+    # Numpy 1.26 is the first version of numpy that supports Python 3.12.
+    { version = ">=1.18.0", python = "<3.12" },
+    { version = ">=1.26.0", python = ">=3.12" }
+]
 matplotlib = ">=3.5.0"
 mabwiser = { version = ">=2.7.1", optional = true }
 

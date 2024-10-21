@@ -16,15 +16,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        include:
-          - python-version: '3.9'
-            extras: '--all-extras'
-          - python-version: '3.9'
-            extras: ''
-          - python-version: '3.12'
-            extras: '--all-extras'
-          - python-version: '3.12'
-            extras: ''
+        python-version: [ '3.9', '3.12' ]
+        extras: [ '--all-extras', '' ]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python

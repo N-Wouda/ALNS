@@ -1,17 +1,20 @@
 from typing import List
 
 import numpy.random as rnd
-from mabwiser.mab import LearningPolicy, NeighborhoodPolicy
+import pytest
 from numpy.testing import assert_, assert_equal, assert_raises
-from pytest import mark
 
 from alns.Outcome import Outcome
 from alns.select import MABSelector
-from alns.select.MABSelector import arm2ops, ops2arm
+from alns.select.MABSelector import MABWISER_AVAILABLE, arm2ops, ops2arm
 from alns.tests.states import Zero, ZeroWithOneContext, ZeroWithZeroContext
 
+if MABWISER_AVAILABLE:
+    from mabwiser.mab import LearningPolicy, NeighborhoodPolicy
 
-@mark.parametrize(
+
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
+@pytest.mark.parametrize(
     "destroy_idx, repair_idx",
     [
         (0, 0),
@@ -28,6 +31,7 @@ def test_arm_conversion(destroy_idx, repair_idx):
     assert_equal(actual, expected)
 
 
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
 def test_does_not_raise_on_valid_mab():
     policy = LearningPolicy.EpsilonGreedy(0.15)
     select = MABSelector([5, 0, 3, 0], 2, 1, policy)
@@ -41,33 +45,25 @@ def test_does_not_raise_on_valid_mab():
     MABSelector([2, 1, 0, 0], 2, 1, policy, seed=1234567)
 
 
-@mark.parametrize(
-    "scores, learning_policy, num_destroy, num_repair",
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
+@pytest.mark.parametrize(
+    "scores, num_destroy, num_repair",
     [
-        (
-            [5, 3, 2, -1],
-            LearningPolicy.EpsilonGreedy(0.15),
-            1,
-            1,
-        ),  # negative score
-        (
-            [5, 3, 2],
-            LearningPolicy.EpsilonGreedy(0.15),
-            1,
-            1,
-        ),  # len(score) < 4
+        ([5, 3, 2, -1], 1, 1),  # negative score
+        ([5, 3, 2], 1, 1),  # len(score) < 4
     ],
 )
 def test_raises_invalid_arguments(
     scores: List[float],
-    learning_policy: LearningPolicy,
     num_destroy: int,
     num_repair: int,
 ):
+    policy = LearningPolicy.EpsilonGreedy(0.15)
     with assert_raises(ValueError):
-        MABSelector(scores, num_destroy, num_repair, learning_policy)
+        MABSelector(scores, num_destroy, num_repair, policy)
 
 
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
 def test_call_with_only_one_operator_pair():
     # Only one operator pair, so the algorithm should select (0, 0).
     select = MABSelector(
@@ -80,6 +76,7 @@ def test_call_with_only_one_operator_pair():
         assert_equal(selected, (0, 0))
 
 
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
 def test_mab_epsilon_greedy():
     rng = rnd.default_rng()
 
@@ -98,7 +95,8 @@ def test_mab_epsilon_greedy():
         assert_equal(selected, (1, 0))
 
 
-@mark.parametrize("alpha", [0.25, 0.5])
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
+@pytest.mark.parametrize("alpha", [0.25, 0.5])
 def test_mab_ucb1(alpha):
     rng = rnd.default_rng()
     select = MABSelector([2, 1, 1, 0], 2, 1, LearningPolicy.UCB1(alpha))
@@ -112,6 +110,7 @@ def test_mab_ucb1(alpha):
     assert_equal(mab_select, (0, 0))
 
 
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
 def test_contextual_mab_requires_context():
     select = MABSelector(
         [2, 1, 1, 0],
@@ -124,6 +123,7 @@ def test_contextual_mab_requires_context():
         select.update(Zero(), 0, 0, outcome=Outcome.BEST)
 
 
+@pytest.mark.skipif(not MABWISER_AVAILABLE, reason="MABWiser not available")
 def text_contextual_mab_uses_context():
     rng = rnd.default_rng()
     select = MABSelector(

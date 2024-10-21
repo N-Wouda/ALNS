@@ -118,14 +118,14 @@ def test_linear_random_solutions():
     """
     simulated_annealing = SimulatedAnnealing(2, 1, 1, "linear")
 
-    state = rnd.default_rng(1)
+    rng = rnd.default_rng(1)
 
     # Using the above seed, the first two random numbers are 0.51 and 0.95,
     # respectively. The acceptance probability is 0.61 first, so the first
     # should be accepted (0.61 > 0.51). Thereafter, it drops to 0.37, so the
     # second should not (0.37 < 0.95).
-    assert_(simulated_annealing(state, Zero(), Zero(), One()))
-    assert_(not simulated_annealing(state, Zero(), Zero(), One()))
+    assert_(simulated_annealing(rng, Zero(), Zero(), One()))
+    assert_(not simulated_annealing(rng, Zero(), Zero(), One()))
 
 
 def test_exponential_random_solutions():
@@ -136,10 +136,10 @@ def test_exponential_random_solutions():
     """
     simulated_annealing = SimulatedAnnealing(2, 1, 0.5, "exponential")
 
-    state = rnd.default_rng(1)
+    rng = rnd.default_rng(1)
 
-    assert_(simulated_annealing(state, Zero(), Zero(), One()))
-    assert_(not simulated_annealing(state, Zero(), Zero(), One()))
+    assert_(simulated_annealing(rng, Zero(), Zero(), One()))
+    assert_(not simulated_annealing(rng, Zero(), Zero(), One()))
 
 
 @mark.parametrize(

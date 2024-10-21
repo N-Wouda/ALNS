@@ -36,15 +36,15 @@ def get_statistics():
         statistics.collect_objective(objective)
 
     # We should make sure these results are reproducible.
-    state = rnd.default_rng(1)
+    rng = rnd.default_rng(1)
 
     operators = ["test1", "test2", "test3"]
 
     for _ in range(100):
-        operator = state.choice(operators)
+        operator = rng.choice(operators)
 
-        statistics.collect_destroy_operator("d_" + operator, state.integers(4))
-        statistics.collect_repair_operator("r_" + operator, state.integers(4))
+        statistics.collect_destroy_operator("d_" + operator, rng.integers(4))
+        statistics.collect_repair_operator("r_" + operator, rng.integers(4))
 
     return statistics
 

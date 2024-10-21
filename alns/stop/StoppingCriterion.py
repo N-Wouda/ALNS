@@ -28,4 +28,4 @@ class StoppingCriterion(Protocol):
         bool
             Whether to stop iterating (True), or not (False).
         """
-        ...
+        ...  # pragma: no cover

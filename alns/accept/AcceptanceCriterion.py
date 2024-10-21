@@ -19,7 +19,7 @@ class AcceptanceCriterion(Protocol):
 
         Parameters
         ----------
-        rnd
+        rng
             May be used to draw random numbers from.
         best
             The best solution state observed so far.

@@ -1,14 +1,11 @@
 import datetime
-import glob
 import os
 import shutil
 import sys
-from pathlib import Path
 
 import tomli
 
 # -- Project information
-
 sys.path.insert(0, os.path.abspath("../../"))
 
 now = datetime.date.today()
@@ -21,36 +18,28 @@ with open("../../pyproject.toml", "rb") as fh:
     pyproj = tomli.load(fh)
     release = version = pyproj["tool"]["poetry"]["version"]
 
-for file in glob.iglob("../../examples/*.ipynb"):
-    path = Path(file)
-
-    print(f"Copy {path.name} into docs/source/examples/")
-    shutil.copy2(path, f"examples/{path.name}")
+print("Copying example notebooks into docs/source/examples/")
+shutil.copytree("../../examples", "examples/", dirs_exist_ok=True)
 
 # -- Autodoc
-
 autoclass_content = "class"
-
 autodoc_member_order = "bysource"
-
 autodoc_default_flags = ["members"]
 
 # -- Numpydoc
-
 numpydoc_xref_param_type = True
 numpydoc_class_members_toctree = False
 
 # -- nbsphinx
+skip_notebooks = os.getenv("SKIP_NOTEBOOKS", False)
+nbsphinx_execute = "never" if skip_notebooks else "always"
 
-nbsphinx_execute = "never"
 
 # -- General configuration
-
 extensions = [
     "sphinx.ext.duration",
     "sphinx.ext.doctest",
     "sphinx.ext.autodoc",
-    # "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx_rtd_theme",
     "nbsphinx",
@@ -71,7 +60,6 @@ intersphinx_disabled_domains = ["std"]
 templates_path = ["_templates"]
 
 # -- Options for HTML output
-
 html_theme = "sphinx_rtd_theme"
 
 # -- Options for EPUB output
